@@ -10,7 +10,7 @@ export default defineConfig({
     minify: 'terser',
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'PetiteVue',
+      name: 'PowerVue',
       formats: ['es', 'umd', 'iife']
     },
     rollupOptions: {
