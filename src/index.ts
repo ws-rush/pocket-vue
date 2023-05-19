@@ -1,7 +1,7 @@
 export { define } from './define'
 export { createApp } from './app'
 export { nextTick } from './scheduler'
-export { reactive } from '@vue/reactivity'
+export { reactive } from './reactivity'
 
 import { createApp } from './app'
 

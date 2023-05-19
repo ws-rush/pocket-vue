@@ -1,7 +1,7 @@
 import { Context, createContext } from './context'
 import { walk } from './walk'
 import { remove } from '@vue/shared'
-import { stop } from '@vue/reactivity'
+// import { stop } from './reactivity'
 
 export class Block {
   template: Element | DocumentFragment
@@ -90,7 +90,8 @@ export class Block {
     this.ctx.blocks.forEach((child) => {
       child.teardown()
     })
-    this.ctx.effects.forEach(stop)
+    // here maybe we need loop on targetMap and depMap to stop
+    // this.ctx.effects.forEach((effect) => stop)
     this.ctx.cleanups.forEach((fn) => fn())
   }
 }

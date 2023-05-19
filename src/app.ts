@@ -1,4 +1,4 @@
-import { reactive } from '@vue/reactivity'
+import { reactive } from './reactivity'
 import { Block } from './block'
 import { Directive } from './directives'
 import { bindContextMethods, createContext } from './context'

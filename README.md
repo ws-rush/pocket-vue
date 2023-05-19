@@ -5,7 +5,7 @@
 - Only ~6kb
 - Vue-compatible template syntax
 - DOM-based, mutates in place
-- Driven by `@vue/reactivity`
+- Driven by reactivity engine wrote by [Mark Backes](https://github.com/themarcba)
 
 ## Status
 
@@ -284,7 +284,7 @@ avoid flash rendreng which happen until `petite-vue` loaded, after it load it wi
 
 ### Global State Management
 
-You can use the `reactive` method (re-exported from `@vue/reactivity`) to create global state singletons:
+You can use the `reactive` method to create global state singletons:
 
 ```html
 <script type="module">

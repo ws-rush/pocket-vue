@@ -1,19 +1,16 @@
-import {
-  effect as rawEffect,
-  reactive,
-  ReactiveEffectRunner
-} from '@vue/reactivity'
+import { effect as rawEffect, reactive } from '@vue/reactivity'
 import { Block } from './block'
 import { Directive } from './directives'
 import { queueJob } from './scheduler'
 import { inOnce } from './walk'
+
 export interface Context {
   key?: any
   scope: Record<string, any>
   dirs: Record<string, Directive>
   blocks: Block[]
   effect: typeof rawEffect
-  effects: ReactiveEffectRunner[]
+  effects: (() => void)[]
   cleanups: (() => void)[]
   delimiters: [string, string]
   delimitersRE: RegExp
@@ -32,13 +29,13 @@ export const createContext = (parent?: Context): Context => {
     effect: (fn) => {
       if (inOnce) {
         queueJob(fn)
-        return fn as any
+        return fn
       }
-      const e: ReactiveEffectRunner = rawEffect(fn, {
-        scheduler: () => queueJob(e)
+      const effect: any = rawEffect(fn, {
+        scheduler: () => queueJob(effect)
       })
-      ctx.effects.push(e)
-      return e
+      ctx.effects.push(effect)
+      return effect
     }
   }
   return ctx
@@ -52,8 +49,6 @@ export const createScopedContext = (ctx: Context, data = {}): Context => {
   const reactiveProxy = reactive(
     new Proxy(mergedScope, {
       set(target, key, val, receiver) {
-        // when setting a property that doesn't exist on current scope,
-        // do not create it on the current scope and fallback to parent scope.
         if (receiver === reactiveProxy && !target.hasOwnProperty(key)) {
           return Reflect.set(parentScope, key, val)
         }

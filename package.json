@@ -33,7 +33,6 @@
   },
   "homepage": "https://github.com/ws-rush/power-vue#readme",
   "devDependencies": {
-    "@vue/reactivity": "^3.2.27",
     "@vue/shared": "^3.2.27",
     "chalk": "^4.1.1",
     "conventional-changelog-cli": "^2.1.1",
