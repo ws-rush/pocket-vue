@@ -9,9 +9,9 @@
 
 ## Status
 
-- `petite-vue` is a great and kinda stable library, but it's development inactive for now, so I decided make this fork to continue development. feel free to open issue or PR.
+- `petite-vue` it's not mantained anymore, hence we will provide bug fixes and handle feature requests. Feel free to open issue or PR.
+- this fork is focused on web components, but we will provide new generic features too
 
-- my focus is support plugins, and better support fo web components
 
 ## Usage
 
@@ -315,6 +315,22 @@ You can use the `reactive` method (re-exported from `@vue/reactivity`) to create
 </div>
 ```
 
+Use `watchEffect` to re-run a function every time its dependencies changes.
+
+```js
+
+import { watchEffect, reactive } from 'https://unpkg.com/pico-vue?module'
+
+const store = reactive({
+  count: 0,
+})
+
+watchEffect( () => console.log(store.count))
+
+store.count++
+
+```
+
 ### Custom Directives
 
 Custom directives are also supported but with a different interface:
@@ -372,7 +388,7 @@ createApp({
 
 ### Use Plugins
 
-You can write custome directive then distrbute it as a pacage, then add it to create vue, like:
+You can write custome directive then distrbute it as a package, then add it to create vue, like:
 
 ```html
 <div v-scope="{counter: 0}" v-log="inside pico-vue scope">
@@ -381,7 +397,7 @@ You can write custome directive then distrbute it as a pacage, then add it to cr
 
 <script type="module">
   import log from './log'
-  import { createApp } from 'peteite-vue'
+  import { createApp } from 'pico-vue'
   createApp().use(log).mount()
 </script>
 ```
@@ -405,19 +421,20 @@ Check out the [examples directory](https://github.com/ws-rush/pico-vue/tree/main
 
 ## Features
 
-### `pico-vue` only
+### `pico-vue`/`petite-vue` only
 
 - `v-scope`
 - `v-effect`
 - `@vue:mounted` & `@vue:unmounted` events
-- `$root` refer to component root element
+- `$root` refers to the component root element
 
-### Has Different Behavior
+### Different Behavior from `petite-vue`
 
 - In expressions, `$el` points to the current element the directive is bound to (instead of component root element which accessed by `$root`)
 - `createApp()` accepts global state instead of a component
 - Components are simplified into object-returning functions
 - Custom directives have a different interface
+- exported `watchEffect`
 
 ### Vue Compatible
 
