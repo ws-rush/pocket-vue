@@ -1,6 +1,6 @@
 {
   "name": "pico-vue",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "petite-vue fork with plugins support",
   "main": "dist/pico-vue.umd.js",
   "unpkg": "dist/pico-vue.iife.js",
@@ -33,8 +33,8 @@
   },
   "homepage": "https://github.com/ws-rush/pico-vue#readme",
   "devDependencies": {
-    "@vue/reactivity": "^3.2.27",
-    "@vue/shared": "^3.2.27",
+    "@vue/reactivity": "3.2.27",
+    "@vue/shared": "3.2.27",
     "chalk": "^4.1.1",
     "conventional-changelog-cli": "^2.1.1",
     "enquirer": "^2.3.6",
