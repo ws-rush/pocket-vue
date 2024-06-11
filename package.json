@@ -34,8 +34,8 @@
   "homepage": "https://github.com/ws-rush/pico-vue#readme",
   "devDependencies": {
     "@types/node": "^20.14.2",
-    "@vue/reactivity": "3.2.27",
-    "@vue/shared": "3.2.27",
+    "@vue/reactivity": "^3.2.45",
+    "@vue/shared": "^3.2.45",
     "chalk": "^4.1.1",
     "conventional-changelog-cli": "^2.1.1",
     "enquirer": "^2.3.6",
