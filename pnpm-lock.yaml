@@ -12,10 +12,10 @@ importers:
         specifier: ^20.14.2
         version: 20.14.2
       '@vue/reactivity':
-        specifier: ^3.2.45
+        specifier: 3.2.45
         version: 3.2.45
       '@vue/shared':
-        specifier: ^3.2.45
+        specifier: 3.2.45
         version: 3.2.45
       chalk:
         specifier: ^4.1.1
