@@ -1,16 +1,13 @@
 import { defineConfig } from 'vite'
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 
 export default defineConfig({
-  esbuild: {
-    minify: true
-  },
   build: {
     target: 'esnext',
     minify: 'terser',
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'PetiteVue',
+      name: 'PicoVue',
       formats: ['es', 'umd', 'iife']
     },
     rollupOptions: {

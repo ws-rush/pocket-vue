@@ -33,6 +33,7 @@
   },
   "homepage": "https://github.com/ws-rush/pico-vue#readme",
   "devDependencies": {
+    "@types/node": "^20.14.2",
     "@vue/reactivity": "3.2.27",
     "@vue/shared": "3.2.27",
     "chalk": "^4.1.1",
@@ -41,7 +42,8 @@
     "execa": "^5.0.0",
     "prettier": "^2.3.0",
     "semver": "^7.3.5",
+    "terser": "^5.31.1",
     "typescript": "^5.4.5",
-    "vite": "^2.7.12"
+    "vite": "^5.2.13"
   }
 }
