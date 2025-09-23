@@ -1,9 +1,9 @@
 const fs = require('fs')
 const path = require('path')
-const chalk = require('chalk')
+const chalk = require('chalk').default
 const semver = require('semver')
 const { prompt } = require('enquirer')
-const execa = require('execa')
+const { execa } = require('execa')
 const currentVersion = require('../package.json').version
 
 const versionIncrements = ['patch', 'minor', 'major']
