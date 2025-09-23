@@ -13,7 +13,9 @@ export const _if = (el: Element, exp: string, ctx: Context) => {
     console.warn(`v-if expression cannot be empty.`)
   }
 
-  const parent = el.parentElement!
+  const parent = el.parentElement || (el.parentNode as Element | DocumentFragment)
+  if (!parent) return
+
   const anchor = new Comment('v-if')
   parent.insertBefore(anchor, el)
 
