@@ -17,7 +17,7 @@
   "types": "./dist/types/index.d.ts",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && tsc --emitDeclarationOnly && mv dist/src dist/types",
+    "build": "vite build",
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",

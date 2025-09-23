@@ -8,9 +8,10 @@ global.customElements = {
   define: vi.fn(),
   get: vi.fn(),
   upgrade: vi.fn(),
-  whenDefined: vi.fn()
+  whenDefined: vi.fn(),
+  getName: (() => null) as any
 }
 
 // Setup global test utilities
-global.createApp = vi.fn()
-global.reactive = vi.fn()
+;(global as any).createApp = vi.fn()
+;(global as any).reactive = vi.fn()
