@@ -42,7 +42,7 @@ export class Block {
     walk(this.template, this.ctx)
   }
 
-  insert(parent: Element, anchor: Node | null = null) {
+  insert(parent: Element | DocumentFragment | Document, anchor: Node | null = null) {
     if (this.isFragment) {
       if (this.start) {
         // already inserted, moving

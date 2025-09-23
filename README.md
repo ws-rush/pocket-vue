@@ -63,10 +63,22 @@ Or, use the ES module build:
 
 The short CDN URL is meant for prototyping. For production usage, use a fully resolved CDN URL to avoid resolving and redirect cost:
 
-- Global build: `https://unpkg.com/pocket-vue@1.0.3/dist/pocket-vue.iife.js`
+- Global build: `https://unpkg.com/pocket-vue@1.0.5/dist/pocket-vue.iife.js`
   - exposes `PetiteVue` global, supports auto init
-- ESM build: `https://unpkg.com/pocket-vue@1.0.3/dist/pocket-vue.es.js`
+- ESM build: `https://unpkg.com/pocket-vue@1.0.5/dist/pocket-vue.es.js`
   - Must be used with `<script type="module">`
+
+### CDN Links
+
+You can also use the following CDN services:
+
+- **jsDelivr**:
+  - Global build: `https://cdn.jsdelivr.net/npm/pocket-vue@1.0.5/dist/pocket-vue.iife.js`
+  - ESM build: `https://cdn.jsdelivr.net/npm/pocket-vue@1.0.5/dist/pocket-vue.es.js`
+
+- **unpkg**:
+  - Global build: `https://unpkg.com/pocket-vue@1.0.5/dist/pocket-vue.iife.js`
+  - ESM build: `https://unpkg.com/pocket-vue@1.0.5/dist/pocket-vue.es.js`
 
 ### Root Scope
 
@@ -98,7 +110,7 @@ The `createApp` function accepts a data object that serves as the root scope for
 </div>
 ```
 
-Note `v-scope` doesn't need to have a value here and simply serves as a hint for `pocket-vue` to process the element.
+Note: `v-scope` doesn't need to have a value here and simply serves as a hint for `pocket-vue` to process the element.
 
 ### Explicit Mount Target
 
