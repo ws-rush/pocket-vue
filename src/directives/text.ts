@@ -11,5 +11,11 @@ export const toDisplayString = (value: any) =>
   value == null
     ? ''
     : isObject(value)
-    ? JSON.stringify(value, null, 2)
+    ? (() => {
+        try {
+          return JSON.stringify(value, null, 2)
+        } catch (e) {
+          return '[Object]'
+        }
+      })()
     : String(value)
