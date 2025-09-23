@@ -1,6 +1,6 @@
-# pico-vue
+# pocket-vue
 
-`pico-vue` is a fork of `petite-vue`, which is an alternative distribution of [Vue](https://vuejs.org) optimized for [progressive enhancement](https://developer.mozilla.org/en-US/docs/Glossary/Progressive_Enhancement). It provides the same template syntax and reactivity mental model as standard Vue. However, it is specifically optimized for "sprinkling" a small amount of interactions on an existing HTML page rendered by a server framework. See more details on [how it differs from standard Vue](#comparison-with-standard-vue).
+`pocket-vue` is a fork of `petite-vue`, which is an alternative distribution of [Vue](https://vuejs.org) optimized for [progressive enhancement](https://developer.mozilla.org/en-US/docs/Glossary/Progressive_Enhancement). It provides the same template syntax and reactivity mental model as standard Vue. However, it is specifically optimized for "sprinkling" a small amount of interactions on an existing HTML page rendered by a server framework. See more details on [how it differs from standard Vue](#comparison-with-standard-vue).
 
 - Only ~6kb
 - Vue-compatible template syntax
@@ -15,10 +15,10 @@
 
 ## Usage
 
-`pico-vue` can be used without a build step. Simply load it from a CDN:
+`pocket-vue` can be used without a build step. Simply load it from a CDN:
 
 ```html
-<script src="https://unpkg.com/pico-vue" defer init></script>
+<script src="https://unpkg.com/pocket-vue" defer init></script>
 
 <!-- anywhere on the page -->
 <div v-scope="{ count: 0 }">
@@ -35,16 +35,16 @@
 </textarea>
 ```
 
-- Use `v-scope` to mark regions on the page that should be controlled by `pico-vue`.
+- Use `v-scope` to mark regions on the page that should be controlled by `pocket-vue`.
 - The `defer` attribute makes the script execute after HTML content is parsed.
-- The `init` attribute tells `pico-vue` to automatically query and initialize all elements that have `v-scope` on the page.
+- The `init` attribute tells `pocket-vue` to automatically query and initialize all elements that have `v-scope` on the page.
 
 ### Manual Init
 
 If you don't want the auto init, remove the `init` attribute and move the scripts to end of `<body>`:
 
 ```html
-<script src="https://unpkg.com/pico-vue"></script>
+<script src="https://unpkg.com/pocket-vue"></script>
 <script>
   PetiteVue.createApp().mount()
 </script>
@@ -54,7 +54,7 @@ Or, use the ES module build:
 
 ```html
 <script type="module">
-  import { createApp } from 'https://unpkg.com/pico-vue?module'
+  import { createApp } from 'https://unpkg.com/pocket-vue?module'
   createApp().mount()
 </script>
 ```
@@ -63,9 +63,9 @@ Or, use the ES module build:
 
 The short CDN URL is meant for prototyping. For production usage, use a fully resolved CDN URL to avoid resolving and redirect cost:
 
-- Global build: `https://unpkg.com/pico-vue@1.0.3/dist/pico-vue.iife.js`
+- Global build: `https://unpkg.com/pocket-vue@1.0.3/dist/pocket-vue.iife.js`
   - exposes `PetiteVue` global, supports auto init
-- ESM build: `https://unpkg.com/pico-vue@1.0.3/dist/pico-vue.es.js`
+- ESM build: `https://unpkg.com/pocket-vue@1.0.3/dist/pocket-vue.es.js`
   - Must be used with `<script type="module">`
 
 ### Root Scope
@@ -74,7 +74,7 @@ The `createApp` function accepts a data object that serves as the root scope for
 
 ```html
 <script type="module">
-  import { createApp } from 'https://unpkg.com/pico-vue?module'
+  import { createApp } from 'https://unpkg.com/pocket-vue?module'
 
   createApp({
     // exposed to all expressions
@@ -98,17 +98,17 @@ The `createApp` function accepts a data object that serves as the root scope for
 </div>
 ```
 
-Note `v-scope` doesn't need to have a value here and simply serves as a hint for `pico-vue` to process the element.
+Note `v-scope` doesn't need to have a value here and simply serves as a hint for `pocket-vue` to process the element.
 
 ### Explicit Mount Target
 
-You can specify a mount target (selector or element) to limit `pico-vue` to only that region of the page:
+You can specify a mount target (selector or element) to limit `pocket-vue` to only that region of the page:
 
 ```js
 createApp().mount('#only-this-div')
 ```
 
-This also means you can have multiple `pico-vue` apps to control different regions on the same page:
+This also means you can have multiple `pocket-vue` apps to control different regions on the same page:
 
 ```js
 createApp({
@@ -122,13 +122,13 @@ createApp({
 
 ### Components
 
-The concept of "Components" are different in `pico-vue`, as it is much more bare-bones.
+The concept of "Components" are different in `pocket-vue`, as it is much more bare-bones.
 
 First, reusable scope logic can be created with functions:
 
 ```html
 <script type="module">
-  import { createApp } from 'https://unpkg.com/pico-vue?module'
+  import { createApp } from 'https://unpkg.com/pocket-vue?module'
 
   function Counter(props) {
     return {
@@ -164,7 +164,7 @@ If you also want to reuse a piece of template, you can provide a special `$templ
 
 ```html
 <script type="module">
-  import { createApp } from 'https://unpkg.com/pico-vue?module'
+  import { createApp } from 'https://unpkg.com/pocket-vue?module'
 
   function Counter(props) {
     return {
@@ -288,7 +288,7 @@ You can use the `reactive` method (re-exported from `@vue/reactivity`) to create
 
 ```html
 <script type="module">
-  import { createApp, reactive } from 'https://unpkg.com/pico-vue?module'
+  import { createApp, reactive } from 'https://unpkg.com/pocket-vue?module'
 
   const store = reactive({
     count: 0,
@@ -319,7 +319,7 @@ Use `watchEffect` to re-run a function every time its dependencies changes.
 
 ```js
 
-import { watchEffect, reactive } from 'https://unpkg.com/pico-vue?module'
+import { watchEffect, reactive } from 'https://unpkg.com/pocket-vue?module'
 
 const store = reactive({
   count: 0,
@@ -391,13 +391,13 @@ createApp({
 You can write custome directive then distrbute it as a package, then add it to create vue, like:
 
 ```html
-<div v-scope="{counter: 0}" v-log="inside pico-vue scope">
+<div v-scope="{counter: 0}" v-log="inside pocket-vue scope">
   <button @click="counter++">increase</button>
 </div>
 
 <script type="module">
   import log from './log'
-  import { createApp } from 'pico-vue'
+  import { createApp } from 'pocket-vue'
   createApp().use(log).mount()
 </script>
 ```
@@ -417,11 +417,11 @@ export default {
 
 ## Examples
 
-Check out the [examples directory](https://github.com/ws-rush/pico-vue/tree/main/examples).
+Check out the [examples directory](https://github.com/ws-rush/pocket-vue/tree/main/examples).
 
 ## Features
 
-### `pico-vue`/`petite-vue` only
+### `pocket-vue`/`petite-vue` only
 
 - `v-scope`
 - `v-effect`
@@ -459,7 +459,7 @@ Check out the [examples directory](https://github.com/ws-rush/pico-vue/tree/main
 Some features are dropped because they have a relatively low utility/size ratio in the context of progressive enhancement. If you need these features, you should probably just use standard Vue.
 
 - `ref()`, `computed()` etc.
-- Render functions (`pico-vue` has no virtual DOM)
+- Render functions (`pocket-vue` has no virtual DOM)
 - Reactivity for Collection Types (Map, Set, etc., removed for smaller size)
 - Transition, KeepAlive, Teleport, Suspense
 - `v-for` deep destructure
