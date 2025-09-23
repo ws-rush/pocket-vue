@@ -4,10 +4,10 @@ import { resolve } from 'node:path'
 export default defineConfig({
   build: {
     target: 'esnext',
-    minify: 'terser',
+    minify: 'esbuild',
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'PicoVue',
+      name: 'PocketVue',
       formats: ['es', 'umd', 'iife']
     },
     rollupOptions: {
