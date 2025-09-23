@@ -9,6 +9,7 @@
   "exports": {
     ".": {
       "import": "./dist/pocket-vue.es.js",
+      "types": "./dist/types/index.d.ts",
       "require": "./dist/pocket-vue.umd.js"
     }
   },
