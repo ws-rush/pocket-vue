@@ -128,15 +128,13 @@ describe("directives", () => {
       expect(div.style.getPropertyValue("--color")).toBe("red");
     });
 
-    it.skip("should remove attribute if value is null or undefined", async () => {
+    it("should remove attribute if value is null or undefined", async () => {
       container.innerHTML = '<div :id="id"></div>';
       const data = reactive({ id: "test-id" });
       const app = createApp(data);
       app.mount(container);
       const div = container.querySelector("div");
       expect(div?.getAttribute("id")).toBe("test-id");
-
-      expect(div?.hasAttribute("id")).toBe(false);
 
       data.id = "test-id";
       await nextTick();

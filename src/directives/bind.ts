@@ -84,7 +84,11 @@ const setProp = (
   ) {
     // For certain attributes, we should use setAttribute instead of setting the property
     if (key === "id" || key === "title" || key === "lang" || key === "dir") {
-      el.setAttribute(key, value);
+      if (value == null) {
+        el.removeAttribute(key);
+      } else {
+        el.setAttribute(key, value);
+      }
     } else {
       // @ts-ignore
       el[key] = value;
