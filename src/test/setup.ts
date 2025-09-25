@@ -15,3 +15,16 @@ global.customElements = {
 // Setup global test utilities
 ;(global as any).createApp = vi.fn()
 ;(global as any).reactive = vi.fn()
+
+// happy-dom patching for attribute updates
+const originalSetAttribute = Element.prototype.setAttribute;
+Element.prototype.setAttribute = function(name: string, value: string) {
+  const currentAttribute = this.getAttribute(name);
+  if (currentAttribute !== value) {
+    // Apply workaround for happy-dom for specific attributes
+    if (['id', 'class', 'style', 'title', 'lang', 'dir'].includes(name)) {
+      this.removeAttribute(name);
+    }
+  }
+  originalSetAttribute.call(this, name, value);
+};

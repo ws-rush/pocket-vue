@@ -49,10 +49,11 @@ export const createApp = (initialData?: any) => {
 
     mount(el?: string | Element | null) {
       if (typeof el === 'string') {
+        const selector = el
         el = document.querySelector(el)
         if (!el) {
           import.meta.env.DEV &&
-            console.error(`selector ${el} has no matching element.`)
+            console.error(`selector ${selector} has no matching element.`)
           return
         }
       }
@@ -89,6 +90,14 @@ export const createApp = (initialData?: any) => {
 
     unmount() {
       rootBlocks.forEach((block) => block.teardown())
+    },
+
+    get rootBlocks() {
+      return rootBlocks
+    },
+
+    get scope() {
+      return ctx.scope
     }
   }
 }

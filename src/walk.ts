@@ -57,9 +57,9 @@ export const walk = (node: Node, ctx: Context): ChildNode | null | void => {
     // ref
     if ((exp = checkAttr(el, 'ref'))) {
       if (ctx !== parentCtx) {
-      	applyDirective(el, ref, `"${exp}"`, parentCtx)
+      	applyDirective(el, ref, exp, parentCtx)
       }
-      applyDirective(el, ref, `"${exp}"`, ctx)
+      applyDirective(el, ref, exp, ctx)
     }
 
     // process children first before self attrs
@@ -162,7 +162,7 @@ const applyDirective = (
   arg?: string,
   modifiers?: Record<string, true>
 ) => {
-  const get = (e = exp) => evaluate(ctx.scope, e, el)
+  const get = (e = exp) => evaluate(ctx.scope, e, el as Element)
   const cleanup = dir({
     el,
     get,
