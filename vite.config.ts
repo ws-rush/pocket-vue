@@ -2,6 +2,9 @@ import { defineConfig } from 'vite'
 import { resolve } from 'node:path'
 
 export default defineConfig({
+  define: {
+    'process.env.NODE_ENV': JSON.stringify('production')
+  },
   build: {
     target: 'esnext',
     minify: 'esbuild',
@@ -11,6 +14,15 @@ export default defineConfig({
       formats: ['es', 'umd', 'iife']
     },
     rollupOptions: {
+      // external: ['@vue/reactivity', '@vue/shared'],
+      // output: {
+      //   // Provide global variables to use in the UMD/IIFE build
+      //   // for externalized deps
+      //   globals: {
+      //     '@vue/reactivity': 'VueReactivity',
+      //     '@vue/shared': 'VueShared'
+      //   },
+      // },
       plugins: [
         {
           name: 'remove-collection-handlers',
