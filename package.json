@@ -18,6 +18,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:types": "tsc --emitDeclarationOnly --outDir dist/types",
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
@@ -52,6 +53,7 @@
     "terser": "^5.31.1",
     "typescript": "^5.3.3",
     "vite": "^7.1.7",
+    "vite-plugin-dts": "^4.5.4",
     "vitest": "^2.0.0"
   }
 }
