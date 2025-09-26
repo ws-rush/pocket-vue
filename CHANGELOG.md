@@ -1,3 +1,9 @@
+## [1.0.1](https://github.com/ws-rush/pocket-vue/compare/v1.0.0...v1.0.1) (2025-09-26)
+
+### Bug Fixes
+
+- package published w/o dist ([27291f0](https://github.com/ws-rush/pocket-vue/commit/27291f048ba2b3deb3842465486a1e310cf027df))
+
 # [1.0.0](https://github.com/ws-rush/pocket-vue/compare/v0.4.1...v1.0.0) (2025-09-23)
 
 ### Bug Fixes
