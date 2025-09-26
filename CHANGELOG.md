@@ -1,3 +1,12 @@
+## [1.1.1](https://github.com/ws-rush/pocket-vue/compare/v1.0.2...v1.1.1) (2025-09-26)
+
+### Bug Fixes
+
+- types generation ([ca6493f](https://github.com/ws-rush/pocket-vue/commit/ca6493fe9bb86859c0e39450207a5f1897ec14af))
+- types generation ([fb3da69](https://github.com/ws-rush/pocket-vue/commit/fb3da690f48ba7ada0ae75115c56f04bccb82410))
+- **v-bind:** correctly remove attributes when value is null/undefined ([2bcb8d5](https://github.com/ws-rush/pocket-vue/commit/2bcb8d59ad702714e1367b1a784fc691cc1fe0b4))
+- **v-bind:** Enhance reactivity and testing reliability ([857258e](https://github.com/ws-rush/pocket-vue/commit/857258e1b6573070c559aa17026661b7bd6d017f))
+
 # [1.1.0](https://github.com/ws-rush/pocket-vue/compare/v1.0.2...v1.1.0) (2025-09-26)
 
 ### Bug Fixes
