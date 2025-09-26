@@ -2,7 +2,7 @@
 
 `pocket-vue` is a fork of `petite-vue`, which is an alternative distribution of [Vue](https://vuejs.org) optimized for [progressive enhancement](https://developer.mozilla.org/en-US/docs/Glossary/Progressive_Enhancement). It provides the same template syntax and reactivity mental model as standard Vue. However, it is specifically optimized for "sprinkling" a small amount of interactions on an existing HTML page rendered by a server framework. See more details on [how it differs from standard Vue](#comparison-with-standard-vue).
 
-- Only ~6kb
+- Only ~9kb
 - Vue-compatible template syntax
 - DOM-based, mutates in place
 - Driven by `@vue/reactivity`
@@ -59,26 +59,17 @@ Or, use the ES module build:
 </script>
 ```
 
-### Production CDN URLs
-
-The short CDN URL is meant for prototyping. For production usage, use a fully resolved CDN URL to avoid resolving and redirect cost:
-
-- Global build: `https://unpkg.com/pocket-vue@1.0.5/dist/pocket-vue.iife.js`
-  - exposes `PetiteVue` global, supports auto init
-- ESM build: `https://unpkg.com/pocket-vue@1.0.5/dist/pocket-vue.es.js`
-  - Must be used with `<script type="module">`
-
 ### CDN Links
 
 You can also use the following CDN services:
 
 - **jsDelivr**:
-  - Global build: `https://cdn.jsdelivr.net/npm/pocket-vue@1.0.5/dist/pocket-vue.iife.js`
-  - ESM build: `https://cdn.jsdelivr.net/npm/pocket-vue@1.0.5/dist/pocket-vue.es.js`
+  - Global build: `https://cdn.jsdelivr.net/npm/pocket-vue`
+  - ESM build: `https://cdn.jsdelivr.net/npm/pocket-vue?module`
 
 - **unpkg**:
-  - Global build: `https://unpkg.com/pocket-vue@1.0.5/dist/pocket-vue.iife.js`
-  - ESM build: `https://unpkg.com/pocket-vue@1.0.5/dist/pocket-vue.es.js`
+  - Global build: `https://unpkg.com/pocket-vue`
+  - ESM build: `https://unpkg.com/pocket-vue?module`
 
 ### Root Scope
 

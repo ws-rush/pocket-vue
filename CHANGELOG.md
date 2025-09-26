@@ -1,3 +1,16 @@
+## [1.0.2](https://github.com/ws-rush/pocket-vue/compare/v1.0.1...v1.0.2) (2025-09-26)
+
+### Bug Fixes
+
+- **doc:** correct cdn links ([3770193](https://github.com/ws-rush/pocket-vue/commit/37701932a2d9a36799c49d2df82bff28a7c2ecfd))
+- elemenate node spesfic code from bundles ([8d0e507](https://github.com/ws-rush/pocket-vue/commit/8d0e507fb313284d5c03545bc90fff741355369c))
+
+## [1.0.1](https://github.com/ws-rush/pocket-vue/compare/v1.0.0...v1.0.1) (2025-09-26)
+
+### Bug Fixes
+
+- package published w/o dist ([27291f0](https://github.com/ws-rush/pocket-vue/commit/27291f048ba2b3deb3842465486a1e310cf027df))
+
 # [1.0.0](https://github.com/ws-rush/pocket-vue/compare/v0.4.1...v1.0.0) (2025-09-23)
 
 ### Bug Fixes
