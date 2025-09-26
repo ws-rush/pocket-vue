@@ -1,3 +1,5 @@
+## [1.1.2](https://github.com/ws-rush/pocket-vue/compare/v1.1.1...v1.1.2) (2025-09-26)
+
 ## [1.1.1](https://github.com/ws-rush/pocket-vue/compare/v1.0.2...v1.1.1) (2025-09-26)
 
 ### Bug Fixes

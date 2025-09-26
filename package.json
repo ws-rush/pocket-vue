@@ -1,6 +1,6 @@
 {
   "name": "pocket-vue",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "petite-vue fork with plugins support",
   "type": "module",
   "main": "dist/pocket-vue.umd.js",
@@ -17,7 +17,7 @@
   "types": "./dist/types/index.d.ts",
   "scripts": {
     "dev": "vite",
-    "build": "pnpm build:types && vite build",
+    "build": "vite build && pnpm build:types",
     "build:types": "tsc --emitDeclarationOnly --outDir dist/types",
     "test": "vitest",
     "test:once": "vitest run",
