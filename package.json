@@ -17,7 +17,7 @@
   "types": "./dist/types/index.d.ts",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "pnpm build:types && vite build",
     "build:types": "tsc --emitDeclarationOnly --outDir dist/types",
     "test": "vitest",
     "test:once": "vitest run",
@@ -53,7 +53,6 @@
     "semver": "^7.5.4",
     "typescript": "^5.9.2",
     "vite": "^7.1.7",
-    "vitest": "^3.2.4",
-    "vite-plugin-dts": "^4.5.4"
+    "vitest": "^3.2.4"
   }
 }

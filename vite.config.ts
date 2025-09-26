@@ -1,12 +1,10 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'node:path'
-import dts from 'vite-plugin-dts'
 
 export default defineConfig({
   define: {
     'process.env.NODE_ENV': JSON.stringify('production')
   },
-  plugins: [dts({ rollupTypes: true, clearPureImport: false, logLevel: 'debug' })],
   build: {
     target: 'esnext',
     minify: 'esbuild',
