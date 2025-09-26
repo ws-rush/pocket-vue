@@ -216,8 +216,8 @@ describe('coverage tests for edge cases', () => {
       expect(div?.textContent).toBe('<script>alert("xss")</script>')
 
       // The important security test: the script content should not be executable
-      // Since we're using textContent, it's displayed as text, not executed
-      expect(div?.innerHTML).toBe('<script>alert("xss")</script>')
+      // Since we're using textContent, it's displayed as escaped text, not executed
+      expect(div?.innerHTML).toBe('&lt;script&gt;alert("xss")&lt;/script&gt;')
 
       // Verify it's actually text content, not executable script
       const scriptTags = div?.querySelectorAll('script')

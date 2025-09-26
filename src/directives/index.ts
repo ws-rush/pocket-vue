@@ -7,6 +7,9 @@ import { text } from './text'
 import { html } from './html'
 import { model } from './model'
 import { effect } from './effect'
+import { ref } from './ref'
+import { _for } from './for'
+import { _if } from './if'
 
 export interface Directive<T = Element> {
   (ctx: DirectiveContext<T>): (() => void) | void
@@ -29,5 +32,14 @@ export const builtInDirectives: Record<string, Directive<any>> = {
   text,
   html,
   model,
-  effect
+  effect,
+  ref,
+  for: (ctx: DirectiveContext<any>) => {
+    _for(ctx.el, ctx.exp, ctx.ctx)
+    return () => {}
+  },
+  if: (ctx: DirectiveContext<any>) => {
+    _if(ctx.el, ctx.exp, ctx.ctx)
+    return () => {}
+  }
 }

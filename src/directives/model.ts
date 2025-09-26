@@ -17,7 +17,7 @@ export const model: Directive<
         .map((o: HTMLOptionElement) =>
           number ? toNumber(getValue(o)) : getValue(o)
         )
-      assign(sel.multiple ? selectedVal : selectedVal[0])
+      assign(sel.multiple ? [...selectedVal] : selectedVal[0])
     })
     effect(() => {
       const value = get()
@@ -29,7 +29,7 @@ export const model: Directive<
           if (isArray(value)) {
             option.selected = looseIndexOf(value, optionValue) > -1
           } else {
-            option.selected = value.has(optionValue)
+            option.selected = false
           }
         } else {
           if (looseEqual(getValue(option), value)) {

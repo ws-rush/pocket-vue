@@ -103,7 +103,7 @@ export const _for = (el: Element, exp: string, ctx: Context) => {
       indexExp && (data[indexExp] = index)
     }
     const childCtx = createScopedContext(ctx, data)
-    const key = keyExp ? evaluate(childCtx.scope, keyExp) : index
+    const key = keyExp ? evaluate(childCtx.scope, keyExp, el) : index
     map.set(key, index)
     childCtx.key = key
     return childCtx
@@ -117,7 +117,7 @@ export const _for = (el: Element, exp: string, ctx: Context) => {
   }
 
   ctx.effect(() => {
-    const source = evaluate(ctx.scope, sourceExp)
+    const source = evaluate(ctx.scope, sourceExp, el)
     const prevKeyToIndexMap = keyToIndexMap
     ;[childCtxs, keyToIndexMap] = createChildContexts(source)
     if (!mounted) {

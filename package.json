@@ -1,6 +1,6 @@
 {
   "name": "pocket-vue",
-  "version": "1.0.2",
+  "version": "1.1.2",
   "description": "petite-vue fork with plugins support",
   "type": "module",
   "main": "dist/pocket-vue.umd.js",
@@ -17,11 +17,12 @@
   "types": "./dist/types/index.d.ts",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && pnpm build:types",
     "build:types": "tsc --emitDeclarationOnly --outDir dist/types",
     "test": "vitest",
-    "test:run": "vitest run",
+    "test:once": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "release": "node scripts/release.cjs"
   },
@@ -39,7 +40,7 @@
   },
   "homepage": "https://github.com/ws-rush/pocket-vue#readme",
   "devDependencies": {
-    "@types/node": "^20.14.2",
+    "@types/node": "^24.5.2",
     "@vitest/coverage-v8": "^2.0.0",
     "@vue/reactivity": "3.5.21",
     "@vue/shared": "3.5.21",
@@ -47,13 +48,11 @@
     "conventional-changelog-cli": "^4.1.0",
     "enquirer": "^2.4.1",
     "execa": "^8.0.1",
-    "happy-dom": "^14.0.0",
+    "happy-dom": "^18.0.1",
     "prettier": "^3.1.1",
     "semver": "^7.5.4",
-    "terser": "^5.31.1",
-    "typescript": "^5.3.3",
+    "typescript": "^5.9.2",
     "vite": "^7.1.7",
-    "vite-plugin-dts": "^4.5.4",
-    "vitest": "^2.0.0"
+    "vitest": "^3.2.4"
   }
 }
