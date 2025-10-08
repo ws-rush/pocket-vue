@@ -24,7 +24,10 @@
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
-    "release": "node scripts/release.cjs"
+    "release": "node scripts/release.cjs",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:serve": "vitepress serve docs"
   },
   "repository": {
     "type": "git",
@@ -53,6 +56,8 @@
     "semver": "^7.5.4",
     "typescript": "^5.9.2",
     "vite": "^7.1.7",
-    "vitest": "^3.2.4"
+    "vitepress": "2.0.0-alpha.12",
+    "vitest": "^3.2.4",
+    "vue": "^3.5.22"
   }
 }
