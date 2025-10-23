@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80.76% </span>
+                <span class="strong">68.75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>21/26</span>
+                <span class='fraction'>11/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>4/6</span>
+                <span class='fraction'>2/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>3/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80.76% </span>
+                <span class="strong">68.75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>21/26</span>
+                <span class='fraction'>11/16</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -93,37 +93,37 @@
 <a name='L28'></a><a href='#L28'>28</a>
 <a name='L29'></a><a href='#L29'>29</a>
 <a name='L30'></a><a href='#L30'>30</a>
-<a name='L31'></a><a href='#L31'>31</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L31'></a><a href='#L31'>31</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">10301x</span>
-<span class="cline-any cline-yes">10301x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">10304x</span>
+<span class="cline-any cline-yes">10304x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">10301x</span>
-<span class="cline-any cline-yes">10301x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const <span class="branch-0 cbranch-no" title="branch not covered" >evalCache: Record&lt;string, Function&gt; = Object.c</span>reate(null)
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const evalCache: Record&lt;string, Function&gt; = Object.create(null)
 &nbsp;
 export const evaluate = (scope: object, exp: string, el: Element) =&gt; {
   try {
@@ -138,19 +138,19 @@ export const execute = (scope: any, exp: string, el?: Node) =&gt; {
   try {
     return fn(scope, el)
   } catch (e) {
-    if (<span class="branch-0 cbranch-no" title="branch not covered" >import.meta.env.DEV) {</span>
+<span class="cstat-no" title="statement not covered" >    if (import.meta.env.DEV) {</span>
 <span class="cstat-no" title="statement not covered" >      console.warn(`Error when evaluating expression "${exp}":`)</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
+    }
 <span class="cstat-no" title="statement not covered" >    console.error(e)</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+  }
+}
 &nbsp;
 const toFunction = (exp: string): Function =&gt; {
   try {
     return new Function(`$data`, `$el`, `with($data){${exp}}`)
   } catch (e) {
-    console.error(`${(e as Error).message} in expression: ${exp}`)
-    return () =&gt; {}
+<span class="cstat-no" title="statement not covered" >    console.error(`${(e as Error).message} in expression: ${exp}`)</span>
+<span class="cstat-no" title="statement not covered" >    return <span class="fstat-no" title="function not covered" >() =&gt; {</span>}</span>
   }
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -160,7 +160,7 @@ const toFunction = (exp: string): Function =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-25T20:37:22.512Z
+                at 2025-10-23T23:02:03.434Z
             </div>
         <script src="../prettify.js"></script>
         <script>

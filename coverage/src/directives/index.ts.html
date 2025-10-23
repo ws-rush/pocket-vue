@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.71% </span>
+                <span class="strong">20% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>24/28</span>
+                <span class='fraction'>1/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>0/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.71% </span>
+                <span class="strong">20% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>24/28</span>
+                <span class='fraction'>1/5</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -110,16 +110,6 @@
 <a name='L45'></a><a href='#L45'>45</a>
 <a name='L46'></a><a href='#L46'>46</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -135,27 +125,37 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Context } from '../context'
 import { effect as rawEffect } from '@vue/reactivity'
-<span class="cstat-no" title="statement not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import { bind } from './bind'</span></span>
+import { bind } from './bind'
 import { on } from './on'
 import { show } from './show'
 import { text } from './text'
@@ -189,13 +189,13 @@ export const builtInDirectives: Record&lt;string, Directive&lt;any&gt;&gt; = {
   model,
   effect,
   ref,
-  for: (ctx: DirectiveContext&lt;any&gt;) =&gt; {
-<span class="fstat-no" title="function not covered" >    _for(ctx.el, ctx.exp, ctx.ctx)</span>
-<span class="cstat-no" title="statement not covered" >    return () =&gt; {}</span>
-<span class="cstat-no" title="statement not covered" >  },</span>
-<span class="cstat-no" title="statement not covered" >  if: (ctx: DirectiveContext&lt;any&gt;) =&gt; {</span>
-    _if(ctx.el, ctx.exp, ctx.ctx)
-    return () =&gt; {}
+  for: <span class="fstat-no" title="function not covered" >(c</span>tx: DirectiveContext&lt;any&gt;) =&gt; {
+<span class="cstat-no" title="statement not covered" >    _for(ctx.el, ctx.exp, ctx.ctx)</span>
+<span class="cstat-no" title="statement not covered" >    return <span class="fstat-no" title="function not covered" >() =&gt; {</span>}</span>
+  },
+  if: <span class="fstat-no" title="function not covered" >(c</span>tx: DirectiveContext&lt;any&gt;) =&gt; {
+<span class="cstat-no" title="statement not covered" >    _if(ctx.el, ctx.exp, ctx.ctx)</span>
+<span class="cstat-no" title="statement not covered" >    return <span class="fstat-no" title="function not covered" >() =&gt; {</span>}</span>
   }
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -205,7 +205,7 @@ export const builtInDirectives: Record&lt;string, Directive&lt;any&gt;&gt; = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-25T20:37:22.512Z
+                at 2025-10-23T23:02:03.434Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
