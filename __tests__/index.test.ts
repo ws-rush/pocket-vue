@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
 describe("index.ts", () => {
-  let originalCurrentScript: HTMLScriptElement | null;
+  let originalCurrentScript: HTMLOrSVGScriptElement | null;
 
   beforeEach(() => {
     // Store original currentScript

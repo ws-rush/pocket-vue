@@ -55,14 +55,13 @@ describe("Block", () => {
     const el = document.createElement("div");
     const block = new Block(el, ctx);
 
-    // Block should have an update method or handle gracefully
-    if (typeof block.update === "function") {
-      expect(() => block.update()).not.toThrow();
-    } else {
-      // If no update method, ensure block is still functional
-      expect(block.el).toBeTruthy();
-      expect(block.ctx).toBeDefined();
-    }
+    // Block does not have an update method, ensure it's still functional
+    expect(block.el).toBeTruthy();
+    expect(block.ctx).toBeDefined();
+    expect(() => {
+    // Should not throw when accessing non-existent properties
+    (block as any).update;
+    }).not.toThrow();
   });
 
   it("should handle block cleanup", () => {
@@ -104,8 +103,9 @@ describe("Block", () => {
     const block = new Block(el, ctx);
 
     // The block clones the template, so children should be preserved
-    expect(block.el.children.length).toBe(1);
-    expect(block.el.children[0].nodeName).toBe("SPAN");
+    const blockEl = block.el as Element;
+    expect(blockEl.children.length).toBe(1);
+    expect(blockEl.children[0].nodeName).toBe("SPAN");
   });
 
   it("should create block with template element", () => {

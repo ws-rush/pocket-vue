@@ -148,7 +148,7 @@ describe('integration tests', () => {
       expect(app1Div?.textContent).toBe('App1')
       expect(app2Div?.textContent).toBe('App2')
 
-      const app1Button = container.querySelector('#app1 button')
+      const app1Button = container.querySelector('#app1 button') as HTMLButtonElement
       app1Button?.click()
 
       // Wait for reactivity to take effect

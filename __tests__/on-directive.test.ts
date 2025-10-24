@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { on } from "../src/directives/on";
 import { createContext } from "../src/context";
 import { evaluate } from "../src/eval";
+import { effect as rawEffect } from "@vue/reactivity";
 import { nextTick } from "../src/scheduler";
 
 describe("on directive", () => {
@@ -21,7 +22,8 @@ describe("on directive", () => {
 
     on({
       el,
-      get: (exp) => evaluate(ctx.scope, exp, el),
+      get: (exp = "handler") => evaluate(ctx.scope, exp, el),
+      effect: rawEffect,
       exp: "handler",
       arg: "click",
       modifiers: undefined,
@@ -43,11 +45,13 @@ describe("on directive", () => {
         if (exp === "($event => { handler($event) })") {
           return (e: Event) => handler(e);
         }
-        return ctx.scope[exp];
+        return ctx.scope[exp || "handler"];
       },
+      effect: rawEffect,
       exp: "handler($event)",
       arg: "click",
-      modifiers: undefined
+      modifiers: undefined,
+      ctx
     });
 
     el.click();
@@ -62,9 +66,11 @@ describe("on directive", () => {
     on({
       el,
       get: () => handler,
+      effect: rawEffect,
       exp: "handler",
       arg: "vue:mounted",
-      modifiers: undefined
+      modifiers: undefined,
+      ctx
     });
 
     // Handler should be called on nextTick
@@ -80,13 +86,15 @@ describe("on directive", () => {
     const cleanup = on({
       el,
       get: () => handler,
+      effect: rawEffect,
       exp: "handler",
       arg: "vue:unmounted",
-      modifiers: undefined
+      modifiers: undefined,
+      ctx
     });
 
     expect(typeof cleanup).toBe("function");
-    cleanup?.();
+    if (cleanup) cleanup();
     expect(handler).toHaveBeenCalled();
   });
 
@@ -99,9 +107,11 @@ describe("on directive", () => {
     on({
       el,
       get: () => handler,
+      effect: rawEffect,
       exp: "handler",
       arg: "click",
-      modifiers: { stop: true }
+      modifiers: { stop: true },
+      ctx
     });
 
     const event = new Event("click");
@@ -121,9 +131,11 @@ describe("on directive", () => {
     on({
       el,
       get: () => handler,
+      effect: rawEffect,
       exp: "handler",
       arg: "click",
-      modifiers: { prevent: true }
+      modifiers: { prevent: true },
+      ctx
     });
 
     const event = new Event("click");
@@ -142,9 +154,11 @@ describe("on directive", () => {
     on({
       el,
       get: () => handler,
+      effect: rawEffect,
       exp: "handler",
       arg: "click",
-      modifiers: { self: true }
+      modifiers: { self: true },
+      ctx
     });
 
     // Create a child element and click it
@@ -173,7 +187,8 @@ describe("on directive", () => {
 
     on({
       el,
-      get: (exp) => evaluate(ctx.scope, exp, el),
+      get: (exp = "handler") => evaluate(ctx.scope, exp, el),
+      effect: rawEffect,
       exp: "handler",
       arg: "click",
       modifiers: { ctrl: true },
@@ -196,7 +211,8 @@ describe("on directive", () => {
 
     on({
       el,
-      get: (exp) => evaluate(ctx.scope, exp, el),
+      get: (exp = "handler") => evaluate(ctx.scope, exp, el),
+      effect: rawEffect,
       exp: "handler",
       arg: "click",
       modifiers: { shift: true },
@@ -219,7 +235,8 @@ describe("on directive", () => {
 
     on({
       el,
-      get: (exp) => evaluate(ctx.scope, exp, el),
+      get: (exp = "handler") => evaluate(ctx.scope, exp, el),
+      effect: rawEffect,
       exp: "handler",
       arg: "click",
       modifiers: { alt: true },
@@ -242,7 +259,8 @@ describe("on directive", () => {
 
     on({
       el,
-      get: (exp) => evaluate(ctx.scope, exp, el),
+      get: (exp = "handler") => evaluate(ctx.scope, exp, el),
+      effect: rawEffect,
       exp: "handler",
       arg: "click",
       modifiers: { meta: true },
@@ -266,9 +284,11 @@ describe("on directive", () => {
     on({
       el,
       get: () => handler,
+      effect: rawEffect,
       exp: "handler",
       arg: "click",
-      modifiers: { left: true }
+      modifiers: { left: true },
+      ctx
     });
 
     const event = new MouseEvent("click", { button: 1 }); // Right button
@@ -287,7 +307,8 @@ describe("on directive", () => {
 
     on({
       el,
-      get: (exp) => evaluate(ctx.scope, exp, el),
+      get: (exp = "handler") => evaluate(ctx.scope, exp, el),
+      effect: rawEffect,
       exp: "handler",
       arg: "click",
       modifiers: { middle: true },
@@ -310,7 +331,8 @@ describe("on directive", () => {
 
     on({
       el,
-      get: (exp) => evaluate(ctx.scope, exp, el),
+      get: (exp = "handler") => evaluate(ctx.scope, exp, el),
+      effect: rawEffect,
       exp: "handler",
       arg: "click",
       modifiers: { right: true },
@@ -333,7 +355,8 @@ describe("on directive", () => {
 
     on({
       el,
-      get: (exp) => evaluate(ctx.scope, exp, el),
+      get: (exp = "handler") => evaluate(ctx.scope, exp, el),
+      effect: rawEffect,
       exp: "handler",
       arg: "click",
       modifiers: { exact: true },
@@ -359,9 +382,11 @@ describe("on directive", () => {
     on({
       el,
       get: () => handler,
+      effect: rawEffect,
       exp: "handler",
       arg: "keydown",
-      modifiers: { enter: true }
+      modifiers: { enter: true },
+      ctx
     });
 
     const enterEvent = new KeyboardEvent("keydown", { key: "Enter" });
@@ -381,9 +406,11 @@ describe("on directive", () => {
     on({
       el,
       get: () => handler,
+      effect: rawEffect,
       exp: "handler",
       arg: "click",
-      modifiers: { right: true }
+      modifiers: { right: true },
+      ctx
     });
 
     // Should map to contextmenu event
@@ -400,9 +427,11 @@ describe("on directive", () => {
     on({
       el,
       get: () => handler,
+      effect: rawEffect,
       exp: "handler",
       arg: "click",
-      modifiers: { middle: true }
+      modifiers: { middle: true },
+      ctx
     });
 
     // Should map to mouseup event
@@ -418,9 +447,11 @@ describe("on directive", () => {
     on({
       el,
       get: () => {},
+      effect: rawEffect,
       exp: "handler",
       arg: undefined,
-      modifiers: undefined
+      modifiers: undefined,
+      ctx
     });
 
     expect(consoleSpy).toHaveBeenCalledWith(
@@ -436,9 +467,11 @@ describe("on directive", () => {
     on({
       el,
       get: () => {},
+      effect: rawEffect,
       exp: "handler",
       arg: "mounted",
-      modifiers: undefined
+      modifiers: undefined,
+      ctx
     });
 
     expect(consoleSpy).toHaveBeenCalledWith(
@@ -449,9 +482,11 @@ describe("on directive", () => {
     on({
       el,
       get: () => {},
+      effect: rawEffect,
       exp: "handler",
       arg: "unmounted",
-      modifiers: undefined
+      modifiers: undefined,
+      ctx
     });
 
     expect(consoleSpy).toHaveBeenCalledWith(

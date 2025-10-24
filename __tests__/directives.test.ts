@@ -60,7 +60,7 @@ describe("directives", () => {
 
     it("should bind a full object of attributes", async () => {
       container.innerHTML = '<div v-bind="attrs"></div>';
-      const attrs = reactive({ id: "test-id", "data-foo": "bar" });
+      const attrs = reactive({ id: "test-id", "data-foo": "bar" } as Record<string, string | undefined>);
       const app = createApp({ attrs });
       app.mount(container);
       const div = container.querySelector("div");
@@ -98,7 +98,7 @@ describe("directives", () => {
 
     it("should bind style as object", async () => {
       container.innerHTML = '<div :style="style"></div>';
-      const data = reactive({ style: { color: "red", fontSize: "12px" } });
+      const data = reactive({ style: { color: "red", fontSize: "12px" } as Record<string, string> });
       const app = createApp(data);
       app.mount(container);
       const div = container.querySelector("div");
@@ -130,7 +130,7 @@ describe("directives", () => {
 
     it("should remove attribute if value is null or undefined", async () => {
       container.innerHTML = '<div :id="id"></div>';
-      const data = reactive({ id: "test-id" });
+      const data = reactive({ id: "test-id" as string | undefined });
       const app = createApp(data);
       app.mount(container);
       const div = container.querySelector("div");

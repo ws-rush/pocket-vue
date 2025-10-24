@@ -6,6 +6,7 @@ import {
   bindContextMethods,
   Context
 } from '../src/context'
+import { queueJob } from '../src/scheduler'
 
 describe('context', () => {
   describe('createContext', () => {

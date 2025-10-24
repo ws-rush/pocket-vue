@@ -1,6 +1,6 @@
 const evalCache: Record<string, Function> = Object.create(null)
 
-export const evaluate = (scope: object, exp: string, el: Element) => {
+export const evaluate = (scope: object, exp: string, _el: Element) => {
   try {
     return new Function(`with (this) { return ${exp} }`).call(scope)
   } catch (e) {
