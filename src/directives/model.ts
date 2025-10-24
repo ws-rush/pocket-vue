@@ -44,41 +44,17 @@ export const model: Directive<
     })
   } else if (type === 'checkbox') {
     listen(el, 'change', () => {
-      const modelValue = get()
-      const checked = (el as HTMLInputElement).checked
-      if (isArray(modelValue)) {
-        const elementValue = getValue(el)
-        const index = looseIndexOf(modelValue, elementValue)
-        const found = index !== -1
-        if (checked && !found) {
-          assign(modelValue.concat(elementValue))
-        } else if (!checked && found) {
-          const filtered = [...modelValue]
-          filtered.splice(index, 1)
-          assign(filtered)
-        }
-      } else {
-        assign(getCheckboxValue(el as HTMLInputElement, checked))
-      }
+      handleCheckboxChange(el as HTMLInputElement, get, assign)
     })
 
     let oldValue: any
     effect(() => {
-      const value = get()
-      if (isArray(value)) {
-        ;(el as HTMLInputElement).checked =
-          looseIndexOf(value, getValue(el)) > -1
-      } else if (value !== oldValue) {
-        ;(el as HTMLInputElement).checked = looseEqual(
-          value,
-          getCheckboxValue(el as HTMLInputElement, true)
-        )
-      }
-      oldValue = value
+      updateCheckboxValue(el as HTMLInputElement, get, oldValue)
+      oldValue = get()
     })
   } else if (type === 'radio') {
     listen(el, 'change', () => {
-      assign(getValue(el))
+      handleRadioChange(el as HTMLInputElement, assign)
     })
     let oldValue: any
     effect(() => {
@@ -98,8 +74,7 @@ export const model: Directive<
     listen(el, 'compositionstart', onCompositionStart)
     listen(el, 'compositionend', onCompositionEnd)
     listen(el, modifiers?.lazy ? 'change' : 'input', () => {
-      if ((el as any).composing) return
-      assign(resolveValue(el.value))
+      handleTextInput(el as HTMLInputElement | HTMLTextAreaElement, assign, resolveValue)
     })
     if (trim) {
       listen(el, 'change', () => {
@@ -108,17 +83,7 @@ export const model: Directive<
     }
 
     effect(() => {
-      if ((el as any).composing) {
-        return
-      }
-      const curVal = el.value
-      const newVal = get()
-      if (document.activeElement === el && resolveValue(curVal) === newVal) {
-        return
-      }
-      if (curVal !== newVal) {
-        el.value = newVal
-      }
+      updateTextValue(el, get, resolveValue)
     })
   }
 }
@@ -134,15 +99,85 @@ const getCheckboxValue = (
   return key in el ? el[key] : checked
 }
 
-const onCompositionStart = (e: Event) => {
+export const onCompositionStart = (e: Event) => {
   ;(e.target as any).composing = true
 }
 
-const onCompositionEnd = (e: Event) => {
+export const onCompositionEnd = (e: Event) => {
   const target = e.target as any
   if (target.composing) {
     target.composing = false
     trigger(target, 'input')
+  }
+}
+
+export const handleRadioChange = (
+  el: HTMLInputElement,
+  assign: (val: any) => void
+) => {
+  assign(getValue(el))
+}
+
+export const updateCheckboxValue = (
+  el: HTMLInputElement,
+  get: () => any,
+  oldValue: any
+) => {
+  const value = get()
+  if (isArray(value)) {
+    el.checked = looseIndexOf(value, getValue(el)) > -1
+  } else if (value !== oldValue) {
+    el.checked = looseEqual(value, getCheckboxValue(el, true))
+  }
+}
+
+export const handleTextInput = (
+  el: HTMLInputElement | HTMLTextAreaElement,
+  assign: (val: any) => void,
+  resolveValue: (val: string) => any
+) => {
+  if ((el as any).composing) return
+  assign(resolveValue(el.value))
+}
+
+export const handleCheckboxChange = (
+  el: HTMLInputElement,
+  get: () => any,
+  assign: (val: any) => void
+) => {
+  const modelValue = get()
+  const checked = el.checked
+  if (isArray(modelValue)) {
+    const elementValue = getValue(el)
+    const index = looseIndexOf(modelValue, elementValue)
+    const found = index !== -1
+    if (checked && !found) {
+      assign(modelValue.concat(elementValue))
+    } else if (!checked && found) {
+      const filtered = [...modelValue]
+      filtered.splice(index, 1)
+      assign(filtered)
+    }
+  } else {
+    assign(getCheckboxValue(el, checked))
+  }
+}
+
+export const updateTextValue = (
+  el: HTMLInputElement | HTMLTextAreaElement,
+  get: () => any,
+  resolveValue: (val: string) => any
+) => {
+  if ((el as any).composing) {
+    return
+  }
+  const curVal = el.value
+  const newVal = get()
+  if (document.activeElement === el && resolveValue(curVal) === newVal) {
+    return
+  }
+  if (curVal !== newVal) {
+    el.value = newVal
   }
 }
 

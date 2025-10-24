@@ -41,44 +41,61 @@ describe("index.ts", () => {
   });
 
   it("should not auto-mount when script has no init attribute", async () => {
-    // Create a script element without init attribute
-    const script = document.createElement("script");
-    script.textContent = ""; // Empty script to simulate currentScript
+  // Create a script element without init attribute
+  const script = document.createElement("script");
+  script.textContent = ""; // Empty script to simulate currentScript
 
-    // Mock currentScript to be our script without init attribute
-    Object.defineProperty(document, "currentScript", {
-      value: script,
-      writable: true,
-      configurable: true
-    });
+  // Mock currentScript to be our script without init attribute
+  Object.defineProperty(document, "currentScript", {
+  value: script,
+  writable: true,
+  configurable: true
+  });
 
-    // Since we can't reset modules in browser mode, we'll test the logic directly
-    // by checking that the condition in src/index.ts would be false
-    const currentScript = document.currentScript;
-    const shouldAutoMount = currentScript && currentScript.hasAttribute('init');
+  // Spy on console.warn to check if mount warning is logged
+  const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    expect(shouldAutoMount).toBe(false);
-    expect(script.hasAttribute("init")).toBe(false);
+    // Import index module
+    const { autoMount } = await import("../src/index");
+
+    // Call autoMount
+    autoMount();
+
+    // Verify no warning was logged (since mount shouldn't be called)
+    expect(consoleWarnSpy).not.toHaveBeenCalled();
+
+    // Restore the spy
+    consoleWarnSpy.mockRestore();
   });
 
   it("should auto-mount when script has init attribute", async () => {
-    // Create a script element with init attribute
-    const script = document.createElement("script");
-    script.setAttribute("init", "");
-    script.textContent = ""; // Empty script to simulate currentScript
+  // Create a script element with init attribute
+  const script = document.createElement("script");
+  script.setAttribute("init", "");
+  script.textContent = ""; // Empty script to simulate currentScript
 
-    // Mock currentScript to be our script with init attribute
-    Object.defineProperty(document, "currentScript", {
-      value: script,
-      writable: true,
-      configurable: true
-    });
+  // Mock currentScript to be our script with init attribute
+  Object.defineProperty(document, "currentScript", {
+  value: script,
+  writable: true,
+  configurable: true
+  });
 
-    // Test that the condition in src/index.ts would be true
-    const currentScript = document.currentScript;
-    const shouldAutoMount = currentScript && currentScript.hasAttribute('init');
+  // Spy on console.warn to check if mount warning is logged
+  const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    expect(shouldAutoMount).toBe(true);
-    expect(script.hasAttribute("init")).toBe(true);
+    // Import index module
+  const { autoMount } = await import("../src/index");
+
+    // Call autoMount
+    autoMount();
+
+    // Verify warning was logged (since mount is called and logs a warning in dev mode)
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+    expect.stringContaining('Mounting on documentElement')
+    );
+
+  // Restore the spy
+    consoleWarnSpy.mockRestore();
   });
 });

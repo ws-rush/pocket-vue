@@ -119,11 +119,24 @@ describe("Block", () => {
   });
 
   it("should create root block", () => {
+  const el = document.createElement("div");
+  const block = new Block(el, ctx, true);
+
+  expect(block.parentCtx).toBeUndefined();
+  expect(block.ctx).toBe(ctx);
+  });
+
+  it("should handle root block removal", () => {
     const el = document.createElement("div");
     const block = new Block(el, ctx, true);
+    const parent = document.createElement("div");
 
-    expect(block.parentCtx).toBeUndefined();
-    expect(block.ctx).toBe(ctx);
+    block.insert(parent);
+    expect(parent.children.length).toBe(1);
+
+    // Removing a root block should not try to remove from parentCtx.blocks
+    block.remove();
+    expect(parent.children.length).toBe(0);
   });
 
   it("should move block", () => {

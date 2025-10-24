@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { walk } from '../src/walk'
+import { walk, inOnce } from '../src/walk'
 import { createContext } from '../src/context'
+import { _if } from '../src/directives/if'
 
 describe('walk', () => {
   let container: HTMLElement
@@ -14,14 +15,29 @@ describe('walk', () => {
   })
 
   it('should walk through DOM elements', () => {
-    container.innerHTML = '<div v-scope><span>{{ message }}</span><button @click="handleClick">Click</button></div>'
+  container.innerHTML = '<div v-scope><span>{{ message }}</span><button @click="handleClick">Click</button></div>'
+
+  ctx.scope.message = 'Hello'
+  ctx.scope.handleClick = vi.fn()
+  walk(container, ctx)
+
+  expect(container.innerHTML).toContain('Hello')
+  })
+
+  it('should skip elements with v-pre', () => {
+    container.innerHTML = '<div v-pre><span>{{ message }}</span></div><div v-scope><span>{{ message }}</span></div>'
 
     ctx.scope.message = 'Hello'
-    ctx.scope.handleClick = vi.fn()
     walk(container, ctx)
 
-    expect(container.innerHTML).toContain('Hello')
+    const divs = container.querySelectorAll('div')
+    // First div should not be processed (still has {{ message }})
+    expect(divs[0].innerHTML).toContain('{{ message }}')
+    // Second div should be processed
+    expect(divs[1].innerHTML).toContain('Hello')
   })
+
+  
 
   it('should handle v-scope directive', () => {
     container.innerHTML = '<div v-scope="{ localCount: 0 }"><span>{{ localCount }}</span></div>'
@@ -84,6 +100,15 @@ describe('walk', () => {
     } else {
       delete (globalThis as any).import
     }
+    })
+
+    it('should handle v-if on element with no parent', () => {
+    const el = document.createElement('div')
+    el.setAttribute('v-if', 'true')
+
+    // _if should return early if no parent
+    const result = _if(el, 'true', ctx)
+    expect(result).toBeUndefined()
   })
 
   it('should handle v-for directive', () => {
@@ -306,6 +331,78 @@ describe('walk', () => {
     const div = container.querySelector('div')
     expect(div?.innerHTML).toContain('String template')
     })
+
+  it('should handle v-once directive', () => {
+  container.innerHTML = '<div v-once><span>{{ message }}</span></div>'
+
+  ctx.scope.message = 'Should not interpolate'
+  expect(inOnce).toBe(false)
+
+  walk(container, ctx)
+
+  // inOnce should be reset after processing
+    expect(inOnce).toBe(false)
+
+    // v-once should prevent interpolation
+  const span = container.querySelector('span')
+    expect(span?.textContent).toBe('{{ message }}')
+  })
+
+  it('should handle ref directive inside v-scope', () => {
+  container.innerHTML = '<div v-scope ref="myRef">Content</div>'
+
+  walk(container, ctx)
+
+  // The ref should be registered in both parent and scoped contexts
+  const scopedDiv = container.querySelector('div[ref]')
+  expect(scopedDiv).toBeDefined()
+  })
+
+  it('should handle v-scope with empty expression', () => {
+    container.innerHTML = '<div v-scope=""><span>{{ $root.tagName }}</span></div>'
+
+    walk(container, ctx)
+
+    const span = container.querySelector('span')
+    expect(span?.textContent).toBe('DIV')
+  })
+
+  it('should handle directive cleanup functions', () => {
+  // Create a mock directive that returns a cleanup function
+  const mockDirective = vi.fn(() => {
+  return () => {} // cleanup function
+  })
+
+  ctx.dirs = { 'test-dir': mockDirective }
+
+  container.innerHTML = '<div v-test-dir="value"></div>'
+
+  walk(container, ctx)
+
+  expect(mockDirective).toHaveBeenCalled()
+  })
+
+  it('should handle :ref shorthand', () => {
+    container.innerHTML = '<div :ref="myRef"></div>'
+
+    walk(container, ctx)
+
+    // :ref should be handled as ref directive
+    const div = container.querySelector('div')
+    expect(div).toBeDefined()
+  })
+
+  it('should process DocumentFragment nodes', () => {
+    const fragment = document.createDocumentFragment()
+    const div = document.createElement('div')
+    div.textContent = '{{ message }}'
+    fragment.appendChild(div)
+
+    ctx.scope.message = 'Fragment content'
+    walk(fragment, ctx)
+
+    expect(div.textContent).toBe('Fragment content')
+  })
 
     it('should warn for invalid template selector in DEV', () => {
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})

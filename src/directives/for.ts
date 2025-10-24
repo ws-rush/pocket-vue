@@ -8,7 +8,58 @@ const forIteratorRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/
 const stripParensRE = /^\(|\)$/g
 const destructureRE = /^[{[]\s*((?:[\w_$]+\s*,?\s*)+)[\]}]$/
 
-type KeyToIndexMap = Map<any, number>
+export type KeyToIndexMap = Map<any, number>
+
+export const updateBlocks = (
+  childCtxs: Context[],
+  blocks: Block[],
+  keyToIndexMap: KeyToIndexMap,
+  prevKeyToIndexMap: KeyToIndexMap,
+  anchor: Node,
+  parent: Element,
+  el: Element,
+  ctx: Context
+): Block[] => {
+  // Remove blocks that are no longer in the key map
+  for (let i = 0; i < blocks.length; i++) {
+    if (!keyToIndexMap.has(blocks[i].key)) {
+      blocks[i].remove()
+    }
+  }
+
+  const nextBlocks: Block[] = []
+  let i = childCtxs.length
+  let nextBlock: Block | undefined
+  let prevMovedBlock: Block | undefined
+  while (i--) {
+    const childCtx = childCtxs[i]
+    const oldIndex = prevKeyToIndexMap.get(childCtx.key)
+    let block: Block
+    if (oldIndex == null) {
+      // new
+      block = new Block(el, childCtx)
+      block.key = childCtx.key
+      block.insert(parent, nextBlock ? nextBlock.el : anchor)
+    } else {
+      // update
+      block = blocks[oldIndex]
+      Object.assign(block.ctx.scope, childCtx.scope)
+      if (oldIndex !== i) {
+        // moved
+        if (
+          blocks[oldIndex + 1] !== nextBlock ||
+          // If the next has moved, it must move too
+          prevMovedBlock === nextBlock
+        ) {
+          prevMovedBlock = block
+          block.insert(parent, nextBlock ? nextBlock.el : anchor)
+        }
+      }
+    }
+    nextBlocks.unshift(nextBlock = block)
+  }
+  return nextBlocks
+}
 
 export const _for = (el: Element, exp: string, ctx: Context) => {
   const inMatch = exp.match(forAliasRE)
@@ -124,45 +175,7 @@ export const _for = (el: Element, exp: string, ctx: Context) => {
       blocks = childCtxs.map((s) => mountBlock(s, anchor))
       mounted = true
     } else {
-      for (let i = 0; i < blocks.length; i++) {
-        if (!keyToIndexMap.has(blocks[i].key)) {
-          blocks[i].remove()
-        }
-      }
-      
-      const nextBlocks: Block[] = []
-      let i = childCtxs.length
-      let nextBlock: Block | undefined
-      let prevMovedBlock: Block | undefined
-      while (i--) {
-        const childCtx = childCtxs[i]
-        const oldIndex = prevKeyToIndexMap.get(childCtx.key)
-        let block
-        if (oldIndex == null) {
-          // new
-          block = mountBlock(
-            childCtx,
-            nextBlock ? nextBlock.el : anchor
-          )
-        } else {
-          // update
-          block = blocks[oldIndex]
-          Object.assign(block.ctx.scope, childCtx.scope)
-          if (oldIndex !== i) {
-            // moved
-            if (
-              blocks[oldIndex + 1] !== nextBlock || 
-              // If the next has moved, it must move too
-              prevMovedBlock === nextBlock
-            ) {
-              prevMovedBlock = block
-              block.insert(parent, nextBlock ? nextBlock.el : anchor)
-            }
-          }
-        }
-        nextBlocks.unshift(nextBlock = block)
-      }
-      blocks = nextBlocks
+      blocks = updateBlocks(childCtxs, blocks, keyToIndexMap, prevKeyToIndexMap, anchor, parent, el, ctx)
     }
   })
 

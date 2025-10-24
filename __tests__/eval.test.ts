@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import { evaluate } from '../src/eval'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { evaluate, execute } from '../src/eval'
 
 describe('evaluate', () => {
   let scope: any
@@ -23,6 +23,8 @@ describe('evaluate', () => {
     expect(evaluate(scope, 'message', el)).toBe('Hello')
     expect(evaluate(scope, 'count', el)).toBe(42)
     expect(evaluate(scope, 'isActive', el)).toBe(true)
+    // This should execute the try block
+    expect(evaluate(scope, 'count + 10', el)).toBe(52)
   })
 
   it('should evaluate object property access', () => {
@@ -143,5 +145,56 @@ describe('evaluate', () => {
     const index = 0
     scope.index = index
     expect(evaluate(scope, 'items[index]', el)).toBe('item1')
+  })
+})
+
+describe('execute', () => {
+  let scope: any
+  let el: Element
+
+  beforeEach(() => {
+    el = document.createElement('div')
+    scope = {
+      message: 'Hello',
+      count: 42,
+      sideEffect: vi.fn()
+    }
+  })
+
+  it('should execute simple expressions', () => {
+    expect(execute(scope, 'sideEffect()', el)).toBeUndefined()
+    expect(scope.sideEffect).toHaveBeenCalled()
+  })
+
+  it('should handle error in execution', () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    // This should throw an error
+    const result = execute(scope, 'throw new Error("test error")', el)
+
+    expect(result).toBeUndefined()
+    expect(consoleErrorSpy).toHaveBeenCalled()
+
+    consoleErrorSpy.mockRestore()
+  })
+
+  it('should cache compiled functions', () => {
+    const exp = 'sideEffect()'
+    execute(scope, exp, el)
+    execute(scope, exp, el) // Should use cached function
+
+    expect(scope.sideEffect).toHaveBeenCalledTimes(2)
+  })
+
+  it('should handle invalid function syntax', () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    // This syntax error should be caught
+    const result = execute(scope, 'invalid syntax {{{', el)
+
+    expect(result).toBeUndefined()
+    expect(consoleErrorSpy).toHaveBeenCalled()
+
+    consoleErrorSpy.mockRestore()
   })
 })

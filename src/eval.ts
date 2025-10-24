@@ -13,9 +13,6 @@ export const execute = (scope: any, exp: string, el?: Node) => {
   try {
     return fn(scope, el)
   } catch (e) {
-    if (import.meta.env.DEV) {
-      console.warn(`Error when evaluating expression "${exp}":`)
-    }
     console.error(e)
   }
 }

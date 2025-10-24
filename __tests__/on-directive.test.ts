@@ -495,5 +495,30 @@ describe("on directive", () => {
     );
 
     consoleSpy.mockRestore();
+    });
+
+  it('should warn when v-on has no event type in DEV', () => {
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const el = document.createElement('div');
+    const ctx = createContext();
+
+    on({
+      el,
+      get: () => () => {},
+      effect: rawEffect,
+      exp: 'handler',
+      arg: undefined, // no event type
+      modifiers: undefined,
+      ctx
+    });
+
+    if (import.meta.env.DEV) {
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'v-on="obj" syntax is not supported in petite-vue.'
+      );
+    }
+
+    consoleSpy.mockRestore();
   });
 });
