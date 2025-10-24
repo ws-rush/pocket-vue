@@ -838,7 +838,7 @@ describe("directives", () => {
       app.mount(container);
 
       // Wait for effect to run
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await nextTick();
 
       expect(callCount).toBe(1);
     });

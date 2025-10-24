@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { createApp } from '../src/app'
 import { reactive } from '@vue/reactivity'
+import { nextTick } from '../src/scheduler'
 
 describe('coverage tests for edge cases', () => {
   let container: HTMLElement
@@ -59,7 +60,7 @@ describe('coverage tests for edge cases', () => {
       }
 
       // Wait for reactivity to take effect
-      await new Promise(resolve => setTimeout(resolve, 0))
+      await nextTick()
 
       expect(container.querySelector('div')?.textContent).toBe('999')
     })
@@ -109,13 +110,13 @@ describe('coverage tests for edge cases', () => {
       const button = container.querySelector('button')
       const spy = vi.spyOn(button!, 'removeEventListener')
 
-      // Note: pocket-vue doesn't automatically clean up event listeners on DOM removal
+      // Note: pocket-vue doesn't automatically clean up event listeners on unmount
       // This test verifies the current behavior
-      container.innerHTML = '' // Simulate unmount
+      app.unmount()
 
-      // This assertion may fail depending on implementation
-      // For now, we'll test that it doesn't throw
-      expect(() => container.innerHTML = '').not.toThrow()
+      // Currently, event listeners are not cleaned up on unmount
+      // This may change in future implementations
+      expect(spy).not.toHaveBeenCalled()
     })
 
     it('should clean up reactive effects', async () => {
@@ -130,15 +131,19 @@ describe('coverage tests for edge cases', () => {
       app.mount(container)
 
       // Wait for effect to run
-      await new Promise(resolve => setTimeout(resolve, 50))
+      await nextTick()
 
       const initialCount = callCount
       expect(initialCount).toBeGreaterThan(0)
 
-      container.innerHTML = '' // Simulate unmount
+      // Properly unmount the app
+      app.unmount()
 
-      // Test that cleanup doesn't throw errors
-      expect(() => container.innerHTML = '').not.toThrow()
+      // Wait to ensure no additional effects run
+      await nextTick()
+
+      // Effect should not run again after unmount
+      expect(callCount).toBe(initialCount)
     })
   })
 
@@ -157,7 +162,7 @@ describe('coverage tests for edge cases', () => {
       data.count = 3
 
       // Wait for reactivity to take effect
-      await new Promise(resolve => setTimeout(resolve, 0))
+      await nextTick()
 
       expect(container.querySelector('div')?.textContent).toBe('3')
     })

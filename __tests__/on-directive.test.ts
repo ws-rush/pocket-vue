@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { on } from "../src/directives/on";
 import { createContext } from "../src/context";
 import { evaluate } from "../src/eval";
+import { nextTick } from "../src/scheduler";
 
 describe("on directive", () => {
   let container: HTMLElement;
@@ -53,7 +54,7 @@ describe("on directive", () => {
     expect(handler).toHaveBeenCalled();
   });
 
-  it("should handle vue:mounted lifecycle", () => {
+  it("should handle vue:mounted lifecycle", async () => {
     const el = document.createElement("div");
     const handler = vi.fn();
     ctx.scope.handler = handler;
@@ -67,9 +68,8 @@ describe("on directive", () => {
     });
 
     // Handler should be called on nextTick
-    setTimeout(() => {
-      expect(handler).toHaveBeenCalled();
-    }, 0);
+    await nextTick();
+    expect(handler).toHaveBeenCalled();
   });
 
   it("should handle vue:unmounted lifecycle", () => {

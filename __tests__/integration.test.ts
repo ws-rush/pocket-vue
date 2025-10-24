@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { createApp } from '../src/app'
 import { reactive } from '@vue/reactivity'
+import { nextTick } from '../src/scheduler'
 
 describe('integration tests', () => {
   let container: HTMLElement
@@ -34,7 +35,7 @@ describe('integration tests', () => {
       button?.click()
 
       // Wait for reactivity to take effect
-      await new Promise(resolve => setTimeout(resolve, 0))
+      await nextTick()
 
       expect(container.querySelector('div')?.textContent).toBe('Updated')
     })
@@ -62,7 +63,7 @@ describe('integration tests', () => {
       data.user.profile.age = 31
 
       // Wait for reactivity to take effect
-      await new Promise(resolve => setTimeout(resolve, 0))
+      await nextTick()
 
       expect(divs[0]?.textContent).toBe('Jane')
       expect(divs[1]?.textContent).toBe('31')
@@ -85,7 +86,7 @@ describe('integration tests', () => {
       data.items.push('item4')
 
       // Wait for reactivity to take effect
-      await new Promise(resolve => setTimeout(resolve, 0))
+      await nextTick()
 
       items = container.querySelectorAll('li')
       expect(items.length).toBe(4)
@@ -94,7 +95,7 @@ describe('integration tests', () => {
       data.items.pop()
 
       // Wait for reactivity to take effect
-      await new Promise(resolve => setTimeout(resolve, 0))
+      await nextTick()
 
       items = container.querySelectorAll('li')
       expect(items.length).toBe(3)
@@ -116,7 +117,7 @@ describe('integration tests', () => {
       button?.click()
 
       // Wait for reactivity to take effect
-      await new Promise(resolve => setTimeout(resolve, 0))
+      await nextTick()
 
       expect(div?.textContent).toContain('1')
     })
@@ -151,7 +152,7 @@ describe('integration tests', () => {
       app1Button?.click()
 
       // Wait for reactivity to take effect
-      await new Promise(resolve => setTimeout(resolve, 0))
+      await nextTick()
 
       expect(app1Div?.textContent).toBe('App1 Updated')
       expect(app2Div?.textContent).toBe('App2')
@@ -170,19 +171,19 @@ describe('integration tests', () => {
       })
       app.mount(container)
 
-      // Wait for effect to run (nextTick + execution)
-      await new Promise(resolve => setTimeout(resolve, 50))
+      // Wait for effect to run
+      await nextTick()
 
       // The effect should have been called at least once
       expect(callCount).toBeGreaterThan(0)
 
       const initialCallCount = callCount
 
-      // Simulate unmount
-      container.innerHTML = ''
+      // Properly unmount the app
+      app.unmount()
 
       // Wait to see if effect runs again (it shouldn't)
-      await new Promise(resolve => setTimeout(resolve, 10))
+      await nextTick()
 
       // The effect should not run again after unmount
       expect(callCount).toBe(initialCallCount)
@@ -208,7 +209,7 @@ describe('integration tests', () => {
       button?.click()
 
       // Wait for reactivity to take effect
-      await new Promise(resolve => setTimeout(resolve, 0))
+      await nextTick()
 
       content = container.querySelector('div')
       expect(content).toBeNull()
@@ -216,7 +217,7 @@ describe('integration tests', () => {
       button?.click()
 
       // Wait for reactivity to take effect
-      await new Promise(resolve => setTimeout(resolve, 0))
+      await nextTick()
 
       content = container.querySelector('div')
       expect(content?.textContent).toBe('Visible Content')

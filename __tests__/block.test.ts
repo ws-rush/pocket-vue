@@ -3,6 +3,7 @@ import { Block } from "../src/block";
 import { createContext } from "../src/context";
 import { walk } from "../src/walk";
 import { stop } from "@vue/reactivity";
+import { nextTick } from "../src/scheduler";
 
 describe("Block", () => {
   let container: HTMLElement;
@@ -54,12 +55,14 @@ describe("Block", () => {
     const el = document.createElement("div");
     const block = new Block(el, ctx);
 
-    // Block may not have an update method, test that it doesn't throw
-    expect(() => {
-      if (typeof block.update === "function") {
-        block.update();
-      }
-    }).not.toThrow();
+    // Block should have an update method or handle gracefully
+    if (typeof block.update === "function") {
+      expect(() => block.update()).not.toThrow();
+    } else {
+      // If no update method, ensure block is still functional
+      expect(block.el).toBeTruthy();
+      expect(block.ctx).toBeDefined();
+    }
   });
 
   it("should handle block cleanup", () => {
@@ -111,7 +114,8 @@ describe("Block", () => {
     const block = new Block(template, ctx);
 
     expect(block.isFragment).toBe(true);
-    expect(block.el.nodeName).toBe("");
+    // In browser, DocumentFragment nodeName is '#document-fragment'
+    expect(block.el.nodeName).toBe("#document-fragment");
   });
 
   it("should create root block", () => {
@@ -146,11 +150,11 @@ describe("Block", () => {
     walk(childBlock.template, childBlock.ctx);
 
     // Wait for nextTick to ensure the effect is created
-    await new Promise(resolve => setTimeout(resolve, 0));
+    await nextTick();
 
     // Check if effects array has any effects before teardown
     expect(childBlock.ctx.effects.length).toBeGreaterThan(0);
-    
+
     const cleanupSpy = vi.fn();
     childBlock.ctx.cleanups.push(cleanupSpy);
 
