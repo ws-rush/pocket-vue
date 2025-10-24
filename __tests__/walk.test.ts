@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { walk } from '../src/walk'
 import { createContext } from '../src/context'
 import { _if } from '../src/directives/if'
+import { nextTick } from '../src/scheduler'
 
 describe('walk', () => {
   let container: HTMLElement
@@ -201,22 +202,23 @@ describe('walk', () => {
     }
   })
 
-  it('should handle v-for updates and moves', () => {
-    container.innerHTML = '<ul><li v-for="item in items" :key="item">{{ item }}</li></ul>'
+  it('should handle v-for updates and moves', async () => {
+  container.innerHTML = '<ul><li v-for="item in items" :key="item">{{ item }}</li></ul>'
 
-    ctx.scope.items = ['A', 'B', 'C']
-    walk(container, ctx)
+  ctx.scope.items = ['A', 'B', 'C']
+  walk(container, ctx)
 
-    let items = container.querySelectorAll('li')
-    expect(items.length).toBe(3)
-    expect(Array.from(items).map(li => li.textContent)).toEqual(['A', 'B', 'C'])
+  let items = container.querySelectorAll('li')
+  expect(items.length).toBe(3)
+  expect(Array.from(items).map(li => li.textContent)).toEqual(['A', 'B', 'C'])
 
-    // Update to trigger move
-    ctx.scope.items = ['C', 'A', 'B']
-    // Since it's reactive, but in test, we need to trigger effect
-    // Actually, walk is called once, to test updates, need to call effect or something.
-    // Perhaps hard to test moves without reactivity trigger.
-    // For coverage, the initial render covers most.
+  // Update to trigger move and reordering
+  ctx.scope.items = ['C', 'A', 'B']
+  await nextTick()
+
+  items = container.querySelectorAll('li')
+  expect(items.length).toBe(3)
+    expect(Array.from(items).map(li => li.textContent)).toEqual(['C', 'A', 'B'])
   })
 
   it('should handle attribute interpolation', () => {
@@ -332,25 +334,29 @@ describe('walk', () => {
     expect(div?.innerHTML).toContain('String template')
     })
 
-  it('should handle v-once directive', () => {
+  it('should handle v-once directive', async () => {
   container.innerHTML = '<div v-once><span>{{ message }}</span></div>'
 
-  ctx.scope.message = 'Should not interpolate'
+  ctx.scope.message = 'Initial value'
   walk(container, ctx)
 
-  // v-once should prevent interpolation - content should remain unchanged
+  // Wait for the initial effect to run
+  await nextTick()
+
+  // v-once should interpolate once with current data
   const span = container.querySelector('span')
-  expect(span?.textContent).toBe('{{ message }}')
+  expect(span?.textContent).toBe('Initial value')
 
   // The v-once attribute should be removed after processing
   const div = container.querySelector('div')
   expect(div?.hasAttribute('v-once')).toBe(false)
 
-  // Even after changing the scope data, v-once content should not update
-  ctx.scope.message = 'Still should not interpolate'
+  // Even after changing the scope data and triggering reactivity, v-once content should not update
+  ctx.scope.message = 'Updated value'
+  await nextTick()
   // Since the v-once element has been processed and is not reactive,
-  // the span should still contain the uninterpolated template
-  expect(span?.textContent).toBe('{{ message }}')
+  // the span should still contain the initial value
+  expect(span?.textContent).toBe('Initial value')
   })
 
   it('should handle ref directive inside v-scope', () => {

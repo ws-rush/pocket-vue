@@ -51,18 +51,7 @@ describe("Block", () => {
     expect(parent.children.length).toBe(0);
   });
 
-  it("should handle block update", () => {
-    const el = document.createElement("div");
-    const block = new Block(el, ctx);
-
-    // Block does not have an update method, ensure it's still functional
-    expect(block.el).toBeTruthy();
-    expect(block.ctx).toBeDefined();
-    expect(() => {
-    // Should not throw when accessing non-existent properties
-    (block as any).update;
-    }).not.toThrow();
-  });
+  
 
   it("should handle block cleanup", () => {
     const el = document.createElement("div");

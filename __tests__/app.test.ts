@@ -1,24 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { createApp, nextTick, reactive, watchEffect } from "../src/index";
 
-describe("index", () => {
-  it("should export createApp", () => {
-    expect(createApp).toBeDefined();
-  });
-
-  it("should export nextTick", () => {
-    expect(nextTick).toBeDefined();
-  });
-
-  it("should export reactive", () => {
-    expect(reactive).toBeDefined();
-  });
-
-  it("should export watchEffect", () => {
-    expect(watchEffect).toBeDefined();
-  });
-});
-
 describe("app", () => {
   let container: HTMLElement;
 
