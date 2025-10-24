@@ -3,6 +3,7 @@ import { Block } from "../src/block";
 import { createContext } from "../src/context";
 import { walk } from "../src/walk";
 import { stop } from "@vue/reactivity";
+import { nextTick } from "../src/scheduler";
 
 describe("Block", () => {
   let container: HTMLElement;
@@ -50,17 +51,7 @@ describe("Block", () => {
     expect(parent.children.length).toBe(0);
   });
 
-  it("should handle block update", () => {
-    const el = document.createElement("div");
-    const block = new Block(el, ctx);
-
-    // Block may not have an update method, test that it doesn't throw
-    expect(() => {
-      if (typeof block.update === "function") {
-        block.update();
-      }
-    }).not.toThrow();
-  });
+  
 
   it("should handle block cleanup", () => {
     const el = document.createElement("div");
@@ -101,8 +92,9 @@ describe("Block", () => {
     const block = new Block(el, ctx);
 
     // The block clones the template, so children should be preserved
-    expect(block.el.children.length).toBe(1);
-    expect(block.el.children[0].nodeName).toBe("SPAN");
+    const blockEl = block.el as Element;
+    expect(blockEl.children.length).toBe(1);
+    expect(blockEl.children[0].nodeName).toBe("SPAN");
   });
 
   it("should create block with template element", () => {
@@ -111,15 +103,29 @@ describe("Block", () => {
     const block = new Block(template, ctx);
 
     expect(block.isFragment).toBe(true);
-    expect(block.el.nodeName).toBe("");
+    // In browser, DocumentFragment nodeName is '#document-fragment'
+    expect(block.el.nodeName).toBe("#document-fragment");
   });
 
   it("should create root block", () => {
+  const el = document.createElement("div");
+  const block = new Block(el, ctx, true);
+
+  expect(block.parentCtx).toBeUndefined();
+  expect(block.ctx).toBe(ctx);
+  });
+
+  it("should handle root block removal", () => {
     const el = document.createElement("div");
     const block = new Block(el, ctx, true);
+    const parent = document.createElement("div");
 
-    expect(block.parentCtx).toBeUndefined();
-    expect(block.ctx).toBe(ctx);
+    block.insert(parent);
+    expect(parent.children.length).toBe(1);
+
+    // Removing a root block should not try to remove from parentCtx.blocks
+    block.remove();
+    expect(parent.children.length).toBe(0);
   });
 
   it("should move block", () => {
@@ -146,11 +152,11 @@ describe("Block", () => {
     walk(childBlock.template, childBlock.ctx);
 
     // Wait for nextTick to ensure the effect is created
-    await new Promise(resolve => setTimeout(resolve, 0));
+    await nextTick();
 
     // Check if effects array has any effects before teardown
     expect(childBlock.ctx.effects.length).toBeGreaterThan(0);
-    
+
     const cleanupSpy = vi.fn();
     childBlock.ctx.cleanups.push(cleanupSpy);
 

@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { createApp } from '../src/app'
 import { reactive } from '@vue/reactivity'
+import { nextTick } from '../src/scheduler'
 
 describe('coverage tests for edge cases', () => {
   let container: HTMLElement
@@ -22,6 +23,8 @@ describe('coverage tests for edge cases', () => {
         const app = createApp({})
         app.mount(container)
       }).not.toThrow()
+
+      expect(container.querySelector('div')?.textContent).toBe('')
     })
 
     it('should handle circular references', () => {
@@ -37,14 +40,16 @@ describe('coverage tests for edge cases', () => {
     })
 
     it('should handle very large datasets', () => {
-      container.innerHTML = '<div v-for="item in items">{{ item }}</div>'
+    container.innerHTML = '<div v-for="item in items">{{ item }}</div>'
 
-      const largeArray = Array.from({ length: 10000 }, (_, i) => `Item ${i}`)
+    const largeArray = Array.from({ length: 10000 }, (_, i) => `Item ${i}`)
 
-      expect(() => {
-        const app = createApp({ items: largeArray })
-        app.mount(container)
-      }).not.toThrow()
+    expect(() => {
+    const app = createApp({ items: largeArray })
+    app.mount(container)
+    }).not.toThrow()
+
+      expect(container.querySelectorAll('div').length).toBe(10000)
     })
 
     it('should handle rapid state changes', async () => {
@@ -59,7 +64,7 @@ describe('coverage tests for edge cases', () => {
       }
 
       // Wait for reactivity to take effect
-      await new Promise(resolve => setTimeout(resolve, 0))
+      await nextTick()
 
       expect(container.querySelector('div')?.textContent).toBe('999')
     })
@@ -99,24 +104,7 @@ describe('coverage tests for edge cases', () => {
   })
 
   describe('memory management', () => {
-    it('should clean up event listeners', () => {
-      container.innerHTML = '<button @click="handleClick">Click</button>'
-
-      const handleClick = vi.fn()
-      const app = createApp({ handleClick })
-      app.mount(container)
-
-      const button = container.querySelector('button')
-      const spy = vi.spyOn(button!, 'removeEventListener')
-
-      // Note: pocket-vue doesn't automatically clean up event listeners on DOM removal
-      // This test verifies the current behavior
-      container.innerHTML = '' // Simulate unmount
-
-      // This assertion may fail depending on implementation
-      // For now, we'll test that it doesn't throw
-      expect(() => container.innerHTML = '').not.toThrow()
-    })
+    
 
     it('should clean up reactive effects', async () => {
       container.innerHTML = '<div v-effect="sideEffect()"></div>'
@@ -130,15 +118,19 @@ describe('coverage tests for edge cases', () => {
       app.mount(container)
 
       // Wait for effect to run
-      await new Promise(resolve => setTimeout(resolve, 50))
+      await nextTick()
 
       const initialCount = callCount
       expect(initialCount).toBeGreaterThan(0)
 
-      container.innerHTML = '' // Simulate unmount
+      // Properly unmount the app
+      app.unmount()
 
-      // Test that cleanup doesn't throw errors
-      expect(() => container.innerHTML = '').not.toThrow()
+      // Wait to ensure no additional effects run
+      await nextTick()
+
+      // Effect should not run again after unmount
+      expect(callCount).toBe(initialCount)
     })
   })
 
@@ -150,14 +142,12 @@ describe('coverage tests for edge cases', () => {
       const app = createApp(data)
       app.mount(container)
 
-      const spy = vi.spyOn(container, 'querySelector')
-
       data.count = 1
       data.count = 2
       data.count = 3
 
       // Wait for reactivity to take effect
-      await new Promise(resolve => setTimeout(resolve, 0))
+      await nextTick()
 
       expect(container.querySelector('div')?.textContent).toBe('3')
     })

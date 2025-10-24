@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { nextTick, queueJob } from '../src/scheduler'
 
 describe('scheduler', () => {
@@ -77,5 +77,76 @@ describe('scheduler', () => {
       expect(job2).toHaveBeenCalled()
       expect(job1).toHaveBeenCalled()
     })
+
+    it('should wait for queue to empty when calling nextTick without callback', async () => {
+      const job = vi.fn()
+      queueJob(job)
+
+      // Call nextTick without callback while queue has jobs
+      const promise = nextTick()
+
+      // Flush microtasks to run checkQueue
+      await Promise.resolve()
+
+      // Now run timers to execute flushJobs and checkQueue
+      vi.runAllTimers()
+
+      // flushJobs executes job
+      expect(job).toHaveBeenCalled()
+
+      // Now the promise should resolve
+      await promise
+    })
+
+    it('should call setTimeout when nextTick waits for queue to clear', async () => {
+      // Spy on setTimeout
+      const setTimeoutSpy = vi.spyOn(globalThis, 'setTimeout')
+
+      try {
+        const job = vi.fn()
+        queueJob(job)
+
+        // Call nextTick without callback
+        const promise = nextTick()
+
+        // Flush microtasks to run checkQueue
+        await Promise.resolve()
+
+        // setTimeout should have been called during the checkQueue process
+        expect(setTimeoutSpy).toHaveBeenCalled()
+
+        // Now run timers to execute flushJobs and checkQueue
+        vi.runAllTimers()
+
+        // flushJobs executes job
+        expect(job).toHaveBeenCalled()
+
+        // Wait for the promise to resolve
+        await promise
+
+      } finally {
+        setTimeoutSpy.mockRestore()
+      }
+    })
+
+    it('should handle rapid queueJob calls efficiently', async () => {
+      const job1 = vi.fn()
+      const job2 = vi.fn()
+      const job3 = vi.fn()
+
+      // Queue multiple jobs rapidly
+      queueJob(job1)
+      queueJob(job2)
+      queueJob(job3)
+
+      // All jobs should be queued and executed
+      await vi.runAllTimers()
+
+      expect(job1).toHaveBeenCalled()
+      expect(job2).toHaveBeenCalled()
+      expect(job3).toHaveBeenCalled()
+    })
+
+
   })
 })

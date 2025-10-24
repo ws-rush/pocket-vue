@@ -32,7 +32,7 @@ const modifierGuards: Record<
 export const on: Directive = ({ el, get, exp, arg, modifiers }) => {
   if (!arg) {
     if (import.meta.env.DEV) {
-      console.error(`v-on="obj" syntax is not supported in petite-vue.`)
+      console.error(`v-on="obj" syntax is not supported in pocket-vue.`)
     }
     return
   }

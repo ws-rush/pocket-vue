@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { reactive } from '@vue/reactivity'
 import {
   createContext,
@@ -6,6 +6,7 @@ import {
   bindContextMethods,
   Context
 } from '../src/context'
+import { queueJob } from '../src/scheduler'
 
 describe('context', () => {
   describe('createContext', () => {

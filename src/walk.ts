@@ -67,7 +67,7 @@ export const walk = (node: Node, ctx: Context): ChildNode | null | void => {
 
     // other directives
     const deferred: [string, string][] = []
-    for (const { name, value } of [...el.attributes]) {
+    for (const { name, value } of Array.from(el.attributes)) {
       if (dirRE.test(name) && name !== 'v-cloak') {
         if (name === 'v-model') {
           // defer v-model since it relies on :value bindings to be processed
@@ -169,8 +169,8 @@ const applyDirective = (
     effect: ctx.effect,
     ctx,
     exp,
-    arg,
-    modifiers
+    ...(arg !== undefined && { arg }),
+    ...(modifiers && { modifiers })
   })
   if (cleanup) {
     ctx.cleanups.push(cleanup)
@@ -178,15 +178,17 @@ const applyDirective = (
 }
 
 const resolveTemplate = (el: Element, template: string) => {
-  if (template[0] === '#') {
-    const templateEl = document.querySelector(template)
-    if (import.meta.env.DEV && !templateEl) {
-      console.error(
-        `template selector ${template} has no matching <template> element.`
-      )
-    }
-    el.appendChild((templateEl as HTMLTemplateElement).content.cloneNode(true))
-    return
+if (template[0] === '#') {
+const templateEl = document.querySelector(template)
+if (import.meta.env.DEV && !templateEl) {
+console.error(
+`template selector ${template} has no matching <template> element.`
+)
+}
+if (templateEl) {
+  el.appendChild((templateEl as HTMLTemplateElement).content.cloneNode(true))
+  }
+  return
   }
   el.innerHTML = template.replace(/<[\/\s]*template\s*>/ig, '')
 }

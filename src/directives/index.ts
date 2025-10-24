@@ -33,13 +33,5 @@ export const builtInDirectives: Record<string, Directive<any>> = {
   html,
   model,
   effect,
-  ref,
-  for: (ctx: DirectiveContext<any>) => {
-    _for(ctx.el, ctx.exp, ctx.ctx)
-    return () => {}
-  },
-  if: (ctx: DirectiveContext<any>) => {
-    _if(ctx.el, ctx.exp, ctx.ctx)
-    return () => {}
-  }
+  ref
 }

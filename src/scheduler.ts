@@ -26,7 +26,7 @@ export const queueJob = (job: Function) => {
   if (!queue.includes(job)) queue.push(job)
   if (!queued) {
     queued = true
-    nextTick(flushJobs)
+    setTimeout(flushJobs, 0)
   }
 }
 
