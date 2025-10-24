@@ -1,10 +1,23 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vitest/config'
 import { resolve } from 'path'
+import { playwright } from '@vitest/browser-playwright'
 
 export default defineConfig({
   test: {
-    environment: 'happy-dom',
+    browser: {
+      provider: playwright(),
+      enabled: true,
+      instances: [
+        {
+          browser: 'chromium',
+          headless: true,
+          launch: {
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+          }
+        },
+      ],
+    },
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     coverage: {
@@ -21,7 +34,7 @@ export default defineConfig({
         '**/*.d.ts',
         '**/*.config.*'
       ]
-    }
+    },
   },
   resolve: {
     alias: {
