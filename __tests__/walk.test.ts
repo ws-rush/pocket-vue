@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { walk, inOnce } from '../src/walk'
+import { walk } from '../src/walk'
 import { createContext } from '../src/context'
 import { _if } from '../src/directives/if'
 
@@ -336,16 +336,21 @@ describe('walk', () => {
   container.innerHTML = '<div v-once><span>{{ message }}</span></div>'
 
   ctx.scope.message = 'Should not interpolate'
-  expect(inOnce).toBe(false)
-
   walk(container, ctx)
 
-  // inOnce should be reset after processing
-    expect(inOnce).toBe(false)
-
-    // v-once should prevent interpolation
+  // v-once should prevent interpolation - content should remain unchanged
   const span = container.querySelector('span')
-    expect(span?.textContent).toBe('{{ message }}')
+  expect(span?.textContent).toBe('{{ message }}')
+
+  // The v-once attribute should be removed after processing
+  const div = container.querySelector('div')
+  expect(div?.hasAttribute('v-once')).toBe(false)
+
+  // Even after changing the scope data, v-once content should not update
+  ctx.scope.message = 'Still should not interpolate'
+  // Since the v-once element has been processed and is not reactive,
+  // the span should still contain the uninterpolated template
+  expect(span?.textContent).toBe('{{ message }}')
   })
 
   it('should handle ref directive inside v-scope', () => {

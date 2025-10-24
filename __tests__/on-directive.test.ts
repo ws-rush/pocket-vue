@@ -455,7 +455,7 @@ describe("on directive", () => {
     });
 
     expect(consoleSpy).toHaveBeenCalledWith(
-      "v-on=\"obj\" syntax is not supported in petite-vue."
+      "v-on=\"obj\" syntax is not supported in pocket-vue."
     );
     consoleSpy.mockRestore();
   });
@@ -499,6 +499,8 @@ describe("on directive", () => {
 
   it('should warn when v-on has no event type in DEV', () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const originalDEV = (globalThis as any).import?.meta?.env?.DEV;
+    ;(globalThis as any).import = { meta: { env: { DEV: true } } };
 
     const el = document.createElement('div');
     const ctx = createContext();
@@ -513,12 +515,15 @@ describe("on directive", () => {
       ctx
     });
 
-    if (import.meta.env.DEV) {
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'v-on="obj" syntax is not supported in petite-vue.'
-      );
-    }
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'v-on="obj" syntax is not supported in pocket-vue.'
+    );
 
     consoleSpy.mockRestore();
+    if (originalDEV !== undefined) {
+      ;(globalThis as any).import.meta.env.DEV = originalDEV;
+    } else {
+      delete (globalThis as any).import;
+    }
   });
 });

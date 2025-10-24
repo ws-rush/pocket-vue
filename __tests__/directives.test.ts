@@ -4,7 +4,6 @@ import { reactive } from "@vue/reactivity";
 import { createApp } from "../src/app";
 import { builtInDirectives } from "../src/directives";
 import { onCompositionEnd, updateTextValue, handleCheckboxChange, handleTextInput, updateCheckboxValue, handleRadioChange } from "../src/directives/model";
-import { updateBlocks, KeyToIndexMap } from "../src/directives/for";
 import { createContext, createScopedContext } from "../src/context";
 
 describe("directives", () => {
@@ -585,23 +584,32 @@ describe("directives", () => {
       app.mount(container);
 
       const input = container.querySelector("input") as HTMLInputElement;
+
       // Simulate composition start
       input.dispatchEvent(new Event("compositionstart"));
       expect((input as any).composing).toBe(true);
 
-      // Change input value during composition
+      // Change input value during composition - should be ignored
       input.value = "composed";
-      // Input event during composition should be ignored
       input.dispatchEvent(new Event("input"));
       await nextTick();
-      expect(data.value).toBe("test"); // should not update
+      expect(data.value).toBe("test"); // should not update during composition
 
-      // Composition end triggers input event
+      // Composition end should trigger update
       input.dispatchEvent(new Event("compositionend"));
       expect((input as any).composing).toBe(false);
-    // Should update data to new value
-      expect(data.value).toBe("composed");
-      });
+      expect(data.value).toBe("composed"); // should update after composition end
+
+      // Test multiple composition cycles
+      input.dispatchEvent(new Event("compositionstart"));
+      input.value = "second";
+      input.dispatchEvent(new Event("input"));
+      await nextTick();
+      expect(data.value).toBe("composed"); // still should not update
+
+      input.dispatchEvent(new Event("compositionend"));
+      expect(data.value).toBe("second"); // should update to new value
+    });
 
       it("should handle composition end when composing", () => {
       const input = document.createElement('input');
@@ -806,43 +814,7 @@ describe("directives", () => {
       );
     });
 
-    it("should handle composition events", async () => {
-      container.innerHTML = '<input v-model="message" />';
-
-      const app = createApp({ message: "" });
-      app.mount(container);
-
-      const input = container.querySelector("input") as HTMLInputElement;
-      
-      // Simulate composition start
-      const compositionStartEvent = new Event("compositionstart");
-      Object.defineProperty(compositionStartEvent, 'target', {
-        value: input,
-        writable: false
-      });
-      input.dispatchEvent(compositionStartEvent);
-
-      // Change value during composition
-      input.value = "test";
-      input.dispatchEvent(new Event("input"));
-
-      // Should not update the model during composition
-      expect(app.scope.message).toBe("");
-
-      // Simulate composition end
-      const compositionEndEvent = new Event("compositionend");
-      Object.defineProperty(compositionEndEvent, 'target', {
-        value: input,
-        writable: false
-      });
-      input.dispatchEvent(compositionEndEvent);
-
-      // Should trigger input event after composition
-      const inputEvent = new Event("input");
-      input.dispatchEvent(inputEvent);
-      expect(app.scope.message).toBe("test");
-    });
-
+  
     it("should handle checkbox with array values", () => {
       container.innerHTML = `
         <input type="checkbox" v-model="selected" value="option1" />
@@ -1283,73 +1255,106 @@ describe("directives", () => {
 
         
 
-          it("should test updateBlocks branches", () => {
-            const el = document.createElement('div');
-      const parent = document.createElement('div');
-      const anchor = document.createTextNode('');
-      parent.appendChild(anchor);
+          
+  
+  });
 
-      // Create proper contexts
-      const ctx = createContext();
-      ctx.scope.$refs = Object.create(null);
-      ctx.blocks = [];
+  describe("v-for integration tests", () => {
+    it("should handle complex list reordering efficiently", async () => {
+      container.innerHTML = `
+        <ul>
+          <li v-for="item in items" :key="item.id" :data-id="item.id">
+            {{ item.name }}
+          </li>
+        </ul>
+      `;
 
-      // Child contexts
-      const childCtx1 = createChildContext(ctx, 'item1', el);
-      const childCtx2 = createChildContext(ctx, 'item2', el);
-      const childCtxs = [childCtx1, childCtx2];
+      const data = reactive({
+        items: [
+          { id: 1, name: 'First' },
+          { id: 2, name: 'Second' },
+          { id: 3, name: 'Third' },
+          { id: 4, name: 'Fourth' }
+        ]
+      });
+      const app = createApp(data);
+      app.mount(container);
 
-      // Mock blocks
-      const block1 = createMockBlock('key1');
-      const block2 = createMockBlock('key2');
-      const blocks = [block1, block2];
+      let items = container.querySelectorAll("li");
+      expect(items.length).toBe(4);
+      expect(items[0].textContent?.trim()).toBe("First");
+      expect(items[1].textContent?.trim()).toBe("Second");
+      expect(items[2].textContent?.trim()).toBe("Third");
+      expect(items[3].textContent?.trim()).toBe("Fourth");
 
-      // Key maps: childCtxs have keys 'key1', 'key2', blocks have 'key1', 'key2'
-      const keyToIndexMap: KeyToIndexMap = new Map([['key1', 0], ['key2', 1]]);
-      const prevKeyToIndexMap: KeyToIndexMap = new Map([['key1', 0], ['key2', 1]]);
+      // Complex reordering: move items around, add new, and remove existing
+      data.items = [
+        { id: 4, name: 'Fourth Updated' }, // moved to front and updated
+        { id: 2, name: 'Second' },        // stays in middle
+        { id: 5, name: 'New Fifth' },     // new item added
+        { id: 1, name: 'First Moved' }    // moved to end and updated
+        // id: 3 (Third) is removed
+      ];
+      await nextTick();
 
-      // This should not remove any blocks, no moves
-      const result = updateBlocks(childCtxs, blocks, keyToIndexMap, prevKeyToIndexMap, anchor, parent, el, ctx);
+      items = container.querySelectorAll("li");
+      expect(items.length).toBe(4);
+      expect(items[0].textContent?.trim()).toBe("Fourth Updated");
+      expect(items[1].textContent?.trim()).toBe("Second");
+      expect(items[2].textContent?.trim()).toBe("New Fifth");
+      expect(items[3].textContent?.trim()).toBe("First Moved");
 
-      expect(result).toHaveLength(2);
-      expect(block1.remove).not.toHaveBeenCalled();
-      expect(block2.remove).not.toHaveBeenCalled();
-
-      // Test with removal
-      const keyToIndexMap2: KeyToIndexMap = new Map([['key1', 0]]);
-      const result2 = updateBlocks(childCtxs, blocks, keyToIndexMap2, keyToIndexMap, anchor, parent, el, ctx);
-
-      expect(result2).toHaveLength(2);
-      expect(block2.remove).toHaveBeenCalled();
-
-      // Test with new blocks
-      const childCtx3 = createChildContext(ctx, 'item3', el);
-      const childCtxs3 = [childCtx1, childCtx3];
-      const keyToIndexMap3: KeyToIndexMap = new Map([['key1', 0], ['key3', 1]]);
-      const result3 = updateBlocks(childCtxs3, [block1], keyToIndexMap3, keyToIndexMap2, anchor, parent, el, ctx);
-
-      expect(result3).toHaveLength(2);
-      expect(result3[1]).toBeDefined();
+      // Verify data-id attributes are maintained correctly
+      expect(items[0].getAttribute('data-id')).toBe('4');
+      expect(items[1].getAttribute('data-id')).toBe('2');
+      expect(items[2].getAttribute('data-id')).toBe('5');
+      expect(items[3].getAttribute('data-id')).toBe('1');
     });
 
-    function createChildContext(parentCtx: any, value: any, el: Element) {
-      const data: any = { item: value };
-      const childCtx = createScopedContext(parentCtx, data);
-      childCtx.key = `key${value.slice(-1)}`;
-      return childCtx;
-    }
+    it("should handle mixed reordering with insertions and removals", async () => {
+      container.innerHTML = `
+        <div>
+          <div v-for="user in users" :key="user.id" class="user-card">
+            <span class="name">{{ user.name }}</span>
+            <span class="email">{{ user.email }}</span>
+          </div>
+        </div>
+      `;
 
-    function createMockBlock(key: string) {
-      return {
-        key,
-        el: document.createElement('div'),
-        insert: vi.fn(),
-        remove: vi.fn(),
-        ctx: { scope: {} }
-      };
-    }
+      const data = reactive({
+        users: [
+          { id: 'a1', name: 'Alice', email: 'alice@example.com' },
+          { id: 'b2', name: 'Bob', email: 'bob@example.com' }
+        ]
+      });
+      const app = createApp(data);
+      app.mount(container);
 
-  
+      let users = container.querySelectorAll(".user-card");
+      expect(users.length).toBe(2);
+
+      // Update: add new user, update existing, remove one
+      data.users = [
+        { id: 'c3', name: 'Charlie', email: 'charlie@example.com' }, // new
+        { id: 'a1', name: 'Alice Smith', email: 'alice.smith@example.com' }, // updated
+        // b2 (Bob) is removed
+        { id: 'd4', name: 'Diana', email: 'diana@example.com' } // new
+      ];
+      await nextTick();
+
+      users = container.querySelectorAll(".user-card");
+      expect(users.length).toBe(3);
+
+      const names = Array.from(users).map(el =>
+        el.querySelector('.name')?.textContent?.trim()
+      );
+      const emails = Array.from(users).map(el =>
+        el.querySelector('.email')?.textContent?.trim()
+      );
+
+      expect(names).toEqual(['Charlie', 'Alice Smith', 'Diana']);
+      expect(emails).toEqual(['charlie@example.com', 'alice.smith@example.com', 'diana@example.com']);
+    });
   });
 
   describe("v-effect", () => {
