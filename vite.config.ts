@@ -11,7 +11,13 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'PocketVue',
-      formats: ['es', 'umd', 'iife']
+      formats: ['es', 'umd', 'iife'],
+      fileName: (format) => {
+        if (format === 'es') return 'pocket-vue.es.js'
+        if (format === 'umd') return 'pocket-vue.umd.js'
+        if (format === 'iife') return 'pocket-vue.iife.js'
+        return `pocket-vue.${format}.js`
+      }
     },
     rollupOptions: {
       // external: ['@vue/reactivity', '@vue/shared'],
