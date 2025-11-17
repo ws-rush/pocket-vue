@@ -72,6 +72,9 @@ You can also use the following CDN services:
 - **unpkg**:
   - Global build: `https://unpkg.com/pocket-vue`
   - ESM build: `https://unpkg.com/pocket-vue?module`
+ 
+- **esm.sh**:
+  - ESM (only) build: `https://esm.sh/pocket-vue`
 
 ### Root Scope
 
