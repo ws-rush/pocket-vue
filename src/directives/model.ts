@@ -83,7 +83,7 @@ export const model: Directive<
     }
 
     effect(() => {
-      updateTextValue(el, get, resolveValue)
+      updateTextValue(el as HTMLInputElement | HTMLTextAreaElement, get, resolveValue)
     })
   }
 }
