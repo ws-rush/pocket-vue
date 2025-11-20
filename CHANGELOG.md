@@ -1,3 +1,15 @@
+# [1.2.0](https://github.com/ws-rush/pocket-vue/compare/v1.1.2...v1.2.0) (2025-11-20)
+
+### Bug Fixes
+
+- make tests compatible with browser mode ([bc88638](https://github.com/ws-rush/pocket-vue/commit/bc88638710096edd9135d011c887f85ce9198040))
+
+### Features
+
+- add fileName to vite config ([869367f](https://github.com/ws-rush/pocket-vue/commit/869367f849730ec7c641ca9377744610fb0cc08c)), closes [#22](https://github.com/ws-rush/pocket-vue/issues/22)
+- enhance test coverage and fix type errors ([23c8cab](https://github.com/ws-rush/pocket-vue/commit/23c8cab256e46a68ccf27a7c840072314ffee11d))
+- migrate tests from happy-dom to browser mode with Playwright ([7e16c0a](https://github.com/ws-rush/pocket-vue/commit/7e16c0ad73ff7578a3a397ffe32f1faa42a9d124))
+
 ## [1.1.2](https://github.com/ws-rush/pocket-vue/compare/v1.1.1...v1.1.2) (2025-09-26)
 
 ## [1.1.1](https://github.com/ws-rush/pocket-vue/compare/v1.0.2...v1.1.1) (2025-09-26)
