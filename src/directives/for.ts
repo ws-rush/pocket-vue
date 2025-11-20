@@ -2,63 +2,83 @@ import { isArray, isObject } from '@vue/shared'
 import { Block } from '../block'
 import { evaluate } from '../eval'
 import { Context, createScopedContext } from '../context'
+import { DIRECTIVE_PATTERNS } from '../utils'
 
-const forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/
-const forIteratorRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/
-const stripParensRE = /^\(|\)$/g
-const destructureRE = /^[{[]\s*((?:[\w_$]+\s*,?\s*)+)[\]}]$/
+// Use centralized regex patterns
+const forAliasRE = DIRECTIVE_PATTERNS.FOR_ALIAS_RE
+const forIteratorRE = DIRECTIVE_PATTERNS.FOR_ITERATOR_RE
+const stripParensRE = DIRECTIVE_PATTERNS.STRIP_PARENS_RE
+const destructureRE = DIRECTIVE_PATTERNS.DESTRUCTURE_RE
 
-export type KeyToIndexMap = Map<any, number>
+type KeyToIndexMap = Map<any, number>
 
-export const updateBlocks = (
-  childCtxs: Context[],
-  blocks: Block[],
-  keyToIndexMap: KeyToIndexMap,
+const updateBlocks = (
+  newChildCtxs: Context[],
+  oldBlocks: Block[],
+  newKeyToIndexMap: KeyToIndexMap,
   prevKeyToIndexMap: KeyToIndexMap,
   anchor: Node,
   parent: Element,
   el: Element,
   ctx: Context
 ): Block[] => {
-  // Remove blocks that are no longer in the key map
-  for (let i = 0; i < blocks.length; i++) {
-    if (!keyToIndexMap.has(blocks[i].key)) {
-      blocks[i].remove()
+  const newBlocks: Block[] = new Array(newChildCtxs.length)
+  const oldKeyToBlockMap: Map<any, Block> = new Map()
+
+  // Map old blocks by key for efficient lookup
+  oldBlocks.forEach(block => {
+    if (block.key != null) {
+      oldKeyToBlockMap.set(block.key, block)
+    }
+  })
+
+  // Iterate new children, trying to reuse or create blocks
+  for (let i = 0; i < newChildCtxs.length; i++) {
+    const newChildCtx = newChildCtxs[i]
+    const newKey = newChildCtx.key
+    let block: Block | undefined
+
+    if (newKey != null) {
+      // Try to find an old block with the same key
+      block = oldKeyToBlockMap.get(newKey)
+      if (block) {
+        // Reuse existing block
+        Object.assign(block.ctx.scope, newChildCtx.scope)
+        oldKeyToBlockMap.delete(newKey) // Mark as used
+      }
+    }
+
+    if (!block) {
+      // No reusable block found, create a new one
+      block = new Block(el, newChildCtx)
+      block.key = newKey
+    }
+    newBlocks[i] = block
+  }
+
+  // Remove old blocks that were not reused
+  oldKeyToBlockMap.forEach(block => block.remove())
+
+  // Perform DOM operations (insert/move) to match the new order
+  // We need to insert blocks in reverse order to ensure the anchor points are valid
+  for (let i = newBlocks.length - 1; i >= 0; i--) {
+    const block = newBlocks[i]
+    const nextBlock = newBlocks[i + 1]
+    const expectedNextEl = nextBlock ? nextBlock.el : anchor
+
+    // Check if block needs to be moved
+    // For fragments, we check the end marker's nextSibling
+    // For regular elements, we check the element's nextSibling
+    const blockEnd = block.isFragment ? block.end : block.el
+    const actualNextEl = blockEnd?.nextSibling
+
+    // Only move if not already in the correct position
+    if (actualNextEl !== expectedNextEl) {
+      block.insert(parent, expectedNextEl)
     }
   }
 
-  const nextBlocks: Block[] = []
-  let i = childCtxs.length
-  let nextBlock: Block | undefined
-  let prevMovedBlock: Block | undefined
-  while (i--) {
-    const childCtx = childCtxs[i]
-    const oldIndex = prevKeyToIndexMap.get(childCtx.key)
-    let block: Block
-    if (oldIndex == null) {
-      // new
-      block = new Block(el, childCtx)
-      block.key = childCtx.key
-      block.insert(parent, nextBlock ? nextBlock.el : anchor)
-    } else {
-      // update
-      block = blocks[oldIndex]
-      Object.assign(block.ctx.scope, childCtx.scope)
-      if (oldIndex !== i) {
-        // moved
-        if (
-          blocks[oldIndex + 1] !== nextBlock ||
-          // If the next has moved, it must move too
-          prevMovedBlock === nextBlock
-        ) {
-          prevMovedBlock = block
-          block.insert(parent, nextBlock ? nextBlock.el : anchor)
-        }
-      }
-    }
-    nextBlocks.unshift(nextBlock = block)
-  }
-  return nextBlocks
+  return newBlocks
 }
 
 export const _for = (el: Element, exp: string, ctx: Context) => {
@@ -170,7 +190,7 @@ export const _for = (el: Element, exp: string, ctx: Context) => {
   ctx.effect(() => {
     const source = evaluate(ctx.scope, sourceExp, el)
     const prevKeyToIndexMap = keyToIndexMap
-    ;[childCtxs, keyToIndexMap] = createChildContexts(source)
+      ;[childCtxs, keyToIndexMap] = createChildContexts(source)
     if (!mounted) {
       blocks = childCtxs.map((s) => mountBlock(s, anchor))
       mounted = true

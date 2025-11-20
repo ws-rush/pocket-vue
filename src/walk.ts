@@ -5,12 +5,13 @@ import { bind } from './directives/bind'
 import { on } from './directives/on'
 import { text } from './directives/text'
 import { evaluate } from './eval'
-import { checkAttr } from './utils'
+import { checkAttr, DIRECTIVE_PATTERNS } from './utils'
 import { ref } from './directives/ref'
 import { Context, createScopedContext } from './context'
 
-const dirRE = /^(?:v-|:|@)/
-const modifierRE = /\.([\w-]+)/g
+// Use centralized regex patterns from utils
+const dirRE = DIRECTIVE_PATTERNS.DIR_RE
+const modifierRE = DIRECTIVE_PATTERNS.MODIFIER_RE
 
 export let inOnce = false
 
@@ -39,9 +40,9 @@ export const walk = (node: Node, ctx: Context): ChildNode | null | void => {
     }
 
     // v-scope
-    if ((exp = checkAttr(el, 'v-scope')) || exp === '') {
+    if ((exp = checkAttr(el, 'v-scope')) != null) {
       const scope = exp ? evaluate(ctx.scope, exp, el) : {}
-      scope.$root = el 
+      scope.$root = el
       ctx = createScopedContext(ctx, scope)
       if (scope.$template) {
         resolveTemplate(el, scope.$template)
@@ -57,7 +58,7 @@ export const walk = (node: Node, ctx: Context): ChildNode | null | void => {
     // ref
     if ((exp = checkAttr(el, 'ref'))) {
       if (ctx !== parentCtx) {
-      	applyDirective(el, ref, exp, parentCtx)
+        applyDirective(el, ref, exp, parentCtx)
       }
       applyDirective(el, ref, exp, ctx)
     }
@@ -113,7 +114,7 @@ export const walk = (node: Node, ctx: Context): ChildNode | null | void => {
 const walkChildren = (node: Element | DocumentFragment, ctx: Context) => {
   let child = node.firstChild
   while (child) {
-    child = walk(child, ctx) || child.nextSibling
+    child = walk(child, ctx) ?? child.nextSibling
   }
 }
 
@@ -129,7 +130,7 @@ const processDirective = (
 
   // modifiers
   raw = raw.replace(modifierRE, (_, m) => {
-    ;(modifiers || (modifiers = {}))[m] = true
+    (modifiers ??= {})[m] = true
     return ''
   })
 
@@ -142,7 +143,7 @@ const processDirective = (
   } else {
     const argIndex = raw.indexOf(':')
     const dirName = argIndex > 0 ? raw.slice(2, argIndex) : raw.slice(2)
-    dir = builtInDirectives[dirName] || ctx.dirs[dirName]
+    dir = builtInDirectives[dirName] ?? ctx.dirs[dirName]
     arg = argIndex > 0 ? raw.slice(argIndex + 1) : undefined
   }
   if (dir) {
@@ -178,17 +179,17 @@ const applyDirective = (
 }
 
 const resolveTemplate = (el: Element, template: string) => {
-if (template[0] === '#') {
-const templateEl = document.querySelector(template)
-if (import.meta.env.DEV && !templateEl) {
-console.error(
-`template selector ${template} has no matching <template> element.`
-)
-}
-if (templateEl) {
-  el.appendChild((templateEl as HTMLTemplateElement).content.cloneNode(true))
-  }
-  return
+  if (template[0] === '#') {
+    const templateEl = document.querySelector(template)
+    if (import.meta.env.DEV && !templateEl) {
+      console.error(
+        `template selector ${template} has no matching <template> element.`
+      )
+    }
+    if (templateEl) {
+      el.appendChild((templateEl as HTMLTemplateElement).content.cloneNode(true))
+    }
+    return
   }
   el.innerHTML = template.replace(/<[\/\s]*template\s*>/ig, '')
 }

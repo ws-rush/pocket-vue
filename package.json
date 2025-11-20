@@ -9,12 +9,18 @@
   "module": "./dist/pocket-vue.es.js",
   "exports": {
     ".": {
-      "import": "./dist/pocket-vue.es.js",
       "types": "./dist/types/index.d.ts",
+      "import": "./dist/pocket-vue.es.js",
       "require": "./dist/pocket-vue.umd.js"
     }
   },
   "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build && pnpm build:types",

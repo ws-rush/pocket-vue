@@ -16,13 +16,13 @@ describe('walk', () => {
   })
 
   it('should walk through DOM elements', () => {
-  container.innerHTML = '<div v-scope><span>{{ message }}</span><button @click="handleClick">Click</button></div>'
+    container.innerHTML = '<div v-scope><span>{{ message }}</span><button @click="handleClick">Click</button></div>'
 
-  ctx.scope.message = 'Hello'
-  ctx.scope.handleClick = vi.fn()
-  walk(container, ctx)
+    ctx.scope.message = 'Hello'
+    ctx.scope.handleClick = vi.fn()
+    walk(container, ctx)
 
-  expect(container.innerHTML).toContain('Hello')
+    expect(container.innerHTML).toContain('Hello')
   })
 
   it('should skip elements with v-pre', () => {
@@ -38,7 +38,7 @@ describe('walk', () => {
     expect(divs[1].innerHTML).toContain('Hello')
   })
 
-  
+
 
   it('should handle v-scope directive', () => {
     container.innerHTML = '<div v-scope="{ localCount: 0 }"><span>{{ localCount }}</span></div>'
@@ -49,19 +49,19 @@ describe('walk', () => {
   })
 
   it('should handle v-if directive', () => {
-  // Test with show = true
-  const container1 = document.createElement('div')
-  container1.innerHTML = '<div v-if="show">Visible</div>'
-  ctx.scope.show = true
-  walk(container1, ctx)
-  expect(container1.innerHTML).toContain('Visible')
+    // Test with show = true
+    const container1 = document.createElement('div')
+    container1.innerHTML = '<div v-if="show">Visible</div>'
+    ctx.scope.show = true
+    walk(container1, ctx)
+    expect(container1.innerHTML).toContain('Visible')
 
-  // Test with show = false
-  const container2 = document.createElement('div')
-  container2.innerHTML = '<div v-if="show">Visible</div>'
-  ctx.scope.show = false
-  walk(container2, ctx)
-  expect(container2.innerHTML).not.toContain('Visible')
+    // Test with show = false
+    const container2 = document.createElement('div')
+    container2.innerHTML = '<div v-if="show">Visible</div>'
+    ctx.scope.show = false
+    walk(container2, ctx)
+    expect(container2.innerHTML).not.toContain('Visible')
   })
 
   it('should handle v-if with v-else', () => {
@@ -85,9 +85,9 @@ describe('walk', () => {
   })
 
   it('should warn for empty v-if in DEV', () => {
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => { })
     const originalDEV = (globalThis as any).import?.meta?.env?.DEV
-    ;(globalThis as any).import = { meta: { env: { DEV: true } } }
+      ; (globalThis as any).import = { meta: { env: { DEV: true } } }
 
     const container = document.createElement('div')
     container.innerHTML = '<div v-if=" ">Empty</div>'
@@ -97,13 +97,13 @@ describe('walk', () => {
 
     warnSpy.mockRestore()
     if (originalDEV !== undefined) {
-      ;(globalThis as any).import.meta.env.DEV = originalDEV
+      ; (globalThis as any).import.meta.env.DEV = originalDEV
     } else {
       delete (globalThis as any).import
     }
-    })
+  })
 
-    it('should handle v-if on element with no parent', () => {
+  it('should handle v-if on element with no parent', () => {
     const el = document.createElement('div')
     el.setAttribute('v-if', 'true')
 
@@ -113,15 +113,15 @@ describe('walk', () => {
   })
 
   it('should handle v-for directive', () => {
-  container.innerHTML = '<ul><li v-for="item in items">{{ item }}</li></ul>'
+    container.innerHTML = '<ul><li v-for="item in items">{{ item }}</li></ul>'
 
-  ctx.scope.items = ['Item 1', 'Item 2']
-  walk(container, ctx)
+    ctx.scope.items = ['Item 1', 'Item 2']
+    walk(container, ctx)
 
-  const items = container.querySelectorAll('li')
-  expect(items.length).toBe(2)
-  expect(items[0]?.textContent).toBe('Item 1')
-  expect(items[1]?.textContent).toBe('Item 2')
+    const items = container.querySelectorAll('li')
+    expect(items.length).toBe(2)
+    expect(items[0]?.textContent).toBe('Item 1')
+    expect(items[1]?.textContent).toBe('Item 2')
   })
 
   it('should handle v-for with number', () => {
@@ -174,20 +174,20 @@ describe('walk', () => {
   })
 
   it('should handle v-for with destructure', () => {
-  container.innerHTML = '<ul><li v-for="{name, age} in people">{{ name }} ({{ age }})</li></ul>'
+    container.innerHTML = '<ul><li v-for="{name, age} in people">{{ name }} ({{ age }})</li></ul>'
 
-  ctx.scope.people = [{ name: 'John', age: 30 }, { name: 'Jane', age: 25 }]
-  walk(container, ctx)
+    ctx.scope.people = [{ name: 'John', age: 30 }, { name: 'Jane', age: 25 }]
+    walk(container, ctx)
 
-  const items = container.querySelectorAll('li')
-  expect(items[0]?.textContent).toBe('John (30)')
-  expect(items[1]?.textContent).toBe('Jane (25)')
+    const items = container.querySelectorAll('li')
+    expect(items[0]?.textContent).toBe('John (30)')
+    expect(items[1]?.textContent).toBe('Jane (25)')
   })
 
   it('should warn for invalid v-for in DEV', () => {
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => { })
     const originalDEV = (globalThis as any).import?.meta?.env?.DEV
-    ;(globalThis as any).import = { meta: { env: { DEV: true } } }
+      ; (globalThis as any).import = { meta: { env: { DEV: true } } }
 
     container.innerHTML = '<ul><li v-for="invalid">item</li></ul>'
     walk(container, ctx)
@@ -196,28 +196,28 @@ describe('walk', () => {
 
     warnSpy.mockRestore()
     if (originalDEV !== undefined) {
-      ;(globalThis as any).import.meta.env.DEV = originalDEV
+      ; (globalThis as any).import.meta.env.DEV = originalDEV
     } else {
       delete (globalThis as any).import
     }
   })
 
   it('should handle v-for updates and moves', async () => {
-  container.innerHTML = '<ul><li v-for="item in items" :key="item">{{ item }}</li></ul>'
+    container.innerHTML = '<ul><li v-for="item in items" :key="item">{{ item }}</li></ul>'
 
-  ctx.scope.items = ['A', 'B', 'C']
-  walk(container, ctx)
+    ctx.scope.items = ['A', 'B', 'C']
+    walk(container, ctx)
 
-  let items = container.querySelectorAll('li')
-  expect(items.length).toBe(3)
-  expect(Array.from(items).map(li => li.textContent)).toEqual(['A', 'B', 'C'])
+    let items = container.querySelectorAll('li')
+    expect(items.length).toBe(3)
+    expect(Array.from(items).map(li => li.textContent)).toEqual(['A', 'B', 'C'])
 
-  // Update to trigger move and reordering
-  ctx.scope.items = ['C', 'A', 'B']
-  await nextTick()
+    // Update to trigger move and reordering
+    ctx.scope.items = ['C', 'A', 'B']
+    await nextTick()
 
-  items = container.querySelectorAll('li')
-  expect(items.length).toBe(3)
+    items = container.querySelectorAll('li')
+    expect(items.length).toBe(3)
     expect(Array.from(items).map(li => li.textContent)).toEqual(['C', 'A', 'B'])
   })
 
@@ -278,24 +278,24 @@ describe('walk', () => {
   })
 
   it('should handle custom delimiters', () => {
-  container.innerHTML = '<div>${ message }</div>'
+    container.innerHTML = '<div>${ message }</div>'
 
-  ctx.scope.message = 'Hello'
-  ctx.delimiters = ['${', '}']
-  ctx.delimitersRE = /\$\{([^]+?)\}/g
+    ctx.scope.message = 'Hello'
+    ctx.delimiters = ['${', '}']
+    ctx.delimitersRE = /\$\{([^]+?)\}/g
 
-  walk(container, ctx)
+    walk(container, ctx)
 
-  const div = container.querySelector('div')
-  expect(div?.textContent).toBe('Hello')
+    const div = container.querySelector('div')
+    expect(div?.textContent).toBe('Hello')
   })
 
 
 
   it('should handle unknown custom directive in DEV', () => {
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => { })
     const originalDEV = (globalThis as any).import?.meta?.env?.DEV
-    ;(globalThis as any).import = { meta: { env: { DEV: true } } }
+      ; (globalThis as any).import = { meta: { env: { DEV: true } } }
 
     container.innerHTML = '<div v-unknown="value"></div>'
     walk(container, ctx)
@@ -304,7 +304,7 @@ describe('walk', () => {
 
     errorSpy.mockRestore()
     if (originalDEV !== undefined) {
-      ;(globalThis as any).import.meta.env.DEV = originalDEV
+      ; (globalThis as any).import.meta.env.DEV = originalDEV
     } else {
       delete (globalThis as any).import
     }
@@ -324,49 +324,62 @@ describe('walk', () => {
     expect(div?.innerHTML).toContain('Template content')
 
     document.body.removeChild(template)
-    })
+  })
 
-    it('should handle v-scope with $template string', () => {
+  it('should handle v-scope with $template string', () => {
     container.innerHTML = "<div v-scope=\"{ $template: '<span>String template</span>' }\"></div>"
     walk(container, ctx)
 
     const div = container.querySelector('div')
     expect(div?.innerHTML).toContain('String template')
-    })
+  })
 
   it('should handle v-once directive', async () => {
-  container.innerHTML = '<div v-once><span>{{ message }}</span></div>'
+    container.innerHTML = '<div v-once><span>{{ message }}</span></div>'
 
-  ctx.scope.message = 'Initial value'
-  walk(container, ctx)
+    ctx.scope.message = 'Initial value'
+    walk(container, ctx)
 
-  // Wait for the initial effect to run
-  await nextTick()
+    // Wait for the initial effect to run
+    await nextTick()
 
-  // v-once should interpolate once with current data
-  const span = container.querySelector('span')
-  expect(span?.textContent).toBe('Initial value')
+    // v-once should interpolate once with current data
+    const span = container.querySelector('span')
+    expect(span?.textContent).toBe('Initial value')
 
-  // The v-once attribute should be removed after processing
-  const div = container.querySelector('div')
-  expect(div?.hasAttribute('v-once')).toBe(false)
+    // The v-once attribute should be removed after processing
+    const div = container.querySelector('div')
+    expect(div?.hasAttribute('v-once')).toBe(false)
 
-  // Even after changing the scope data and triggering reactivity, v-once content should not update
-  ctx.scope.message = 'Updated value'
-  await nextTick()
-  // Since the v-once element has been processed and is not reactive,
-  // the span should still contain the initial value
-  expect(span?.textContent).toBe('Initial value')
+    // Even after changing the scope data and triggering reactivity, v-once content should not update
+    ctx.scope.message = 'Updated value'
+    await nextTick()
+    // Since the v-once element has been processed and is not reactive,
+    // the span should still contain the initial value
+    expect(span?.textContent).toBe('Initial value')
   })
 
   it('should handle ref directive inside v-scope', () => {
-  container.innerHTML = '<div v-scope ref="myRef">Content</div>'
+    container.innerHTML = '<div v-scope ref="myRef">Content</div>'
 
-  walk(container, ctx)
+    walk(container, ctx)
 
-  // The ref should be registered in both parent and scoped contexts
-  const scopedDiv = container.querySelector('div[ref]')
-  expect(scopedDiv).toBeDefined()
+    // The ref should be registered in both parent and scoped contexts
+    const scopedDiv = container.querySelector('div[ref]')
+    expect(scopedDiv).toBeDefined()
+  })
+
+  it('should register ref in both parent and scoped context when used with v-scope', () => {
+    container.innerHTML = '<div v-scope="{ data: 42 }" ref="scopedRef">Scoped Content</div>'
+
+    ctx.scope.$refs = {}
+    walk(container, ctx)
+
+    // The ref should be registered
+    expect(ctx.scope.$refs.scopedRef).toBeDefined()
+    const div = container.querySelector('div')
+    expect(div).toBeDefined()
+    expect(ctx.scope.$refs.scopedRef).toBe(div)
   })
 
   it('should handle v-scope with empty expression', () => {
@@ -379,18 +392,18 @@ describe('walk', () => {
   })
 
   it('should handle directive cleanup functions', () => {
-  // Create a mock directive that returns a cleanup function
-  const mockDirective = vi.fn(() => {
-  return () => {} // cleanup function
-  })
+    // Create a mock directive that returns a cleanup function
+    const mockDirective = vi.fn(() => {
+      return () => { } // cleanup function
+    })
 
-  ctx.dirs = { 'test-dir': mockDirective }
+    ctx.dirs = { 'test-dir': mockDirective }
 
-  container.innerHTML = '<div v-test-dir="value"></div>'
+    container.innerHTML = '<div v-test-dir="value"></div>'
 
-  walk(container, ctx)
+    walk(container, ctx)
 
-  expect(mockDirective).toHaveBeenCalled()
+    expect(mockDirective).toHaveBeenCalled()
   })
 
   it('should handle :ref shorthand', () => {
@@ -415,10 +428,10 @@ describe('walk', () => {
     expect(div.textContent).toBe('Fragment content')
   })
 
-    it('should warn for invalid template selector in DEV', () => {
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+  it('should warn for invalid template selector in DEV', () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => { })
     const originalDEV = (globalThis as any).import?.meta?.env?.DEV
-    ;(globalThis as any).import = { meta: { env: { DEV: true } } }
+      ; (globalThis as any).import = { meta: { env: { DEV: true } } }
 
     container.innerHTML = "<div v-scope=\"{ $template: '#nonexistent' }\"></div>"
     walk(container, ctx)
@@ -427,9 +440,9 @@ describe('walk', () => {
 
     errorSpy.mockRestore()
     if (originalDEV !== undefined) {
-    ;(globalThis as any).import.meta.env.DEV = originalDEV
+      ; (globalThis as any).import.meta.env.DEV = originalDEV
     } else {
-    delete (globalThis as any).import
+      delete (globalThis as any).import
     }
-    })
+  })
 })

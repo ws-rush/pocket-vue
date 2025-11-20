@@ -6,7 +6,7 @@ import { createApp } from './app'
 
 export const autoMount = () => {
   const s = document.currentScript
-  if (s && s.hasAttribute('init')) {
+  if (s?.hasAttribute('init')) {
     createApp().mount()
   }
 }

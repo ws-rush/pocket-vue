@@ -14,7 +14,7 @@ export class Block {
   end?: Text
 
   get el() {
-    return this.start || (this.template as Element)
+    return this.start ?? (this.template as Element)
   }
 
   constructor(template: Element, parentCtx: Context, isRoot = false) {
@@ -46,13 +46,16 @@ export class Block {
     if (this.isFragment) {
       if (this.start) {
         // already inserted, moving
+        const nodesToMove: Node[] = []
         let node: Node | null = this.start
-        let next: Node | null
         while (node) {
-          next = node.nextSibling
-          parent.insertBefore(node, anchor)
+          nodesToMove.push(node)
           if (node === this.end) break
-          node = next
+          node = node.nextSibling
+        }
+        // Insert them in reverse order to maintain visual order
+        for (let i = nodesToMove.length - 1; i >= 0; i--) {
+          parent.insertBefore(nodesToMove[i], anchor)
         }
       } else {
         this.start = new Text('')
@@ -86,11 +89,47 @@ export class Block {
     this.teardown()
   }
 
+  /**
+   * Cleanup all effects and child blocks
+   * Enhanced with better error handling and cleanup callbacks
+   */
   teardown() {
+    // Teardown child blocks first (depth-first cleanup)
     this.ctx.blocks.forEach((child) => {
-      child.teardown()
+      try {
+        child.teardown()
+      } catch (e) {
+        if (import.meta.env.DEV) {
+          console.warn('Error tearing down child block:', e)
+        }
+      }
     })
-    this.ctx.effects.forEach(stop)
-    this.ctx.cleanups.forEach((fn) => fn())
+
+    // Stop all reactive effects
+    this.ctx.effects.forEach((effect) => {
+      try {
+        stop(effect)
+      } catch (e) {
+        if (import.meta.env.DEV) {
+          console.warn('Error stopping effect:', e)
+        }
+      }
+    })
+
+    // Run cleanup callbacks
+    this.ctx.cleanups.forEach((cleanup) => {
+      try {
+        cleanup()
+      } catch (e) {
+        if (import.meta.env.DEV) {
+          console.warn('Error in cleanup callback:', e)
+        }
+      }
+    })
+
+    // Clear arrays to free memory
+    this.ctx.blocks.length = 0
+    this.ctx.effects.length = 0
+    this.ctx.cleanups.length = 0
   }
 }

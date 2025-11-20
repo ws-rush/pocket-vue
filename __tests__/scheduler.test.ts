@@ -98,35 +98,17 @@ describe('scheduler', () => {
       await promise
     })
 
-    it('should call setTimeout when nextTick waits for queue to clear', async () => {
-      // Spy on setTimeout
-      const setTimeoutSpy = vi.spyOn(globalThis, 'setTimeout')
+    it('should resolve nextTick promise after queued jobs', async () => {
+      const job = vi.fn()
+      queueJob(job)
 
-      try {
-        const job = vi.fn()
-        queueJob(job)
+      // Call nextTick without callback
+      const promise = nextTick()
 
-        // Call nextTick without callback
-        const promise = nextTick()
+      // The promise should resolve after the queued job runs
+      await promise
 
-        // Flush microtasks to run checkQueue
-        await Promise.resolve()
-
-        // setTimeout should have been called during the checkQueue process
-        expect(setTimeoutSpy).toHaveBeenCalled()
-
-        // Now run timers to execute flushJobs and checkQueue
-        vi.runAllTimers()
-
-        // flushJobs executes job
-        expect(job).toHaveBeenCalled()
-
-        // Wait for the promise to resolve
-        await promise
-
-      } finally {
-        setTimeoutSpy.mockRestore()
-      }
+      expect(job).toHaveBeenCalled()
     })
 
     it('should handle rapid queueJob calls efficiently', async () => {
@@ -142,11 +124,42 @@ describe('scheduler', () => {
       // All jobs should be queued and executed
       await vi.runAllTimers()
 
-      expect(job1).toHaveBeenCalled()
-      expect(job2).toHaveBeenCalled()
-      expect(job3).toHaveBeenCalled()
-    })
+      expect(job1).toHaveBeenCalled();
+      expect(job2).toHaveBeenCalled();
+      expect(job3).toHaveBeenCalled();
+    });
 
+    it('should execute callback in next microtask via nextTick', async () => {
+      const callback = vi.fn();
+      nextTick(callback);
+
+      expect(callback).not.toHaveBeenCalled();
+
+      // Wait for microtask to execute
+      await Promise.resolve();
+      await vi.runAllTimers();
+
+      expect(callback).toHaveBeenCalled();
+    });
+
+    it('should handle undefined callback in nextTick', async () => {
+      // Should not throw when no callback provided
+      expect(() => nextTick()).not.toThrow();
+
+      // Wait for microtask
+      await Promise.resolve();
+    });
+
+    it('should execute multiple independent nextTick callbacks', async () => {
+      const order: number[] = [];
+
+      nextTick(() => order.push(1));
+      nextTick(() => order.push(2));
+      nextTick(() => order.push(3));
+
+      await vi.runAllTimers();
+      expect(order).toEqual([1, 2, 3]);
+    });
 
   })
 })

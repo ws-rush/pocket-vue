@@ -2,18 +2,31 @@ import { isArray, looseEqual, looseIndexOf, toNumber } from '@vue/shared'
 import { Directive } from '.'
 import { listen } from '../utils'
 
+// Consolidated value handling utilities
+const createValueHandler = (resolveValue: (val: string) => any) =>
+  (el: HTMLInputElement | HTMLTextAreaElement, assign: (val: any) => void) => {
+    if ((el as any).composing) return
+    assign(resolveValue(el.value))
+  }
+
+const setupInputHandlers = (el: Element, handlers: Record<string, EventListener>) => {
+  Object.entries(handlers).forEach(([event, handler]) => {
+    listen(el, event, handler)
+  })
+}
+
 export const model: Directive<
   HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
 > = ({ el, exp, get, effect, modifiers }) => {
   const type = el.type
   const assign = get(`(val) => { ${exp} = val }`)
-  const { trim, number = type === 'number' || type === 'range' } = modifiers || {}
+  const { trim, number = type === 'number' || type === 'range' } = modifiers ?? {}
 
   if (el.tagName === 'SELECT') {
     const sel = el as HTMLSelectElement
     listen(el, 'change', () => {
-      const selectedVal = Array.prototype.filter
-        .call(sel.options, (o: HTMLOptionElement) => o.selected)
+      const selectedVal = Array.from(sel.options)
+        .filter((o: HTMLOptionElement) => o.selected)
         .map((o: HTMLOptionElement) =>
           number ? toNumber(getValue(o)) : getValue(o)
         )
@@ -22,8 +35,9 @@ export const model: Directive<
     effect(() => {
       const value = get()
       const isMultiple = sel.multiple
-      for (let i = 0, l = sel.options.length; i < l; i++) {
-        const option = sel.options[i]
+      const options = sel.options
+      for (let i = 0, l = options.length; i < l; i++) {
+        const option = options[i]
         const optionValue = getValue(option)
         if (isMultiple) {
           if (isArray(value)) {
@@ -32,7 +46,7 @@ export const model: Directive<
             option.selected = false
           }
         } else {
-          if (looseEqual(getValue(option), value)) {
+          if (looseEqual(optionValue, value)) {
             if (sel.selectedIndex !== i) sel.selectedIndex = i
             return
           }
@@ -60,7 +74,7 @@ export const model: Directive<
     effect(() => {
       const value = get()
       if (value !== oldValue) {
-        ;(el as HTMLInputElement).checked = looseEqual(value, getValue(el))
+        ; (el as HTMLInputElement).checked = looseEqual(value, getValue(el))
       }
     })
   } else {
@@ -71,16 +85,21 @@ export const model: Directive<
       return val
     }
 
-    listen(el, 'compositionstart', onCompositionStart)
-    listen(el, 'compositionend', onCompositionEnd)
-    listen(el, modifiers?.lazy ? 'change' : 'input', () => {
-      handleTextInput(el as HTMLInputElement | HTMLTextAreaElement, assign, resolveValue)
-    })
-    if (trim) {
-      listen(el, 'change', () => {
-        el.value = el.value.trim()
-      })
+    const handleInput = createValueHandler(resolveValue)
+    const handlers: Record<string, EventListener> = {
+      compositionstart: onCompositionStart,
+      compositionend: onCompositionEnd,
+      [modifiers?.lazy ? 'change' : 'input']: () =>
+        handleInput(el as HTMLInputElement | HTMLTextAreaElement, assign)
     }
+
+    if (trim) {
+      handlers.change = () => {
+        el.value = el.value.trim()
+      }
+    }
+
+    setupInputHandlers(el, handlers)
 
     effect(() => {
       updateTextValue(el as HTMLInputElement | HTMLTextAreaElement, get, resolveValue)
@@ -99,8 +118,8 @@ const getCheckboxValue = (
   return key in el ? el[key] : checked
 }
 
-export const onCompositionStart = (e: Event) => {
-  ;(e.target as any).composing = true
+const onCompositionStart = (e: Event) => {
+  ; (e.target as any).composing = true
 }
 
 export const onCompositionEnd = (e: Event) => {
@@ -131,14 +150,8 @@ export const updateCheckboxValue = (
   }
 }
 
-export const handleTextInput = (
-  el: HTMLInputElement | HTMLTextAreaElement,
-  assign: (val: any) => void,
-  resolveValue: (val: string) => any
-) => {
-  if ((el as any).composing) return
-  assign(resolveValue(el.value))
-}
+// Re-export for backward compatibility with tests
+export const handleTextInput = createValueHandler((val: string) => val)
 
 export const handleCheckboxChange = (
   el: HTMLInputElement,

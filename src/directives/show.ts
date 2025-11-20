@@ -1,8 +1,20 @@
 import { Directive } from '.'
+import { getElementMetadata } from '../metadata'
 
+/**
+ * v-show directive implementation
+ * Uses WeakMap-based metadata storage for automatic memory cleanup
+ */
 export const show: Directive<HTMLElement> = ({ el, get, effect }) => {
-  const initialDisplay = el.style.display
+  // Store original display value in metadata (WeakMap)
+  // This will be automatically garbage collected when the element is removed
+  const metadata = getElementMetadata(el)
+  if (metadata.originalDisplay === undefined) {
+    metadata.originalDisplay = el.style.display || ''
+  }
+
   effect(() => {
-    el.style.display = get() ? initialDisplay : 'none'
+    const shouldShow = get()
+    el.style.display = shouldShow ? metadata.originalDisplay! : 'none'
   })
 }

@@ -15,7 +15,7 @@ export interface Directive<T = Element> {
   (ctx: DirectiveContext<T>): (() => void) | void
 }
 
-export interface DirectiveContext<T = Element> {
+interface DirectiveContext<T = Element> {
   el: T
   get: (exp?: string) => any
   effect: typeof rawEffect

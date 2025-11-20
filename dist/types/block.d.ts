@@ -11,5 +11,9 @@ export declare class Block {
     constructor(template: Element, parentCtx: Context, isRoot?: boolean);
     insert(parent: Element | DocumentFragment | Document, anchor?: Node | null): void;
     remove(): void;
+    /**
+     * Cleanup all effects and child blocks
+     * Enhanced with better error handling and cleanup callbacks
+     */
     teardown(): void;
 }

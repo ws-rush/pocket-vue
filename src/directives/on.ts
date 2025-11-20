@@ -44,8 +44,7 @@ export const on: Directive = ({ el, get, exp, arg, modifiers }) => {
   // special lifecycle events
   if (import.meta.env.DEV && (arg === 'mounted' || arg === 'unmounted')) {
     console.error(
-      `mounted and unmounted hooks now need to be prefixed with vue: ` +
-        `- use @vue:${arg}="handler" instead.`
+    `mounted and unmounted hooks now need to be prefixed with vue: - use @vue:${arg}="handler" instead.`
     )
   }
   if (arg === 'vue:mounted') {
@@ -69,7 +68,7 @@ export const on: Directive = ({ el, get, exp, arg, modifiers }) => {
       }
       for (const key in modifiers) {
         const guard = modifierGuards[key]
-        if (guard && guard(e, modifiers)) {
+        if (guard?.(e, modifiers)) {
           return
         }
       }

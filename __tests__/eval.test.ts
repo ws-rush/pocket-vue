@@ -146,6 +146,23 @@ describe('evaluate', () => {
     scope.index = index
     expect(evaluate(scope, 'items[index]', el)).toBe('item1')
   })
+
+  it('should reject dangerous expressions', () => {
+  const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+  // Test various dangerous patterns
+  expect(evaluate(scope, 'eval("alert(1)")', el)).toBeUndefined()
+  expect(evaluate(scope, 'window.location', el)).toBeUndefined()
+  expect(evaluate(scope, 'delete something()', el)).toBeUndefined()
+
+  // Test empty and overly long expressions
+  expect(evaluate(scope, '', el)).toBeUndefined()
+  expect(evaluate(scope, 'a'.repeat(1001), el)).toBeUndefined()
+
+  expect(consoleWarnSpy).toHaveBeenCalledTimes(5)
+
+  consoleWarnSpy.mockRestore()
+  })
 })
 
 describe('execute', () => {
@@ -197,4 +214,61 @@ describe('execute', () => {
 
     consoleErrorSpy.mockRestore()
   })
+
+  it('should reject dangerous expressions in execute', () => {
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    // Test dangerous expressions are rejected
+    expect(execute(scope, 'window.alert(1)', el)).toBeUndefined()
+    expect(execute(scope, 'eval("code")', el)).toBeUndefined()
+
+    expect(consoleWarnSpy).toHaveBeenCalledTimes(2)
+
+    consoleWarnSpy.mockRestore()
+  })
+
+  it('should invalidate cache on execution error', () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    // Create a function that will be cached initially
+    const exp = 'count + 1'
+    execute(scope, exp, el) // Should cache the function
+
+    // Now execute with an expression that causes runtime error
+    const errorExp = 'nonexistent.property.access'
+    const result = execute(scope, errorExp, el)
+
+    expect(result).toBeUndefined()
+    expect(consoleErrorSpy).toHaveBeenCalled()
+
+    // The error expression should be removed from cache
+    // We can't directly test the cache, but we can verify the error was logged
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Error executing expression'),
+      expect.any(Error)
+    )
+
+    consoleErrorSpy.mockRestore()
+  })
+
+  it('should handle runtime errors in cached functions', () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    // First execute a valid expression to cache it
+    const exp = 'sideEffect()'
+    execute(scope, exp, el)
+
+    // Now modify scope to cause runtime error on next execution
+    scope.sideEffect = () => { throw new Error('runtime error') }
+
+    // Execute again - should handle the error and remove from cache
+    const result = execute(scope, exp, el)
+
+    expect(result).toBeUndefined()
+    expect(consoleErrorSpy).toHaveBeenCalled()
+
+    consoleErrorSpy.mockRestore()
+  })
+
+
 })

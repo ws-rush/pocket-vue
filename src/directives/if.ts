@@ -13,7 +13,7 @@ export const _if = (el: Element, exp: string, ctx: Context) => {
     console.warn(`v-if expression cannot be empty.`)
   }
 
-  const parent = el.parentElement || (el.parentNode as Element | DocumentFragment)
+  const parent = el.parentElement ?? (el.parentNode as Element | DocumentFragment)
   if (!parent) return
 
   const anchor = new Comment('v-if')
@@ -59,7 +59,7 @@ export const _if = (el: Element, exp: string, ctx: Context) => {
   ctx.effect(() => {
     for (let i = 0; i < branches.length; i++) {
       const { exp, el } = branches[i]
-      if (!exp || evaluate(ctx.scope, exp, el)) {
+      if (exp == null || evaluate(ctx.scope, exp, el)) {
         if (i !== activeBranchIndex) {
           removeActiveBlock()
           block = new Block(el, ctx)

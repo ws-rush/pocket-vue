@@ -27,8 +27,8 @@ describe("directives", () => {
       expect(builtInDirectives.html).toBeDefined();
       expect(builtInDirectives.model).toBeDefined();
       expect(builtInDirectives.effect).toBeDefined();
-    expect(builtInDirectives.ref).toBeDefined();
-  });
+      expect(builtInDirectives.ref).toBeDefined();
+    });
   });
 
   describe("v-bind", () => {
@@ -124,11 +124,11 @@ describe("directives", () => {
     });
 
     it("should bind style with CSS variables", async () => {
-    container.innerHTML = '<div :style="style"></div>';
-    const data = reactive({ style: { "--color": "red" } });
-    createApp(data).mount(container);
-    const div = container.querySelector("div")!;
-    expect(div.style.getPropertyValue("--color")).toBe("red");
+      container.innerHTML = '<div :style="style"></div>';
+      const data = reactive({ style: { "--color": "red" } });
+      createApp(data).mount(container);
+      const div = container.querySelector("div")!;
+      expect(div.style.getPropertyValue("--color")).toBe("red");
     });
 
     it("should remove style attribute when style becomes falsy", async () => {
@@ -213,6 +213,50 @@ describe("directives", () => {
       data.message = "world";
       await nextTick();
       expect(input.value).toBe("world");
+    });
+
+    it("should handle object binding with key removal", async () => {
+      container.innerHTML = '<div v-bind="attrs"></div>';
+      const data = reactive({
+        attrs: {
+          id: "test",
+          "data-foo": "bar",
+          "data-baz": "qux"
+        } as Record<string, string | undefined>
+      });
+      const app = createApp(data);
+      app.mount(container);
+      const div = container.querySelector("div")!;
+
+      expect(div.getAttribute("id")).toBe("test");
+      expect(div.getAttribute("data-foo")).toBe("bar");
+      expect(div.getAttribute("data-baz")).toBe("qux");
+
+      // Remove some keys from the object
+      data.attrs = { id: "new-id" };
+      await nextTick();
+
+      expect(div.getAttribute("id")).toBe("new-id");
+      expect(div.hasAttribute("data-foo")).toBe(false);
+      expect(div.hasAttribute("data-baz")).toBe(false);
+    });
+
+    it("should handle object binding with all keys removed", async () => {
+      container.innerHTML = '<div v-bind="attrs"></div>';
+      const data = reactive({
+        attrs: { "data-test": "value" } as Record<string, string | undefined>
+      });
+      const app = createApp(data);
+      app.mount(container);
+      const div = container.querySelector("div")!;
+
+      expect(div.getAttribute("data-test")).toBe("value");
+
+      // Remove all keys
+      data.attrs = {};
+      await nextTick();
+
+      expect(div.hasAttribute("data-test")).toBe(false);
     });
   });
 
@@ -436,18 +480,18 @@ describe("directives", () => {
     });
 
     it("should work with select", () => {
-    container.innerHTML = `
+      container.innerHTML = `
     <select v-model="selected">
     <option value="option1">Option 1</option>
     <option value="option2">Option 2</option>
     </select>
     `;
 
-    const app = createApp({ selected: "option2" });
-    app.mount(container);
+      const app = createApp({ selected: "option2" });
+      app.mount(container);
 
-    const select = container.querySelector("select");
-    expect(select?.value).toBe("option2");
+      const select = container.querySelector("select");
+      expect(select?.value).toBe("option2");
     });
 
     it("should work with multiple select", async () => {
@@ -504,9 +548,9 @@ describe("directives", () => {
       const select = container.querySelector("select") as HTMLSelectElement;
       expect(select.options[0].selected).toBe(false);
       expect(select.options[1].selected).toBe(false);
-      });
+    });
 
-      it("should work with select with number modifier", async () => {
+    it("should work with select with number modifier", async () => {
       container.innerHTML = `
         <select v-model.number="selected">
           <option value="1">One</option>
@@ -611,7 +655,7 @@ describe("directives", () => {
       expect(data.value).toBe("second"); // should update to new value
     });
 
-      it("should handle composition end when composing", () => {
+    it("should handle composition end when composing", () => {
       const input = document.createElement('input');
       (input as any).composing = true;
 
@@ -638,9 +682,9 @@ describe("directives", () => {
       onCompositionEnd(event);
 
       expect(mockDispatch).not.toHaveBeenCalled();
-      });
+    });
 
-      it("should skip update when composing", () => {
+    it("should skip update when composing", () => {
       const input = document.createElement('input');
       (input as any).composing = true;
       input.value = 'old';
@@ -660,6 +704,48 @@ describe("directives", () => {
       expect(input.value).toBe('new');
     });
 
+    it("should handle lazy modifier with number input type edge case", async () => {
+      container.innerHTML = '<input type="number" v-model.lazy="value">';
+
+      const data = reactive({ value: 0 });
+      const app = createApp(data);
+      app.mount(container);
+
+      const input = container.querySelector("input") as HTMLInputElement;
+
+      // Input event should not update immediately with lazy modifier
+      input.value = "123";
+      input.dispatchEvent(new Event("input"));
+      await nextTick();
+      expect(data.value).toBe(0);
+
+      // Change event should update
+      input.dispatchEvent(new Event("change"));
+      await nextTick();
+      expect(data.value).toBe(123);
+    });
+
+    it("should handle checkbox with custom true/false values and non-array model", async () => {
+      container.innerHTML = '<input type="checkbox" :true-value="yes" :false-value="no" v-model="checked">';
+
+      const data = reactive({ yes: "yes-value", no: "no-value", checked: "yes-value" });
+      const app = createApp(data);
+      app.mount(container);
+
+      const checkbox = container.querySelector("input") as HTMLInputElement;
+      expect(checkbox.checked).toBe(true);
+
+      // Uncheck it
+      checkbox.click();
+      await nextTick();
+      expect(data.checked).toBe("no-value");
+
+      // Check it again
+      checkbox.click();
+      await nextTick();
+      expect(data.checked).toBe("yes-value");
+    });
+
     it("should skip update when active element and values match", () => {
       const input = document.createElement('input');
       (input as any).composing = false;
@@ -669,9 +755,9 @@ describe("directives", () => {
       updateTextValue(input, () => 'same', (val) => val);
 
       expect(input.value).toBe('same'); // should not change
-      });
+    });
 
-      it("should handle checkbox change for array add", () => {
+    it("should handle checkbox change for array add", () => {
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
       checkbox.checked = true;
@@ -709,17 +795,16 @@ describe("directives", () => {
       handleCheckboxChange(checkbox, () => false, assign);
 
       expect(assign).toHaveBeenCalledWith(true);
-      });
+    });
 
-      it("should handle text input when not composing", () => {
+    it("should handle text input when not composing", () => {
       const input = document.createElement('input');
       input.value = 'test value';
       (input as any).composing = false;
 
       const assign = vi.fn();
-      const resolveValue = vi.fn((val) => val);
 
-      handleTextInput(input, assign, resolveValue);
+      handleTextInput(input, assign);
 
       expect(assign).toHaveBeenCalledWith('test value');
     });
@@ -730,15 +815,13 @@ describe("directives", () => {
       (input as any).composing = true;
 
       const assign = vi.fn();
-      const resolveValue = vi.fn();
 
-      handleTextInput(input, assign, resolveValue);
+      handleTextInput(input, assign);
 
       expect(assign).not.toHaveBeenCalled();
-      expect(resolveValue).not.toHaveBeenCalled();
-      });
+    });
 
-      it("should update checkbox value for array", () => {
+    it("should update checkbox value for array", () => {
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
       checkbox.value = 'test';
@@ -755,9 +838,9 @@ describe("directives", () => {
       updateCheckboxValue(checkbox, () => true, false);
 
       expect(checkbox.checked).toBe(true);
-      });
+    });
 
-      it("should handle radio change", () => {
+    it("should handle radio change", () => {
       const radio = document.createElement('input');
       radio.type = 'radio';
       radio.value = 'test';
@@ -770,20 +853,20 @@ describe("directives", () => {
     });
 
     it("should handle active element check", async () => {
-    container.innerHTML = '<input v-model="value">';
+      container.innerHTML = '<input v-model="value">';
 
-    const data = reactive({ value: "test" });
-    const app = createApp(data);
-    app.mount(container);
+      const data = reactive({ value: "test" });
+      const app = createApp(data);
+      app.mount(container);
 
-    const input = container.querySelector("input") as HTMLInputElement;
-    input.focus();
-    expect(document.activeElement).toBe(input);
+      const input = container.querySelector("input") as HTMLInputElement;
+      input.focus();
+      expect(document.activeElement).toBe(input);
       expect(input.value).toBe("test");
 
-    // Change input value manually (simulating user typing)
-    input.value = "modified";
-    // When data changes to same resolved value as current input, should not update input
+      // Change input value manually (simulating user typing)
+      input.value = "modified";
+      // When data changes to same resolved value as current input, should not update input
       data.value = "modified"; // same as current input value
       await nextTick();
       expect(input.value).toBe("modified"); // should not change
@@ -814,7 +897,7 @@ describe("directives", () => {
       );
     });
 
-  
+
     it("should handle checkbox with array values", () => {
       container.innerHTML = `
         <input type="checkbox" v-model="selected" value="option1" />
@@ -870,7 +953,7 @@ describe("directives", () => {
 
       const input = container.querySelector("input") as HTMLInputElement;
       input.value = "test";
-      
+
       // Should not update on input event
       input.dispatchEvent(new Event("input"));
       expect(app.scope.message).toBe("");
@@ -950,7 +1033,7 @@ describe("directives", () => {
       // Change ref name
       app.scope.refName = "secondRef";
       await nextTick();
-      
+
       // Old ref should be cleaned up
       expect(app.scope.$refs.firstRef).toBeUndefined();
       // New ref should be set
@@ -968,7 +1051,7 @@ describe("directives", () => {
 
       // Unmount the app
       app.unmount();
-      
+
       // Ref should be cleaned up
       expect(app.scope.$refs.myRef).toBeUndefined();
     });
@@ -1060,7 +1143,7 @@ describe("directives", () => {
       `;
 
       const app = createApp({
-        obj: { 
+        obj: {
           group1: { a: 1, b: 2 },
           group2: { c: 3, d: 4 }
         }
@@ -1121,28 +1204,28 @@ describe("directives", () => {
     });
 
     it("should handle null/undefined array", () => {
-    container.innerHTML = `
+      container.innerHTML = `
     <div v-for="item in items" :key="item">
     {{ item }}
     </div>
     `;
 
-    const app = createApp({
-    items: null
-    });
-    app.mount(container);
+      const app = createApp({
+        items: null
+      });
+      app.mount(container);
 
-    const divs = container.querySelectorAll("div");
-    expect(divs.length).toBe(0);
+      const divs = container.querySelectorAll("div");
+      expect(divs.length).toBe(0);
 
-    // Set to undefined
-    app.scope.items = undefined;
-    expect(divs.length).toBe(0);
+      // Set to undefined
+      app.scope.items = undefined;
+      expect(divs.length).toBe(0);
     });
 
     it("should handle array destructuring", () => {
       container.innerHTML = `
-        <div v-for="[a, b] in items" :key="$index">
+        <div v-for="[a, b], index in items" :key="index">
           {{ a }}, {{ b }}
         </div>
       `;
@@ -1177,44 +1260,86 @@ describe("directives", () => {
       expect(divs.length).toBe(2);
       expect(divs[0].textContent?.trim()).toBe("John: 25");
       expect(divs[1].textContent?.trim()).toBe("Jane: 30");
+    });
+
+    it("should handle v-for block reuse when keys change completely", async () => {
+      container.innerHTML = `
+        <div v-for="item in items" :key="item.id">
+          {{ item.name }}
+        </div>
+      `;
+
+      const data = reactive({
+        items: [{ id: 1, name: "First" }, { id: 2, name: "Second" }]
       });
+      const app = createApp(data);
+      app.mount(container);
+
+      let divs = container.querySelectorAll("div");
+      expect(divs.length).toBe(2);
+      expect(divs[0].textContent?.trim()).toBe("First");
+
+      // Replace with completely new items (new keys, should create new blocks)
+      data.items = [{ id: 3, name: "Third" }, { id: 4, name: "Fourth" }];
+      await nextTick();
+
+      divs = container.querySelectorAll("div");
+      expect(divs.length).toBe(2);
+      expect(divs[0].textContent?.trim()).toBe("Third");
+      expect(divs[1].textContent?.trim()).toBe("Fourth");
+    });
+
+    it("should handle v-for as last element in container", () => {
+      container.innerHTML = `<div v-for="item in items">{{ item }}</div>`;
+
+      const app = createApp({
+        items: ["A", "B", "C"]
+      });
+      app.mount(container);
+
+      const divs = container.querySelectorAll("div");
+      expect(divs.length).toBe(3);
+      expect(divs[0].textContent).toBe("A");
+      expect(divs[1].textContent).toBe("B");
+      expect(divs[2].textContent).toBe("C");
+    });
 
     it("should handle complex reordering", async () => {
-    container.innerHTML = `
+      container.innerHTML = `
     <div v-for="item in items" :key="item.id">
     {{ item.value }}
     </div>
     `;
 
-    const data = reactive({
-    items: [
-    { id: 1, value: 'A' },
-    { id: 2, value: 'B' },
-    { id: 3, value: 'C' },
-      { id: 4, value: 'D' }
-      ]
-    });
-    const app = createApp(data);
+      const data = reactive({
+        items: [
+          { id: 1, value: 'A' },
+          { id: 2, value: 'B' },
+          { id: 3, value: 'C' },
+          { id: 4, value: 'D' }
+        ]
+      });
+      const app = createApp(data);
       app.mount(container);
 
-    let divs = container.querySelectorAll("div");
-    expect(divs.length).toBe(4);
-    expect(divs[0].textContent?.trim()).toBe("A");
-    expect(divs[1].textContent?.trim()).toBe("B");
+      let divs = container.querySelectorAll("div");
+      expect(divs.length).toBe(4);
+      expect(divs[0].textContent?.trim()).toBe("A");
+      expect(divs[1].textContent?.trim()).toBe("B");
       expect(divs[2].textContent?.trim()).toBe("C");
-    expect(divs[3].textContent?.trim()).toBe("D");
+      expect(divs[3].textContent?.trim()).toBe("D");
 
-    // Complex reordering: D, B, A, C - this should trigger various move conditions
-    data.items = [
-    { id: 4, value: 'D' },
-      { id: 2, value: 'B' },
-      { id: 1, value: 'A' },
+      // Complex reordering: D, B, A, C - this should trigger various move conditions
+      data.items = [
+        { id: 4, value: 'D' },
+        { id: 2, value: 'B' },
+        { id: 1, value: 'A' },
         { id: 3, value: 'C' }
-    ];
-    await nextTick();
+      ];
+      await nextTick();
 
-    divs = container.querySelectorAll("div");
-    expect(divs.length).toBe(4);
+      divs = container.querySelectorAll("div");
+      expect(divs.length).toBe(4);
       expect(divs[0].textContent?.trim()).toBe("D");
       expect(divs[1].textContent?.trim()).toBe("B");
       expect(divs[2].textContent?.trim()).toBe("A");
@@ -1251,12 +1376,12 @@ describe("directives", () => {
       expect(divs[0].textContent?.trim()).toBe("A");
       expect(divs[1].textContent?.trim()).toBe("B");
       expect(divs[2].textContent?.trim()).toBe("C");
-      });
+    });
 
-        
 
-          
-  
+
+
+
   });
 
   describe("v-for integration tests", () => {

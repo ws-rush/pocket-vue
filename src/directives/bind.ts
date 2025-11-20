@@ -1,4 +1,4 @@
-import { Directive } from ".";
+import { Directive } from "."
 import {
   normalizeClass,
   normalizeStyle,
@@ -6,22 +6,24 @@ import {
   isArray,
   hyphenate,
   camelize,
-} from "@vue/shared";
+} from "@vue/shared"
+import { getElementMetadata } from "../metadata"
 
-const forceAttrRE = /^(spellcheck|draggable|form|list|type)$/;
+const forceAttrRE = /^(spellcheck|draggable|form|list|type)$/
 
-export const bind: Directive<Element & { _class?: string }> = ({
+export const bind: Directive<Element> = ({
   el,
   get,
   effect,
   arg,
   modifiers,
 }) => {
-  let prevValue: any;
+  let prevValue: any
 
-  // record static class
+  // Record static class in metadata instead of on element
   if (arg === "class") {
-    el._class = el.className;
+    const metadata = getElementMetadata(el)
+    metadata.originalClass = el.className
   }
 
   effect(() => {
@@ -33,7 +35,7 @@ export const bind: Directive<Element & { _class?: string }> = ({
       setProp(el, arg, value, prevValue, modifiers?.camel);
     } else {
       for (const key in value) {
-        setProp(el, key, value[key], prevValue && prevValue[key]);
+        setProp(el, key, value[key], prevValue?.[key]);
       }
       for (const key in prevValue) {
         if (!value || !(key in value)) {
@@ -52,92 +54,97 @@ const setProp = (
   prevValue?: any,
   isCamel?: boolean,
 ) => {
-  const { style } = el as HTMLElement; // Moved here
-
   if (key === "class") {
-    const newClass = normalizeClass(el._class ? [el._class, value] : value) || "";
-    el.setAttribute("class", newClass);
+    handleClass(el, value);
   } else if (key === "style") {
-    value = normalizeStyle(value);
-    if (!value) {
-      el.removeAttribute("style");
-    } else if (isString(value)) {
-      if (value !== prevValue) style.cssText = value;
-    } else { // value is an object
-      for (const key in value) {
-        setStyle(style, key, value[key]);
-      }
-      if (prevValue && !isString(prevValue)) {
-        for (const key in prevValue) {
-          if (value[key] == null) {
-            setStyle(style, key, "");
-          }
+    handleStyle(el as HTMLElement, value, prevValue);
+  } else if (shouldSetProperty(el, key, isCamel)) {
+    setElementProperty(el, key, value);
+  } else {
+    setElementAttribute(el, key, value);
+  }
+};
+
+const handleClass = (el: Element, value: any) => {
+  const metadata = getElementMetadata(el)
+  const originalClass = metadata.originalClass
+  const newClass = normalizeClass(originalClass ? [originalClass, value] : value) ?? ""
+  el.setAttribute("class", newClass)
+}
+
+const handleStyle = (el: HTMLElement, value: any, prevValue?: any) => {
+  value = normalizeStyle(value);
+  if (!value) {
+    el.removeAttribute("style");
+  } else if (isString(value)) {
+    if (value !== prevValue) el.style.cssText = value;
+  } else {
+    for (const key in value) {
+      setStyle(el.style, key, value[key]);
+    }
+    if (prevValue && !isString(prevValue)) {
+      for (const key in prevValue) {
+        if (value[key] == null) {
+          setStyle(el.style, key, "");
         }
       }
     }
-  } else if (
-    key !== "class" &&
-    key !== "style" &&
-    !(el instanceof SVGElement) &&
-    (key in el || isCamel) &&
-    !forceAttrRE.test(key)
-  ) {
-    // For certain attributes, we should use setAttribute instead of setting the property
-    if (key === "id" || key === "title" || key === "lang" || key === "dir") {
-      if (value == null) {
-        el.removeAttribute(key);
-      } else {
-        el.setAttribute(key, value);
-      }
+  }
+};
+
+const shouldSetProperty = (el: Element, key: string, isCamel?: boolean) =>
+  key !== "class" &&
+  key !== "style" &&
+  !(el instanceof SVGElement) &&
+  (key in el || isCamel) &&
+  !forceAttrRE.test(key);
+
+// Properties that should be set as attributes for consistency
+const DOM_ATTR_PROPS = new Set(['id', 'title', 'lang', 'dir'])
+
+const setElementProperty = (el: Element, key: string, value: any) => {
+  if (DOM_ATTR_PROPS.has(key)) {
+    if (value == null) {
+      el.removeAttribute(key)
     } else {
-      // @ts-ignore
-      el[key] = value;
-      if (key === "value") {
-        // @ts-ignore
-        el._value = value;
-      }
+      el.setAttribute(key, value)
     }
   } else {
-    // special case for <input v-model type="checkbox"> with
-    // :true-value & :false-value
-    // store value as dom properties since non-string values will be
-    // stringified.
-    if (key === "true-value") {
-      (el as any)._trueValue = value;
-    } else if (key === "false-value") {
-      (el as any)._falseValue = value;
-    } else if (value != null) {
-      el.setAttribute(key, value);
-    } else {
-      el.removeAttribute(key);
+    (el as any)[key] = value
+    if (key === 'value') {
+      (el as any)._value = value
     }
+  }
+}
+
+const setElementAttribute = (el: Element, key: string, value: any) => {
+  if (key === "true-value") {
+    (el as any)._trueValue = value;
+  } else if (key === "false-value") {
+    (el as any)._falseValue = value;
+  } else if (value != null) {
+    el.setAttribute(key, value);
+  } else {
+    el.removeAttribute(key);
   }
 };
 
 const importantRE = /\s*!important$/;
 
-const setStyle = (
-  style: CSSStyleDeclaration,
-  name: string,
-  val: string | string[],
-) => {
+// Use modern CSS custom properties API
+const setStyle = (style: CSSStyleDeclaration, name: string, val: string | string[]) => {
   if (isArray(val)) {
-    val.forEach((v) => setStyle(style, name, v));
+    val.forEach((v) => setStyle(style, name, v))
+  } else if (name.startsWith('--')) {
+    style.setProperty(name, val)
+  } else if (importantRE.test(val)) {
+    // !important
+    style.setProperty(
+      hyphenate(name),
+      val.replace(importantRE, ''),
+      'important',
+    )
   } else {
-    if (name.startsWith("--")) {
-      // custom property definition
-      style.setProperty(name, val);
-    } else {
-      if (importantRE.test(val)) {
-        // !important
-        style.setProperty(
-          hyphenate(name),
-          val.replace(importantRE, ""),
-          "important",
-        );
-      } else {
-        style[name as any] = val;
-      }
-    }
+    style[name as any] = val
   }
-};
+}
