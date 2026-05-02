@@ -10,12 +10,15 @@ pocket-vue provides special lifecycle events that you can listen to on any eleme
 ## Usage
 
 ```html
-<div
-  v-if="show"
-  @vue:mounted="console.log('mounted on: ', $el)"
-  @vue:unmounted="console.log('unmounted: ', $el)"
->
-  I am visible
+<div v-scope="{ show:false }">
+  <button type="button" @click="show = !show">show</button>
+  <div
+    v-if="show"
+    @vue:mounted="console.log('mounted on: ', $el)"
+    @vue:unmounted="console.log('unmounted: ', $el)"
+  >
+    I am visible
+  </div>
 </div>
 ```
 

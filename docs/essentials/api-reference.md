@@ -180,8 +180,6 @@ Registers a reference to an element or component.
 - **`$root`**: The root element of the `v-scope` component.
 - **`$refs`**: A collection of elements marked with the `ref` directive.
 - **`$nextTick`**: Function to defer a callback until after the next DOM update cycle.
-- **`$data`**: The current scope object.
-
 ### Available in `v-on` inline handlers
 
 - **`$event`**: The original DOM event object, available as a special variable in inline event handler expressions.

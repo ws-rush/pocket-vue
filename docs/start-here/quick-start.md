@@ -8,7 +8,7 @@ pocket-vue is a fork of [petite-vue](https://github.com/vuejs/petite-vue), optim
 
 ### Key Benefits
 
-- **Lightweight**: Only ~6kb gzipped.
+- **Lightweight**: Only ~9kb gzipped.
 - **No Build Step**: Works directly in the browser with a `<script>` tag.
 - **Vue-Compatible**: Uses familiar Vue syntax (`v-if`, `v-for`, `@click`, etc.).
 - **Progressive**: Designed to layer on top of your existing HTML.
@@ -20,7 +20,7 @@ pocket-vue is a fork of [petite-vue](https://github.com/vuejs/petite-vue), optim
 | Feature | pocket-vue | Standard Vue |
 |---------|-----------|--------------|
 | Target Use Case | Progressive Enhancement | Single Page Application (SPA) |
-| Runtime Size | ~6kb | ~100kb+ |
+| Runtime Size | ~9kb | ~44kb+ |
 | Virtual DOM | No (uses real DOM) | Yes |
 | Build Required | No | Recommended |
 | Scoped CSS | No | Yes (SFC) |

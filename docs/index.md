@@ -16,7 +16,7 @@ hero:
 
 features:
   - title: Ultra Lightweight
-    details: Only ~6kb gzipped. No build step required. Just drop it in and go. Perfect for "sprinkling" on existing pages.
+    details: Only ~9kb gzipped. No build step required. Just drop it in and go. Perfect for "sprinkling" on existing pages.
   - title: Progressive First
     details: Designed specifically for progressive enhancement. Layer on interactivity without rewriting your server-rendered HTML.
   - title: Vue Compatible

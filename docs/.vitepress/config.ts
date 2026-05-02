@@ -93,7 +93,6 @@ export default withMermaid(
                     items: [
                         { text: '$el', link: '/globals/el' },
                         { text: '$root', link: '/globals/root' },
-                        { text: '$data', link: '/globals/data' },
                         { text: '$refs', link: '/globals/refs' },
                         { text: '$nextTick', link: '/globals/nextTick' }
                     ]

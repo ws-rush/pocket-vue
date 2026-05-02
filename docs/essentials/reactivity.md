@@ -1,6 +1,6 @@
 # Reactivity APIs
 
-pocket-vue re-exports a subset of Vue's reactivity APIs: `reactive()` and `watchEffect()`. These are the core primitives you need for building reactive applications.
+pocket-vue provides two reactivity APIs: `reactive()` and `watchEffect()`. These are the core primitives you need for building reactive applications.
 
 ## Usage
 
@@ -43,20 +43,10 @@ state.count++ // prints 1
 
 ---
 
-## Additional Reactivity APIs
-
-pocket-vue only re-exports `reactive` and `watchEffect` from `@vue/reactivity`. If you need additional reactivity utilities like `ref()`, `computed()`, or `watch()`, you can import them directly from `@vue/reactivity`:
-
-```javascript
-import { ref, computed } from '@vue/reactivity'
-```
-
----
-
 ## Best Practices
 
 - **Use `reactive` for state objects**: This is the most common pattern for defining your application state.
-- **Use getters for computed values**: Instead of `computed()`, use JavaScript getters in your reactive objects:
+- **Use getters for derived values**: Use JavaScript getters in your reactive objects for computed-like behavior:
   ```javascript
   const state = reactive({
     count: 0,
