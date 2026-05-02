@@ -59,5 +59,3 @@ graph TD
 
 > [!NOTE]
 > `v-effect` watchers are automatically disposed of when the component is unmounted.
-
-

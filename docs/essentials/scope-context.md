@@ -4,7 +4,7 @@ pico-vue uses a hierarchical scope system similar to JavaScript's lexical scopin
 
 ## Scope Inheritance
 
-When you nest `v-scope` directives, a new child scope is created that inherits from the parent scope.
+When you nest `v-scope` directives, a new child scope is created that inherits from the parent scope via JavaScript's prototype chain. This means child scopes can read parent properties, but writing to a property will check the current scope first.
 
 <div v-pre>
 
@@ -39,45 +39,62 @@ If a child scope defines a property with the same name as a parent property, it 
 
 ### Updating Parent State
 
-When you assign a value to a property in a template, pico-vue will first check if the property exists on the current scope. If it doesn't, it will walk up the scope chain and update the property on the first parent scope where it finds it.
+When you assign a value to a property in a template, pico-vue will first check if the property exists on the current scope. If it doesn't, it will walk up the scope chain (prototype chain) and update the property on the first parent scope where it finds it.
+
+<div v-pre>
+
+```html
+<div v-scope="{ count: 0 }">
+  <p>{{ count }}</p>
+  <div v-scope="{ localMsg: 'hi' }">
+    <!-- Modifies parent's count since 'count' is not on this scope -->
+    <button @click="count++">Increment Parent Count</button>
+    <p>{{ localMsg }} - {{ count }}</p>
+  </div>
+</div>
+```
+
+</div>
 
 ---
 
-## Provide and Inject
+## Implicit Data Sharing (Scope Inheritance)
 
-pico-vue provides a simple `provide` and `inject` pattern for sharing data across multiple levels of nested components without manually passing props.
+Since pico-vue uses prototype-based scope inheritance, any property defined in a parent scope is automatically accessible in all descendant scopes — no special API is needed.
 
-### `provide(key, value)`
+```html
+<div v-scope="{ theme: 'dark' }">
+  <p>Theme: {{ theme }}</p>
 
-You can provide data from a parent scope using the `provide` method on the application instance or within your component's setup.
-
-```javascript
-createApp({
-  // Provide a reactive value to all descendants
-  theme: 'dark'
-}).mount()
+  <div v-scope="{ title: 'Hello' }">
+    <!-- Both 'theme' and 'title' are accessible here -->
+    <p>{{ title }} ({{ theme }})</p>
+  </div>
+</div>
 ```
 
-### `inject(key)`
-
-In pico-vue, `inject` is handled automatically through scope inheritance. Any property defined in a parent scope is implicitly "injected" into all child scopes.
+For sharing state across multiple independent apps or distant components, see the [Global State](/advanced/global-state) guide using the `reactive()` function.
 
 ---
 
 ## Accessing Component Instance
 
-### `$el`
-
-The current element the directive is bound to.
-
 ### `$root`
 
-The root element of the application.
+The root element of the current component (the element with `v-scope`). This is set automatically when `v-scope` initializes.
 
-### `$data`
-
-The current scope object.
+```html
+<div v-scope>
+  <button @click="console.log($root)">
+    Log Component Root
+  </button>
+</div>
+```
 
 ### `$refs`
 
-A collection of elements marked with the `ref` directive.
+A collection of elements marked with the `ref` attribute. See [$refs](/globals/refs) for details.
+
+### `$nextTick`
+
+A function to defer a callback until after the next DOM update cycle. See [$nextTick](/globals/nextTick) for details.

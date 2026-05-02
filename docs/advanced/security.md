@@ -1,5 +1,23 @@
 # Security
 
+## Built-in Expression Validation
+
+pico-vue includes built-in expression validation that blocks potentially dangerous patterns in template expressions. The following patterns are rejected:
+
+- **Code execution**: `eval`, `Function`, `setTimeout`, `setInterval`
+- **Network access**: `XMLHttpRequest`, `fetch`, `WebSocket`, `Worker`
+- **Global objects**: `window`, `document`, `globalThis`, `global`, `process`, `require`, `import`, `export`
+- **Dangerous operators**: `delete`, `void`, `typeof`, `instanceof` (when used with function calls)
+- **Expression length**: Expressions longer than 1000 characters are rejected
+
+In development mode, rejected expressions will produce a console warning:
+
+```
+Potentially unsafe expression rejected: "document.cookie"
+```
+
+This provides a baseline level of protection, but it is **not a substitute for proper input sanitization**.
+
 ## XSS Vulnerabilities
 
 pico-vue evaluates JavaScript expressions in the templates. This means **if** pico-vue is mounted on a region of the DOM that contains non-sanitized HTML from user data, it may lead to XSS attacks.

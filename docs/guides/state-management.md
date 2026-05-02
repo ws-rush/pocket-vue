@@ -81,9 +81,13 @@ If you are using the CDN build without ES modules, you can still achieve this pa
 
 ## Persisting State
 
-To persist state across page reloads (e.g., for a dark mode preference), you can use `localStorage` combined with `v-effect`.
+To persist state across page reloads (e.g., for a dark mode preference), you can use `localStorage` combined with `v-effect` or `watchEffect`.
+
+### Using `v-effect`
 
 ```html
+<script src="https://unpkg.com/pico-vue"></script>
+
 <script>
   const store = PicoVue.reactive({
     darkMode: localStorage.getItem('darkMode') === 'true',
@@ -92,18 +96,47 @@ To persist state across page reloads (e.g., for a dark mode preference), you can
     }
   })
 
-  PicoVue.createApp({
-    store,
-    onMounted() {
-      // Watch for changes and save to localStorage
-      this.$effect(() => {
-        localStorage.setItem('darkMode', store.darkMode)
-        document.body.classList.toggle('dark', store.darkMode)
-      })
-    }
-  }).mount()
+  PicoVue.createApp({ store }).mount()
 </script>
+
+<div v-scope v-effect="
+  localStorage.setItem('darkMode', store.darkMode);
+  document.body.classList.toggle('dark', store.darkMode)
+">
+  <button @click="store.toggleTheme()">
+    {{ store.darkMode ? 'Dark' : 'Light' }} Mode
+  </button>
+</div>
+```
+
+### Using `watchEffect`
+
+```html
+<script type="module">
+  import { createApp, reactive, watchEffect } from 'pico-vue'
+
+  const store = reactive({
+    darkMode: localStorage.getItem('darkMode') === 'true',
+    toggleTheme() {
+      this.darkMode = !this.darkMode
+    }
+  })
+
+  // React to darkMode changes and persist
+  watchEffect(() => {
+    localStorage.setItem('darkMode', store.darkMode)
+    document.body.classList.toggle('dark', store.darkMode)
+  })
+
+  createApp({ store }).mount()
+</script>
+
+<div v-scope>
+  <button @click="store.toggleTheme()">
+    {{ store.darkMode ? 'Dark' : 'Light' }} Mode
+  </button>
+</div>
 ```
 
 > [!TIP]
-> `v-effect` runs immediately and then re-runs whenever any reactive dependency changes. This makes it perfect for side effects like saving to `localStorage`.
+> `watchEffect` and `v-effect` both run immediately and then re-run whenever any reactive dependency changes. This makes them perfect for side effects like saving to `localStorage`.

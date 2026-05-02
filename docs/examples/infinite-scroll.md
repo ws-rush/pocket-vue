@@ -28,15 +28,15 @@ This recipe demonstrates how to implement an infinite scroll pattern using pico-
       this.loading = false;
     }, 1000);
   },
-  
-  mounted() {
+
+  setupScrollListener() {
     window.addEventListener('scroll', () => {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 10) {
         this.loadMore();
       }
     });
   }
-}">
+}" @vue:mounted="setupScrollListener()">
   <div class="infinite-scroll">
     <ul>
       <li v-for="item in items" :key="item.id">
@@ -57,7 +57,7 @@ This recipe demonstrates how to implement an infinite scroll pattern using pico-
 
 1.  **Reactive State**: We use an `items` array, a `loading` boolean, and a `page` number to manage our state.
 2.  **Load More Logic**: We provide a `loadMore()` method to fetch more items from the server and append them to the current list.
-3.  **Scroll Event Listener**: We attach a scroll event listener in the `mounted()` lifecycle hook to detect when the user reaches the bottom of the page and trigger `loadMore()`.
+3.  **Scroll Event Listener**: We wire up `@vue:mounted="setupScrollListener()"` to attach a scroll event listener when the component is mounted, which detects when the user reaches the bottom of the page and triggers `loadMore`.
 4.  **Loading State**: We use the `loading` property to show or hide a loading indicator and prevent multiple requests from being made at once.
 5.  **List Rendering**: We use `v-for="item in items"` to render the concatenated list of items.
 6.  **Optimized Rendering**: By using `:key="item.id"`, we ensure that pico-vue efficiently updates only the new items as they are added to the DOM.

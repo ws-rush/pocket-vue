@@ -34,23 +34,7 @@ function createApp(initialData?: object): AppInstance
 function reactive<T extends object>(target: T): T
 ```
 
-Creates a reactive proxy of the given object.
-
-### `ref()`
-
-```typescript
-function ref<T>(value: T): { value: T }
-```
-
-Returns a reactive ref object.
-
-### `computed()`
-
-```typescript
-function computed<T>(getter: () => T): { readonly value: T }
-```
-
-Returns a read-only reactive ref object.
+Creates a reactive proxy of the given object. Re-exported from `@vue/reactivity`.
 
 ### `watchEffect()`
 
@@ -58,7 +42,10 @@ Returns a read-only reactive ref object.
 function watchEffect(effect: () => void): void
 ```
 
-Runs a function and tracks its reactive dependencies.
+Runs a function and tracks its reactive dependencies. This is a re-export of `effect` from `@vue/reactivity`.
+
+> [!NOTE]
+> Only `reactive` and `watchEffect` are re-exported from pico-vue. If you need `ref()`, `computed()`, or other reactivity APIs, import them directly from `@vue/reactivity`.
 
 ---
 
@@ -187,8 +174,14 @@ Registers a reference to an element or component.
 
 ## Special Properties
 
-- **`$el`**: The current element the directive is bound to.
-- **`$root`**: The root element of the application.
-- **`$data`**: The current scope object.
-- **`$refs`**: A collection of elements marked with `ref`.
+### Available in all directive expressions
+
+- **`$el`**: The current element the directive is bound to. Available in all directives (`v-on`, `v-bind`, `v-effect`, etc.).
+- **`$root`**: The root element of the `v-scope` component.
+- **`$refs`**: A collection of elements marked with the `ref` directive.
 - **`$nextTick`**: Function to defer a callback until after the next DOM update cycle.
+- **`$data`**: The current scope object.
+
+### Available in `v-on` inline handlers
+
+- **`$event`**: The original DOM event object, available as a special variable in inline event handler expressions.

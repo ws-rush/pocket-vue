@@ -28,7 +28,7 @@ pico-vue is designed to be used without a build step. You can simply load it fro
 > [!TIP] Production Tip
 > For production, it is recommended to pin a specific version number to avoid unexpected breakage from newer versions.
 > ```html
-> <script src="https://unpkg.com/pico-vue@1.2.0" defer init></script>
+> <script src="https://unpkg.com/pico-vue@0.0.4" defer init></script>
 > ```
 
 ## Auto Initialization

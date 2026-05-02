@@ -5,7 +5,7 @@ This recipe shows how to use pico-vue to fetch and display data from an external
 ## Example Code
 
 ```html
-<div v-scope="{ 
+<div v-scope="{
   posts: [],
   loading: false,
   error: null,
@@ -23,11 +23,7 @@ This recipe shows how to use pico-vue to fetch and display data from an external
       this.loading = false;
     }
   },
-  
-  mounted() {
-    this.fetchPosts();
-  }
-}">
+}" @vue:mounted="fetchPosts()">
   <div class="fetch-api-container">
     <button :disabled="loading" @click="fetchPosts">
       {{ loading ? 'Loading...' : 'Refresh Posts' }}
@@ -56,7 +52,7 @@ This recipe shows how to use pico-vue to fetch and display data from an external
 1.  **Reactive State**: We use `posts`, `loading`, and `error` to manage the API state.
 2.  **Fetch Logic**: We define an `async` `fetchPosts()` method to perform the API call and update the state.
 3.  **Error Handling**: We use `try/catch` and `finally` blocks to handle errors and loading states.
-4.  **Lifecycle Hook**: We call `fetchPosts()` in the `mounted()` hook to load the data as soon as the component is mounted.
+4.  **Lifecycle Hook**: We use `@vue:mounted="fetchPosts()"` to load the data as soon as the component is mounted.
 5.  **Conditional Rendering**: We use `v-if`, `v-else-if`, and `v-show` to display the data, loading indicator, and error messages.
 6.  **Refresh Mechanism**: We provide a "Refresh Posts" button to manually trigger the API call.
 7.  **Optimized Rendering**: By using `:key="post.id"`, we ensure that pico-vue efficiently updates the DOM when the data changes.

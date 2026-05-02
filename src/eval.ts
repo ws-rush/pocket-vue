@@ -12,7 +12,7 @@ const validateExpression = (exp: string): boolean => {
   return !DANGEROUS_PATTERNS.some(pattern => pattern.test(exp))
 }
 
-export const evaluate = (scope: object, exp: string, _el: Element) => {
+export const evaluate = (scope: object, exp: string, el: Element) => {
   if (!validateExpression(exp)) {
     if (import.meta.env.DEV) {
       console.warn(`Potentially unsafe expression rejected: "${exp}"`)
@@ -21,7 +21,8 @@ export const evaluate = (scope: object, exp: string, _el: Element) => {
   }
 
   try {
-    return new Function(`with (this) { return ${exp} }`).call(scope)
+    const fn = evalCache[exp] ?? (evalCache[exp] = new Function('$el', `with (this) { return (${exp}) }`))
+    return fn.call(scope, el)
   } catch (e) {
     if (import.meta.env.DEV) {
       console.error(`Error evaluating expression "${exp}":`, e)

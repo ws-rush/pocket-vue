@@ -102,7 +102,20 @@ It is highly recommended to provide a unique `key` attribute for each item using
 </div>
 ```
 
-Without a unique key, pico-vue will use a "patch in-place" strategy which can lead to unexpected behavior with stateful elements (like input fields) or CSS transitions.
+### How Key-Based Diffing Works
+
+When you provide `:key`, pico-vue uses a key-based diffing algorithm to efficiently update the list:
+
+1. **Reuse**: Existing DOM elements with matching keys are reused (their scope data is updated in-place) instead of being destroyed and recreated.
+2. **Reorder**: Elements are moved in the DOM to match the new order, rather than being patched in-place.
+3. **Add/Remove**: New elements are created for new keys, and old elements without matching keys are removed.
+
+This is especially important for:
+- Lists that can be reordered, filtered, or sorted
+- Stateful elements like input fields inside list items
+- Animations and transitions
+
+Without a unique key, pico-vue will use index-based matching which can lead to unexpected behavior with stateful elements.
 
 ---
 

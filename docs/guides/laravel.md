@@ -77,17 +77,23 @@ Build a fast, client-side table search without an extra round-trip to the server
 ### 2. Real-time Notifications
 Easily manage a list of notifications from a WebSocket (like Laravel Echo).
 
-```javascript
-// Echo implementation example
+```html
+<!-- Echo implementation example -->
+<div v-scope="{ notifications: [] }" @vue:mounted="setupEcho()">
+  <!-- notifications list -->
+</div>
+
+<script>
 createApp({
   notifications: [],
-  mounted() {
+  setupEcho() {
     Echo.channel('notifications')
         .listen('NewNotification', (e) => {
           this.notifications.push(e.message)
         })
   }
 }).mount()
+</script>
 ```
 
 ---

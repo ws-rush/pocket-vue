@@ -128,9 +128,12 @@ You can bind the value of checkboxes or radio buttons to dynamic values using `v
 ```
 
 ### True/False Value for Checkboxes
-For checkboxes, you can customize the values used for checked and unchecked states.
+For checkboxes, you can customize the values used for checked and unchecked states using `:true-value` and `:false-value` bindings.
 
 ```html
-<input type="checkbox" v-model="toggle" true-value="yes" false-value="no">
+<input type="checkbox" v-model="toggle" :true-value="'yes'" :false-value="'no'">
 ```
+
+> [!NOTE]
+> You must use the `:true-value` and `:false-value` binding syntax (with the `:` prefix), not plain HTML attributes.
 

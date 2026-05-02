@@ -1,6 +1,6 @@
 # Reactivity APIs
 
-pico-vue uses the same core reactivity system as standard Vue. This includes `ref()`, `reactive()`, `computed()`, and `watchEffect()`.
+pico-vue re-exports a subset of Vue's reactivity APIs: `reactive()` and `watchEffect()`. These are the core primitives you need for building reactive applications.
 
 ## Usage
 
@@ -9,14 +9,14 @@ When using the CDN build, these APIs are available on the global `PicoVue` objec
 ```html
 <script src="https://unpkg.com/pico-vue"></script>
 <script>
-  const { reactive, ref, computed, watchEffect } = PicoVue
+  const { reactive, watchEffect } = PicoVue
 </script>
 ```
 
 When using the ES module build, you can import them from `pico-vue`.
 
 ```javascript
-import { reactive, ref, computed, watchEffect } from 'pico-vue'
+import { reactive, watchEffect } from 'pico-vue'
 ```
 
 ---
@@ -31,34 +31,24 @@ Returns a reactive proxy of the given object. This is typically used for definin
 const state = reactive({ count: 0 })
 ```
 
-### `ref(value)`
-
-Returns a reactive, mutable ref object with a single property `.value` that points to the internal value.
-
-```javascript
-const count = ref(0)
-console.log(count.value) // 0
-count.value++
-console.log(count.value) // 1
-```
-
-### `computed(getter)`
-
-Returns a read-only reactive ref object whose `.value` is the return value of the getter function. It automatically tracks dependencies and updates when they change.
-
-```javascript
-const count = ref(0)
-const double = computed(() => count.value * 2)
-```
-
 ### `watchEffect(effect)`
 
 Runs a function immediately while reactively tracking its dependencies and re-runs it whenever the dependencies change.
 
 ```javascript
-const count = ref(0)
-watchEffect(() => console.log(count.value)) // prints 0
-count.value++ // prints 1
+const state = reactive({ count: 0 })
+watchEffect(() => console.log(state.count)) // prints 0
+state.count++ // prints 1
+```
+
+---
+
+## Additional Reactivity APIs
+
+pico-vue only re-exports `reactive` and `watchEffect` from `@vue/reactivity`. If you need additional reactivity utilities like `ref()`, `computed()`, or `watch()`, you can import them directly from `@vue/reactivity`:
+
+```javascript
+import { ref, computed } from '@vue/reactivity'
 ```
 
 ---
@@ -66,6 +56,13 @@ count.value++ // prints 1
 ## Best Practices
 
 - **Use `reactive` for state objects**: This is the most common pattern for defining your application state.
-- **Use `ref` for primitive values**: Use `ref` for single values like strings, numbers, or booleans.
-- **Always access `.value` on refs**: Remember that refs are objects and you must use the `.value` property to access or modify their content in JavaScript code.
-- **No `.value` needed in templates**: pico-vue automatically unwraps refs in your templates, so you can just use <code v-pre>{{ count }}</code> instead of <code v-pre>{{ count.value }}</code>.
+- **Use getters for computed values**: Instead of `computed()`, use JavaScript getters in your reactive objects:
+  ```javascript
+  const state = reactive({
+    count: 0,
+    get double() {
+      return this.count * 2
+    }
+  })
+  ```
+- **Use `watchEffect` for side effects**: Use it when you need to react to state changes with side effects like logging, network requests, or DOM manipulation.

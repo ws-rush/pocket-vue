@@ -43,10 +43,17 @@ The expression inside `v-effect` is executed immediately, and re-executed whenev
 
 ### Accessing DOM Elements
 
-You can use the special `$el` property to access the current element. This is useful for manually manipulating the DOM or integrating with third-party libraries.
+`v-effect` has access to special variables:
+
+- **`$el`**: The current element the directive is on. Also available in other directives (`v-on`, `v-bind`, etc.).
+- **`$data`**: The current scope object. Useful for debugging or passing the entire scope to a function.
 
 ```html
+<!-- $el: access the current element -->
 <input v-effect="if (shouldFocus) $el.focus()">
+
+<!-- $data: access the current scope -->
+<div v-effect="console.log($data)"></div>
 ```
 
 ---

@@ -13,7 +13,7 @@ function Counter(props) {
     inc() {
       this.count++
     },
-    mounted() {
+    onMounted() {
       console.log(`I'm mounted!`)
     }
   }
@@ -29,7 +29,7 @@ createApp({
 Use the function in `v-scope` to instantiate the component:
 
 ```html
-<div v-scope="Counter({ initialCount: 1 })" @vue:mounted="mounted">
+<div v-scope="Counter({ initialCount: 1 })" @vue:mounted="onMounted">
   <p>{{ count }}</p>
   <button @click="inc">increment</button>
 </div>
@@ -39,6 +39,9 @@ Use the function in `v-scope` to instantiate the component:
   <button @click="inc">increment</button>
 </div>
 ```
+
+> [!NOTE]
+> pico-vue does **not** have automatic lifecycle hooks like `mounted()` or `setup()`. To run code when a component is mounted, define a method in your scope and wire it up manually using `@vue:mounted="methodName"`. See [Lifecycle Events](/essentials/lifecycle) for details.
 
 ## Components with Template
 

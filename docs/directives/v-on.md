@@ -63,6 +63,7 @@ Pico-vue provides modifiers to simplify common event handling tasks. Modifiers a
 - `.once`: The handler will be triggered at most once
 - `.capture`: Adds the listener in capture mode
 - `.passive`: Adds the listener with `{ passive: true }`
+- `.exact`: Only triggers if no additional system modifier keys are pressed
 
 ```html
 <!-- the click event's propagation will be stopped -->
@@ -84,6 +85,27 @@ You can use any valid key name (in kebab-case) as a modifier for keyboard events
 
 <!-- Works with other keys too -->
 <input @keyup.page-down="onPageDown">
+```
+
+### System Modifier Keys
+You can restrict handlers to specific keyboard modifier keys.
+
+- `.ctrl`
+- `.shift`
+- `.alt`
+- `.meta`
+
+```html
+<!-- Only triggers when Ctrl+Enter is pressed -->
+<input @keyup.ctrl.enter="submit">
+```
+
+### `.exact` Modifier
+The `.exact` modifier ensures the event only triggers when exactly the specified modifier keys are pressed (no additional system keys).
+
+```html
+<!-- Only triggers when Ctrl is pressed, without Shift, Alt, or Meta -->
+<button @click.ctrl.exact="onCtrlClick">Ctrl + Click</button>
 ```
 
 ### Mouse Button Modifiers
@@ -110,3 +132,18 @@ Pico-vue emits special events when an element is mounted or unmounted. These **m
 <input @vue:mounted="$el.focus()">
 ```
 
+---
+
+## Limitations
+
+### Object Syntax Not Supported
+
+The `v-on="eventHandlers"` object syntax (passing an object of event handlers) is **not** supported in pico-vue. You must use individual `@event` bindings:
+
+```html
+<!-- NOT supported -->
+<button v-on="{ click: onClick, focus: onFocus }">...</button>
+
+<!-- Use individual bindings instead -->
+<button @click="onClick" @focus="onFocus">...</button>
+```
