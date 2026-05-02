@@ -11,7 +11,7 @@ The simplest way to manage global state is to create a reactive object and share
 Create a JavaScript file (e.g., `store.js`) to hold your global state.
 
 ```js
-import { reactive } from 'pico-vue'
+import { reactive } from '@rush/pico-vue'
 
 export const store = reactive({
   count: 0,
@@ -33,7 +33,7 @@ You can now import this store and use it in your components.
 
 ```html
 <script type="module">
-  import { createApp } from 'pico-vue'
+  import { createApp } from '@rush/pico-vue'
   import { store } from './store.js'
 
   createApp({
@@ -58,7 +58,7 @@ Because `store` is reactive, any change to `store.count` will automatically upda
 If you are using the CDN build without ES modules, you can still achieve this pattern.
 
 ```html
-<script src="https://unpkg.com/pico-vue"></script>
+<script src="https://unpkg.com/@rush/pico-vue"></script>
 
 <script>
   const store = PicoVue.reactive({
@@ -86,7 +86,7 @@ To persist state across page reloads (e.g., for a dark mode preference), you can
 ### Using `v-effect`
 
 ```html
-<script src="https://unpkg.com/pico-vue"></script>
+<script src="https://unpkg.com/@rush/pico-vue"></script>
 
 <script>
   const store = PicoVue.reactive({
@@ -113,7 +113,7 @@ To persist state across page reloads (e.g., for a dark mode preference), you can
 
 ```html
 <script type="module">
-  import { createApp, reactive, watchEffect } from 'pico-vue'
+  import { createApp, reactive, watchEffect } from '@rush/pico-vue'
 
   const store = reactive({
     darkMode: localStorage.getItem('darkMode') === 'true',

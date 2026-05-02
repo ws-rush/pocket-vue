@@ -90,7 +90,7 @@ export default function Counter(props) {
 `index.html`:
 ```html
 <script type="module">
-  import { createApp } from 'https://unpkg.com/pico-vue?module'
+  import { createApp } from 'https://unpkg.com/@rush/pico-vue?module'
   import Counter from './components/Counter.js'
 
   createApp({

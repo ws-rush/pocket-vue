@@ -6,7 +6,7 @@ A classic example of a Todo application. This demonstrates list rendering, input
 
 ```html
 <script type="module">
-  import { createApp } from 'pico-vue'
+  import { createApp } from '@rush/pico-vue'
 
   const STORAGE_KEY = 'pico-vue-todomvc'
 

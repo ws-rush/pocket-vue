@@ -31,7 +31,7 @@ pico-vue is a fork of [petite-vue](https://github.com/vuejs/petite-vue), optimiz
 ## Basic Example
 
 ```html
-<script src="https://unpkg.com/pico-vue" defer init></script>
+<script src="https://unpkg.com/@rush/pico-vue" defer init></script>
 
 <div v-scope="{ count: 0 }">
   <button @click="count--">-</button>

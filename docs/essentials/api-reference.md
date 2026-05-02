@@ -45,7 +45,7 @@ function watchEffect(effect: () => void): void
 Runs a function and tracks its reactive dependencies. This is a re-export of `effect` from `@vue/reactivity`.
 
 > [!NOTE]
-> Only `reactive` and `watchEffect` are re-exported from pico-vue. If you need `ref()`, `computed()`, or other reactivity APIs, import them directly from `@vue/reactivity`.
+> Only `reactive` and `watchEffect` are re-exported from `@rush/pico-vue`. If you need `ref()`, `computed()`, or other reactivity APIs, import them directly from `@vue/reactivity`.
 
 ---
 

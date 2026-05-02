@@ -9,7 +9,7 @@ The quickest way is via CDN in your `application.html.erb` layout.
 ```html
 <!-- app/views/layouts/application.html.erb -->
 <head>
-  <script src="https://unpkg.com/pico-vue" defer init></script>
+  <script src="https://unpkg.com/@rush/pico-vue" defer init></script>
 </head>
 ```
 

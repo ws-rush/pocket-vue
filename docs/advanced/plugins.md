@@ -5,7 +5,7 @@ Plugins are self-contained code that usually add global-level functionality to p
 ## Using a Plugin
 
 ```js
-import { createApp } from 'pico-vue'
+import { createApp } from '@rush/pico-vue'
 import myPlugin from './my-plugin'
 
 createApp().use(myPlugin, {
@@ -37,7 +37,7 @@ export default {
 
 <script type="module">
   import log from './log.js'
-  import { createApp } from 'pico-vue'
+  import { createApp } from '@rush/pico-vue'
   createApp().use(log).mount()
 </script>
 ```

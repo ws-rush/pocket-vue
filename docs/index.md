@@ -33,7 +33,7 @@ pico-vue is a fork of petite-vue, providing a modern, maintained solution for de
 
 ```html
 <!-- No build step required! -->
-<script src="https://unpkg.com/pico-vue" defer init></script>
+<script src="https://unpkg.com/@rush/pico-vue" defer init></script>
 
 <div v-scope="{ count: 0 }">
   {{ count }}

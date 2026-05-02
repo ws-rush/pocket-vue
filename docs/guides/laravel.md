@@ -9,7 +9,7 @@ Add pico-vue to your `app.blade.php` layout.
 ```html
 <!-- resources/views/layouts/app.blade.php -->
 <head>
-  <script src="https://unpkg.com/pico-vue" defer init></script>
+  <script src="https://unpkg.com/@rush/pico-vue" defer init></script>
 </head>
 ```
 

@@ -56,12 +56,12 @@ async function main() {
 
   // Build the package.
   step('\nBuilding the package...')
-  await run('yarn', ['build'])
+  await run('pnpm', ['build'])
 
   // Generate the changelog.
   step('\nGenerating the changelog...')
-  await run('yarn', ['changelog'])
-  await run('yarn', ['prettier', '--write', 'CHANGELOG.md'])
+  await run('pnpm', ['changelog'])
+  await run('pnpm', ['prettier', '--write', 'CHANGELOG.md'])
 
   const { yes: changelogOk } = await prompt({
     type: 'confirm',
@@ -75,13 +75,11 @@ async function main() {
 
   // Commit changes to the Git and create a tag.
   step('\nCommitting changes...')
-  await run('git', ['add', 'CHANGELOG.md', 'package.json', 'jsr.json'])
+  await run('git', ['add', 'CHANGELOG.md', 'package.json'])
   await run('git', ['commit', '-m', `release: v${targetVersion}`])
   await run('git', ['tag', `v${targetVersion}`])
 
-  // Publish the package to JSR is now handled by GitHub Actions for provenance.
-  // step('\nPublishing the package...')
-  // await run('npx', ['jsr', 'publish', '--allow-dirty'])
+  // Publishing is handled by GitHub Actions on tag push.
 
   // Push to GitHub.
   step('\nPushing to GitHub...')
@@ -95,13 +93,6 @@ function updatePackage(version) {
   const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
   pkg.version = version
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
-
-  const jsrPath = path.resolve(root, 'jsr.json')
-  if (fs.existsSync(jsrPath)) {
-    const jsr = JSON.parse(fs.readFileSync(jsrPath, 'utf-8'))
-    jsr.version = version
-    fs.writeFileSync(jsrPath, JSON.stringify(jsr, null, 2) + '\n')
-  }
 }
 
 main().catch((err) => console.error(err))

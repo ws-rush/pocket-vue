@@ -7,16 +7,16 @@ pico-vue re-exports a subset of Vue's reactivity APIs: `reactive()` and `watchEf
 When using the CDN build, these APIs are available on the global `PicoVue` object.
 
 ```html
-<script src="https://unpkg.com/pico-vue"></script>
+<script src="https://unpkg.com/@rush/pico-vue"></script>
 <script>
   const { reactive, watchEffect } = PicoVue
 </script>
 ```
 
-When using the ES module build, you can import them from `pico-vue`.
+When using the ES module build, you can import them from `@rush/pico-vue`.
 
 ```javascript
-import { reactive, watchEffect } from 'pico-vue'
+import { reactive, watchEffect } from '@rush/pico-vue'
 ```
 
 ---

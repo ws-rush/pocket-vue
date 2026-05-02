@@ -9,7 +9,7 @@ The easiest way to use pico-vue in Django is by adding a `<script>` tag to your 
 ```html
 <!-- base.html -->
 <head>
-  <script src="https://unpkg.com/pico-vue" defer init></script>
+  <script src="https://unpkg.com/@rush/pico-vue" defer init></script>
 </head>
 ```
 

@@ -7,7 +7,7 @@
 ### Simple Initialization
 
 ```javascript
-import { createApp } from 'pico-vue'
+import { createApp } from '@rush/pico-vue'
 
 const app = createApp({
   count: 0,
@@ -24,7 +24,7 @@ app.mount('#app')
 When using the CDN build, `createApp` is available on the global `PicoVue` object.
 
 ```html
-<script src="https://unpkg.com/pico-vue"></script>
+<script src="https://unpkg.com/@rush/pico-vue"></script>
 <script>
   const { createApp } = PicoVue
   createApp({ count: 0 }).mount('#app')

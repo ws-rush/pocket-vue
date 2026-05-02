@@ -9,7 +9,7 @@ Add pico-vue to your `_Layout.cshtml` file.
 ```html
 <!-- Views/Shared/_Layout.cshtml -->
 <head>
-  <script src="https://unpkg.com/pico-vue" defer init></script>
+  <script src="https://unpkg.com/@rush/pico-vue" defer init></script>
 </head>
 ```
 

@@ -5,7 +5,7 @@ You can use the `reactive` method (re-exported from `@vue/reactivity`) to create
 ## Creating Global State
 
 ```js
-import { createApp, reactive } from 'pico-vue'
+import { createApp, reactive } from '@rush/pico-vue'
 
 const store = reactive({
   count: 0,
@@ -40,7 +40,7 @@ createApp({
 Use `watchEffect` to re-run a function every time its dependencies change.
 
 ```js
-import { watchEffect, reactive } from 'pico-vue'
+import { watchEffect, reactive } from '@rush/pico-vue'
 
 const store = reactive({
   count: 0,

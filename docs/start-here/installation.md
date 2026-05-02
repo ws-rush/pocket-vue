@@ -7,20 +7,20 @@ pico-vue is designed to be used without a build step. You can simply load it fro
 ### Unpkg
 
 ```html
-<script src="https://unpkg.com/pico-vue" defer init></script>
+<script src="https://unpkg.com/@rush/pico-vue" defer init></script>
 ```
 
 ### jsDelivr
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/pico-vue" defer init></script>
+<script src="https://cdn.jsdelivr.net/npm/@rush/pico-vue" defer init></script>
 ```
 
 ### esm.sh
 
 ```html
 <script type="module">
-  import { createApp } from 'https://esm.sh/pico-vue'
+  import { createApp } from 'https://esm.sh/@rush/pico-vue'
   createApp().mount()
 </script>
 ```
@@ -28,7 +28,7 @@ pico-vue is designed to be used without a build step. You can simply load it fro
 > [!TIP] Production Tip
 > For production, it is recommended to pin a specific version number to avoid unexpected breakage from newer versions.
 > ```html
-> <script src="https://unpkg.com/pico-vue@0.0.4" defer init></script>
+> <script src="https://unpkg.com/@rush/pico-vue@0.0.4" defer init></script>
 > ```
 
 ## Auto Initialization
@@ -36,7 +36,7 @@ pico-vue is designed to be used without a build step. You can simply load it fro
 The `init` attribute on the script tag tells pico-vue to automatically query and initialize all elements that have `v-scope` on the page.
 
 ```html
-<script src="https://unpkg.com/pico-vue" defer init></script>
+<script src="https://unpkg.com/@rush/pico-vue" defer init></script>
 ```
 
 ## Manual Initialization
@@ -44,7 +44,7 @@ The `init` attribute on the script tag tells pico-vue to automatically query and
 If you don't want the auto init, remove the `init` attribute and move the scripts to end of `<body>`:
 
 ```html
-<script src="https://unpkg.com/pico-vue"></script>
+<script src="https://unpkg.com/@rush/pico-vue"></script>
 <script>
   PicoVue.createApp().mount()
 </script>
@@ -54,7 +54,7 @@ Or, use the ES module build:
 
 ```html
 <script type="module">
-  import { createApp } from 'https://unpkg.com/pico-vue?module'
+  import { createApp } from 'https://unpkg.com/@rush/pico-vue?module'
   createApp().mount()
 </script>
 ```
@@ -64,13 +64,13 @@ Or, use the ES module build:
 You can also install pico-vue via npm:
 
 ```bash
-npm install pico-vue
+npm install @rush/pico-vue
 ```
 
 Then import it in your project:
 
 ```js
-import { createApp } from 'pico-vue'
+import { createApp } from '@rush/pico-vue'
 createApp().mount()
 ```
 
