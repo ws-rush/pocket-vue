@@ -1,0 +1,202 @@
+[
+  {
+    "id": "examples-commits",
+    "category": "Examples",
+    "title": "Commits",
+    "description": "Example demo from /examples/commits.html",
+    "code": "<script type=\"module\">\n  import { createApp, reactive } from 'https://esm.sh/pocket-vue'\n\n  const API_URL = `https://api.github.com/repos/microsoft/vscode/commits?per_page=3&sha=`\n\n  createApp({\n    branches: ['main', 'release/1.90'],\n    currentBranch: 'main',\n    commits: null,\n\n    truncate(v) {\n      const newline = v.indexOf('\\n')\n      return newline > 0 ? v.slice(0, newline) : v\n    },\n\n    formatDate(v) {\n      return v.replace(/T|Z/g, ' ')\n    },\n\n    fetchData() {\n      fetch(`${API_URL}${this.currentBranch}`)\n        .then((res) => res.json())\n        .then((data) => {\n          this.commits = data\n        })\n    }\n  }).mount()\n</script>\n\n<div v-scope v-effect=\"fetchData()\">\n  <h1>Latest Visual Sudio Code Commits\n</h1>\n  <template v-for=\"branch in branches\">\n    <input\n      type=\"radio\"\n      :id=\"branch\"\n      :value=\"branch\"\n      name=\"branch\"\n      v-model=\"currentBranch\"\n    />\n    <label :for=\"branch\">{{ branch }}</label>\n  </template>\n  <p>microsoft/vscode@{{ currentBranch }}</p>\n  <ul>\n    <li v-for=\"{ html_url, sha, author, commit } in commits\">\n      <a :href=\"html_url\" target=\"_blank\" class=\"commit\"\n        >{{ sha.slice(0, 7) }}</a\n      >\n      - <span class=\"message\">{{ truncate(commit.message) }}</span><br />\n      by\n      <span class=\"author\"\n        ><a :href=\"author.html_url\" target=\"_blank\"\n          >{{ commit.author.name }}</a\n        ></span\n      >\n      at <span class=\"date\">{{ formatDate(commit.author.date) }}</span>\n    </li>\n  </ul>\n</div>\n\n<style>\n  body {\n    font-family: 'Helvetica', Arial, sans-serif;\n  }\n  a {\n    text-decoration: none;\n    color: #f66;\n  }\n  li {\n    line-height: 1.5em;\n    margin-bottom: 20px;\n  }\n  .author, .date {\n    font-weight: bold;\n  }\n</style>\n",
+    "source": "/examples/commits.html"
+  },
+  {
+    "id": "examples-components",
+    "category": "Examples",
+    "title": "Components",
+    "description": "Example demo from /examples/components.html",
+    "code": "<script type=\"module\">\nimport { createApp } from 'https://esm.sh/pocket-vue'\n\n\n// Custom Elements\nexport class MyCounter extends HTMLElement {\n  data() {\n    return {\n      $template: `<template>My count is {{ count }}<button @click=\"inc\">++</button></template>`,\n      count: 0,\n      inc() {\n        this.count++\n      }\n    }\n  }\n\n  connectedCallback() {\n    this.setAttribute('v-scope', \"$el.data()\")\n    createApp().mount(this)\n  }\n}\n\ncustomElements.define(\"my-counter\", MyCounter)\n</script>\n\n<my-counter count=\"hello\"></my-counter>",
+    "source": "/examples/components.html"
+  },
+  {
+    "id": "examples-grid",
+    "category": "Examples",
+    "title": "Grid",
+    "description": "Example demo from /examples/grid.html",
+    "code": "<script type=\"module\">\n  import { createApp } from 'https://esm.sh/pocket-vue'\n\n  const columns = ['name', 'power']\n  const data = [\n    { name: 'Chuck Norris', power: Infinity },\n    { name: 'Bruce Lee', power: 9000 },\n    { name: 'Jackie Chan', power: 7000 },\n    { name: 'Jet Li', power: 8000 }\n  ]\n\n  createApp({\n    query: '',\n    columns,\n    data,\n    sortKey: '',\n    sortOrders: columns.reduce((o, key) => ((o[key] = 1), o), {}),\n\n    get filteredData() {\n      const sortKey = this.sortKey\n      const filterKey = this.query && this.query.toLowerCase()\n      const order = this.sortOrders[sortKey] || 1\n      let data = this.data\n      if (filterKey) {\n        data = data.filter((row) => {\n          return Object.keys(row).some((key) => {\n            return String(row[key]).toLowerCase().indexOf(filterKey) > -1\n          })\n        })\n      }\n      if (sortKey) {\n        data = data.slice().sort((a, b) => {\n          a = a[sortKey]\n          b = b[sortKey]\n          return (a === b ? 0 : a > b ? 1 : -1) * order\n        })\n      }\n      return data\n    },\n\n    sortBy(key) {\n      this.sortKey = key\n      this.sortOrders[key] = this.sortOrders[key] * -1\n    },\n\n    capitalize(str) {\n      return str.charAt(0).toUpperCase() + str.slice(1)\n    }\n  }).mount()\n</script>\n\n<div v-scope>\n  <form id=\"search\">Search <input name=\"query\" v-model=\"query\" /></form>\n  <table v-if=\"filteredData.length\">\n    <thead>\n      <tr>\n        <th\n          v-for=\"key in columns\"\n          @click=\"sortBy(key)\"\n          :class=\"{ active: sortKey == key }\"\n        >\n          {{ capitalize(key) }}\n          <span class=\"arrow\" :class=\"sortOrders[key] > 0 ? 'asc' : 'dsc'\">\n          </span>\n        </th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr v-for=\"entry in filteredData\">\n        <td v-for=\"key in columns\">{{entry[key]}}</td>\n      </tr>\n    </tbody>\n  </table>\n  <p v-else>No matches found.</p>\n</div>\n\n<style>\n  body {\n    font-family: Helvetica Neue, Arial, sans-serif;\n    font-size: 14px;\n    color: #444;\n  }\n\n  table {\n    border: 2px solid #42b983;\n    border-radius: 3px;\n    background-color: #fff;\n  }\n\n  th {\n    background-color: #42b983;\n    color: rgba(255, 255, 255, 0.66);\n    cursor: pointer;\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n  }\n\n  td {\n    background-color: #f9f9f9;\n  }\n\n  th,\n  td {\n    min-width: 120px;\n    padding: 10px 20px;\n  }\n\n  th.active {\n    color: #fff;\n  }\n\n  th.active .arrow {\n    opacity: 1;\n  }\n\n  .arrow {\n    display: inline-block;\n    vertical-align: middle;\n    width: 0;\n    height: 0;\n    margin-left: 5px;\n    opacity: 0.66;\n  }\n\n  .arrow.asc {\n    border-left: 4px solid transparent;\n    border-right: 4px solid transparent;\n    border-bottom: 4px solid #fff;\n  }\n\n  .arrow.dsc {\n    border-left: 4px solid transparent;\n    border-right: 4px solid transparent;\n    border-top: 4px solid #fff;\n  }\n</style>\n",
+    "source": "/examples/grid.html"
+  },
+  {
+    "id": "examples-markdown",
+    "category": "Examples",
+    "title": "Markdown",
+    "description": "Example demo from /examples/markdown.html",
+    "code": "<script src=\"https://unpkg.com/marked@2.1.3/lib/marked.js\"></script>\n<script src=\"https://unpkg.com/lodash@4.17.21/lodash.min.js\"></script>\n<script type=\"module\">\n  import { createApp } from 'https://esm.sh/pocket-vue'\n\n  createApp({\n    input: '# hello',\n    get compiledMarkdown() {\n      return marked(this.input)\n    },\n    update: _.debounce(function (e) {\n      this.input = e.target.value\n    }, 100)\n  }).mount('#editor')\n</script>\n\n<div id=\"editor\">\n  <textarea class=\"input\" :value=\"input\" @input=\"update\"></textarea>\n  <div class=\"output\" v-html=\"compiledMarkdown\"></div>\n</div>\n\n<style>\n  html,\n  body,\n  #editor {\n    margin: 0;\n    height: 100%;\n    font-family: 'Helvetica Neue', Arial, sans-serif;\n    color: #333;\n  }\n\n  #editor {\n    display: flex;\n  }\n\n  .input,\n  .output {\n    width: 50%;\n    box-sizing: border-box;\n  }\n\n  .input {\n    border: none;\n    border-right: 1px solid #ccc;\n    resize: none;\n    outline: none;\n    background-color: #f6f6f6;\n    font-size: 14px;\n    font-family: 'Monaco', courier, monospace;\n    padding: 20px;\n  }\n\n  .output {\n    padding: 0 20px;\n  }\n\n  code {\n    color: #f66;\n  }\n</style>\n",
+    "source": "/examples/markdown.html"
+  },
+  {
+    "id": "examples-svg",
+    "category": "Examples",
+    "title": "SVG",
+    "description": "Example demo from /examples/svg.html",
+    "code": "<script type=\"module\">\n  import { createApp } from 'https://esm.sh/pocket-vue'\n\n  function valueToPoint(value, index, total) {\n    var x = 0\n    var y = -value * 0.8\n    var angle = ((Math.PI * 2) / total) * index\n    var cos = Math.cos(angle)\n    var sin = Math.sin(angle)\n    var tx = x * cos - y * sin + 100\n    var ty = x * sin + y * cos + 100\n\n    if (ty < 0) debugger\n    return {\n      x: tx,\n      y: ty\n    }\n  }\n\n  createApp({\n    newLabel: '',\n    stats: [\n      { label: 'A', value: 100 },\n      { label: 'B', value: 100 },\n      { label: 'C', value: 100 },\n      { label: 'D', value: 100 },\n      { label: 'E', value: 100 },\n      { label: 'F', value: 100 }\n    ],\n\n    get pointsString() {\n      return this.getPoints()\n        .map(({ x, y }) => `${x},${y}`)\n        .join(' ')\n    },\n\n    getPoints(offset = 0) {\n      const total = this.stats.length\n      return this.stats.map((stat, i) => ({\n        ...valueToPoint(+stat.value + offset, i, total),\n        label: stat.label\n      }))\n    },\n\n    add(e) {\n      e.preventDefault()\n      if (!this.newLabel) return\n      this.stats.push({\n        label: this.newLabel,\n        value: 100\n      })\n      this.newLabel = ''\n    },\n\n    remove(stat) {\n      if (this.stats.length > 3) {\n        this.stats.splice(this.stats.indexOf(stat), 1)\n      } else {\n        alert(\"Can't delete more!\")\n      }\n    }\n  }).mount()\n</script>\n\n<div v-scope>\n  <svg width=\"200\" height=\"200\">\n    <g>\n      <polygon :points=\"pointsString\"></polygon>\n      <circle cx=\"100\" cy=\"100\" r=\"80\"></circle>\n      <text v-for=\"{ x, y, label } in getPoints(10)\" :x=\"x\" :y=\"y\">{{ label }}</text>\n    </g>\n  </svg>\n  <!-- controls -->\n  <div v-for=\"stat in stats\">\n    <label>{{stat.label}}</label>\n    <input type=\"range\" v-model=\"stat.value\" min=\"0\" max=\"100\" />\n    <span>{{stat.value}}</span>\n    <button @click=\"remove(stat)\" class=\"remove\">X</button>\n  </div>\n  <form id=\"add\">\n    <input name=\"newlabel\" v-model=\"newLabel\" />\n    <button @click=\"add\">Add a Stat</button>\n  </form>\n  <pre id=\"raw\">{{ stats }}</pre>\n</div>\n\n<style>\n  body {\n    font-family: Helvetica Neue, Arial, sans-serif;\n  }\n\n  polygon {\n    fill: #42b983;\n    opacity: 0.75;\n  }\n\n  circle {\n    fill: transparent;\n    stroke: #999;\n  }\n\n  text {\n    font-family: Helvetica Neue, Arial, sans-serif;\n    font-size: 10px;\n    fill: #666;\n  }\n\n  label {\n    display: inline-block;\n    margin-left: 10px;\n    width: 20px;\n  }\n\n  #raw {\n    position: absolute;\n    top: 0;\n    left: 300px;\n  }\n</style>\n",
+    "source": "/examples/svg.html"
+  },
+  {
+    "id": "examples-todomvc",
+    "category": "Examples",
+    "title": "TodoMVC",
+    "description": "Example demo from /examples/todomvc.html",
+    "code": "<link rel=\"stylesheet\" href=\"https://unpkg.com/todomvc-app-css@2.4.1/index.css\" />\n<style>\n  [v-cloak] {\n    display: none;\n  }\n</style>\n\n<script type=\"module\">\n  import { createApp } from 'https://esm.sh/pocket-vue'\n\n  const STORAGE_KEY = 'todos-pocket-vue'\n  const todoStorage = {\n    fetch() {\n      const todos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')\n      todos.forEach((todo, index) => {\n        todo.id = index\n      })\n      todoStorage.uid = todos.length\n      return todos\n    },\n    save(todos) {\n      localStorage.setItem(STORAGE_KEY, JSON.stringify(todos))\n    }\n  }\n\n  const filters = {\n    all(todos) {\n      return todos\n    },\n    active(todos) {\n      return todos.filter((todo) => {\n        return !todo.completed\n      })\n    },\n    completed(todos) {\n      return todos.filter(function (todo) {\n        return todo.completed\n      })\n    }\n  }\n\n  createApp({\n    todos: todoStorage.fetch(),\n    newTodo: '',\n    editedTodo: null,\n    visibility: 'all',\n\n    get filteredTodos() {\n      return filters[this.visibility](this.todos)\n    },\n\n    get remaining() {\n      return filters.active(this.todos).length\n    },\n\n    get allDone() {\n      return this.remaining === 0\n    },\n\n    set allDone(value) {\n      this.todos.forEach(function (todo) {\n        todo.completed = value\n      })\n    },\n\n    save() {\n      todoStorage.save(this.todos)\n    },\n\n    setupRouting() {\n      const onHashChange = () => {\n        var visibility = window.location.hash.replace(/#\\/?/, '')\n        if (filters[visibility]) {\n          this.visibility = visibility\n        } else {\n          window.location.hash = ''\n          this.visibility = 'all'\n        }\n      }\n      window.addEventListener('hashchange', onHashChange)\n      onHashChange()\n    },\n\n    addTodo() {\n      var value = this.newTodo && this.newTodo.trim()\n      if (!value) {\n        return\n      }\n      this.todos.push({\n        id: todoStorage.uid++,\n        title: value,\n        completed: false\n      })\n      this.newTodo = ''\n    },\n\n    removeTodo(todo) {\n      this.todos.splice(this.todos.indexOf(todo), 1)\n    },\n\n    editTodo(todo) {\n      this.beforeEditCache = todo.title\n      this.editedTodo = todo\n    },\n\n    doneEdit(todo) {\n      if (!this.editedTodo) {\n        return\n      }\n      this.editedTodo = null\n      todo.title = todo.title.trim()\n      if (!todo.title) {\n        this.removeTodo(todo)\n      }\n    },\n\n    cancelEdit(todo) {\n      this.editedTodo = null\n      todo.title = this.beforeEditCache\n    },\n\n    removeCompleted() {\n      this.todos = filters.active(this.todos)\n    },\n\n    pluralize(n) {\n      return n === 1 ? 'item' : 'items'\n    }\n  }).mount('#app')\n</script>\n\n<div id=\"app\" @vue:mounted=\"setupRouting\" v-effect=\"save()\" v-cloak>\n  <section class=\"todoapp\">\n    <header class=\"header\">\n      <h1>todos</h1>\n      <input class=\"new-todo\" autofocus autocomplete=\"off\" placeholder=\"What needs to be done?\" v-model=\"newTodo\"\n        @keyup.enter=\"addTodo\" />\n    </header>\n    <section class=\"main\" v-show=\"todos.length\">\n      <input id=\"toggle-all\" class=\"toggle-all\" type=\"checkbox\" v-model=\"allDone\" />\n      <label for=\"toggle-all\">Mark all as complete</label>\n      <ul class=\"todo-list\">\n        <li v-for=\"todo in filteredTodos\" class=\"todo\" :key=\"todo.id\"\n          :class=\"{ completed: todo.completed, editing: todo === editedTodo }\">\n          <div class=\"view\">\n            <input class=\"toggle\" type=\"checkbox\" v-model=\"todo.completed\" />\n            <label @dblclick=\"editTodo(todo)\">{{ todo.title }}</label>\n            <button class=\"destroy\" @click=\"removeTodo(todo)\"></button>\n          </div>\n          <input class=\"edit\" type=\"text\" v-model=\"todo.title\" v-effect=\"if (todo === editedTodo) $el.focus()\"\n            @blur=\"doneEdit(todo)\" @keyup.enter=\"doneEdit(todo)\" @keyup.escape=\"cancelEdit(todo)\" />\n        </li>\n      </ul>\n    </section>\n    <footer class=\"footer\" v-show=\"todos.length\">\n      <span class=\"todo-count\">\n        <strong>{{ remaining }}</strong>\n        <span>{{ pluralize(remaining) }} left</span>\n      </span>\n      <ul class=\"filters\">\n        <li>\n          <a href=\"#/all\" :class=\"{ selected: visibility === 'all' }\" @click=\"visibility = 'all'\">\n            All\n          </a>\n          >\n        </li>\n        <li>\n          <a href=\"#/active\" :class=\"{ selected: visibility === 'active' }\" @click=\"visibility = 'active'\">\n            Active\n          </a>\n          >\n        </li>\n        <li>\n          <a href=\"#/completed\" :class=\"{ selected: visibility === 'completed' }\" @click=\"visibility = 'completed'\">\n            Completed\n          </a>\n          >\n        </li>\n      </ul>\n      <button class=\"clear-completed\" @click=\"removeCompleted\" v-show=\"todos.length > remaining\">\n        Clear completed\n      </button>\n    </footer>\n  </section>\n</div>",
+    "source": "/examples/todomvc.html"
+  },
+  {
+    "id": "examples-tree",
+    "category": "Examples",
+    "title": "Tree",
+    "description": "Example demo from /examples/tree.html",
+    "code": "<script type=\"module\">\n  import { createApp } from 'https://esm.sh/pocket-vue'\n\n  const treeData = {\n    name: 'My Tree',\n    children: [\n      { name: 'hello' },\n      { name: 'wat' },\n      {\n        name: 'child folder',\n        children: [\n          {\n            name: 'child folder',\n            children: [{ name: 'hello' }, { name: 'wat' }]\n          },\n          { name: 'hello' },\n          { name: 'wat' },\n          {\n            name: 'child folder',\n            children: [{ name: 'hello' }, { name: 'wat' }]\n          }\n        ]\n      }\n    ]\n  }\n\n  function TreeItem(model) {\n    return {\n      $template: '#item-template',\n      model,\n      open: false,\n      get isFolder() {\n        return model.children && model.children.length\n      },\n      toggle() {\n        if (this.isFolder) {\n          this.open = !this.open\n        }\n      },\n      changeType() {\n        if (!this.isFolder) {\n          model.children = []\n          this.addChild()\n          this.open = true\n        }\n      },\n      addChild() {\n        model.children.push({\n          name: 'new stuff'\n        })\n      }\n    }\n  }\n\n  createApp({\n    TreeItem,\n    treeData\n  }).mount()\n</script>\n\n<template id=\"item-template\">\n  <div :class=\"{ bold: isFolder }\" @click=\"toggle\" @dblclick=\"changeType\">\n    <span>{{ model.name }}</span>\n    <span v-if=\"isFolder\">[{{open ? '-' : '+'}}]</span>\n  </div>\n  <ul v-show=\"open\" v-if=\"isFolder\">\n    <li v-for=\"model in model.children\" v-scope=\"TreeItem(model)\"></li>\n    <li class=\"add\" @click=\"addChild\">+</li>\n  </ul>\n</template>\n\n<p>Double click an item to turn it into a folder.</p>\n<ul v-scope>\n  <li class=\"item\" v-scope=\"TreeItem(treeData)\"></li>\n</ul>\n\n<style>\n  body {\n    font-family: Menlo, Consolas, monospace;\n    color: #444;\n  }\n  .item {\n    cursor: pointer;\n  }\n  .bold {\n    font-weight: bold;\n  }\n</style>\n",
+    "source": "/examples/tree.html"
+  },
+  {
+    "id": "tests-bind",
+    "category": "Tests",
+    "title": "v-bind",
+    "description": "Test demo from /tests/bind.html",
+    "code": "<style>\n  #green {\n    color: green;\n  }\n  .red {\n    color: red;\n  }\n  .orange {\n    color: orange;\n  }\n  .static {\n    font-weight: bold;\n  }\n  [v-cloak] {\n    opacity: 0;\n  }\n</style>\n\n<script type=\"module\">\n  import { createApp, reactive } from 'https://esm.sh/pocket-vue'\n\n  // for testing\n  const data = (window.data = reactive({\n    id: 'green',\n    classes: ['foo', { red: true }],\n    style: { color: 'blue' },\n    obj: {\n      class: 'orange'\n    }\n  }))\n\n  createApp(data).mount()\n</script>\n\n<div v-scope v-cloak>\n  <div :id=\"id\">simple binding - this should be green</div>\n  <div class=\"static\" :class=\"classes\">\n    class binding - this should be red and bold\n  </div>\n  <div style=\"font-weight: bold\" :style=\"style\">\n    style binding - this should be blue and bold\n  </div>\n  <div v-bind=\"obj\">object binding - this should be orange</div>\n</div>\n",
+    "source": "/tests/bind.html"
+  },
+  {
+    "id": "tests-cloak",
+    "category": "Tests",
+    "title": "v-cloak",
+    "description": "Test demo from /tests/cloak.html",
+    "code": "<script type=\"module\">\n  import { createApp } from 'https://esm.sh/pocket-vue'\n  createApp({\n    msg: 'content',\n    hide: false\n  }).mount()\n</script>\n\n<div v-scope v-cloak>\n  <div v-cloak v-if=\"!hide\">{{ msg }}</div>\n  <button @click=\"hide = !hide\">toggle</button>\n</div>\n\n<style>\n  [v-cloak] {\n    display: none;\n  }\n</style>",
+    "source": "/tests/cloak.html"
+  },
+  {
+    "id": "tests-component",
+    "category": "Tests",
+    "title": "Component",
+    "description": "Test demo from /tests/component.html",
+    "code": "<script type=\"module\">\n  import { createApp, reactive } from 'https://esm.sh/pocket-vue'\n\n  function MyComp() {\n    return {\n      $template: '#comp',\n      count: 0,\n      get plusOne() {\n        return this.count + 1\n      }\n    }\n  }\n\n  createApp({\n    MyComp\n  }).mount()\n</script>\n\n<template id=\"comp\">\n  {{ count }} {{ plusOne }}\n  <button @click=\"count++\">++</button>\n</template>\n\n<div v-scope=\"MyComp()\"></div>",
+    "source": "/tests/component.html"
+  },
+  {
+    "id": "tests-custom-delimiters",
+    "category": "Tests",
+    "title": "Custom delimiters",
+    "description": "Test demo from /tests/custom-delimiters.html",
+    "code": "<script type=\"module\">\n  import { createApp } from 'https://esm.sh/pocket-vue'\n  createApp({\n    $delimiters: ['${', '}']\n  }).mount()\n</script>\n\n<div v-scope=\"{ count: 1 }\">\n  <p v-if=\"count\">count is ${ count }!</p>\n  <button @click=\"count++\">increase</button>\n\n  <p v-for=\"i in [1, 2, 3]\" :key=\"i\">${ i }</p>\n\n  <p v-if=\"true\">${ count }</p>\n</div>\n",
+    "source": "/tests/custom-delimiters.html"
+  },
+  {
+    "id": "tests-effect",
+    "category": "Tests",
+    "title": "v-effect",
+    "description": "Test demo from /tests/effect.html",
+    "code": "<script type=\"module\">\n  import { createApp } from 'https://esm.sh/pocket-vue'\n  createApp().mount()\n</script>\n\n<div v-scope=\"{ count: 0 }\">\n  <div v-effect=\"$el.textContent = count\"></div>\n  <button @click=\"count++\">++</button>\n</div>\n",
+    "source": "/tests/effect.html"
+  },
+  {
+    "id": "tests-for",
+    "category": "Tests",
+    "title": "v-for",
+    "description": "Test demo from /tests/for.html",
+    "code": "<script type=\"module\">\n  import { createApp } from 'https://esm.sh/pocket-vue'\n\n  let id = 4\n  createApp({\n    list: [\n      { id: 1, text: 'bar' },\n      { id: 2, text: 'boo' },\n      { id: 3, text: 'baz' },\n      { id: 4, text: 'bazz' }\n    ],\n    add() {\n      this.list.push({ id: ++id, text: 'new item' })\n    },\n    splice() {\n      this.list.splice(1, 0, { id: ++id, text: 'new item' })\n    }\n  }).mount('#app')\n</script>\n\n<div id=\"app\">\n  <button @click=\"add\">add</button>\n  <button @click=\"list.reverse()\">reverse</button>\n  <button @click=\"list.pop()\">pop</button>\n  <button @click=\"splice\">splice</button>\n  <ul>\n    <li v-for=\"({ id, text }, index) in list\" :key=\"id\">\n      <div>{{ index }} {{ { id, text } }}</div>\n    </li>\n  </ul>\n\n  <ul>\n    <li v-for=\"item of list\" :key=\"item.id\">\n      <input v-model=\"item.text\" />\n    </li>\n  </ul>\n</div>\n",
+    "source": "/tests/for.html"
+  },
+  {
+    "id": "tests-html",
+    "category": "Tests",
+    "title": "v-html",
+    "description": "Test demo from /tests/html.html",
+    "code": "<script type=\"module\">\n  import { createApp } from 'https://esm.sh/pocket-vue'\n  createApp().mount()\n</script>\n\n<div v-scope=\"{ ele:'<span>Hello World</span>' }\">\n  <p v-html=\"ele\"></p>\n</div>\n\n",
+    "source": "/tests/html.html"
+  },
+  {
+    "id": "tests-if",
+    "category": "Tests",
+    "title": "v-if",
+    "description": "Test demo from /tests/if.html",
+    "code": "<script type=\"module\">\n  import { createApp } from 'https://esm.sh/pocket-vue'\n\n  createApp().mount('#app')\n</script>\n\n<div id=\"app\" v-scope=\"{ open: true, elseOpen: true }\">\n  <button @click=\"open = !open\">toggle</button>\n  <button @click=\"elseOpen = !elseOpen\">toggle else</button>\n  <div v-if=\"open\">ok</div>\n  <div v-else-if=\"elseOpen\">else if</div>\n  <template v-else>else</template>\n</div>\n",
+    "source": "/tests/if.html"
+  },
+  {
+    "id": "tests-model",
+    "category": "Tests",
+    "title": "v-model",
+    "description": "Test demo from /tests/model.html",
+    "code": "<script type=\"module\">\n  import { createApp } from 'https://esm.sh/pocket-vue'\n\n  createApp().mount('#app')\n</script>\n\n<div\n  id=\"app\"\n  v-scope=\"{\n  text: 'hello',\n  checked: true,\n  checkToggle: { a: 1 },\n  trueValue: { a: 1 },\n  falseValue: { a: 2 },\n  arr: ['one'],\n  radioSelected: 'two',\n  selected: 'two'\n}\"\n>\n  <pre>{{ $data }}</pre>\n  <h2>Text Input</h2>\n  {{ text }}\n  <input v-model.trim=\"text\" />\n\n  <h2>TextArea</h2>\n  {{ text }}\n  <textarea v-model.trim=\"text\"></textarea>\n\n  <h2>Checkbox</h2>\n  <input type=\"checkbox\" id=\"checkbox\" v-model=\"checked\" />\n  <label for=\"checkbox\">{{ checked }}</label>\n\n  <h2>Checkbox w/ Array</h2>\n  <label><input type=\"checkbox\" v-model=\"arr\" value=\"one\" /> one</label>\n  <label><input type=\"checkbox\" v-model=\"arr\" value=\"two\" /> two</label>\n  <label\n    ><input type=\"checkbox\" v-model=\"arr\" :value=\"123\" /> actual number</label\n  >\n  <div>{{ arr }}</div>\n\n  <h2>Checkbox w/ true-value / false-value</h2>\n  <input\n    type=\"checkbox\"\n    v-model=\"checkToggle\"\n    :true-value=\"trueValue\"\n    :false-value=\"falseValue\"\n  />\n  <div>{{ checkToggle }}</div>\n\n  <h2>Radio</h2>\n  <label><input type=\"radio\" v-model=\"radioSelected\" value=\"one\" /> one</label>\n  <label><input type=\"radio\" v-model=\"radioSelected\" value=\"two\" /> two</label>\n  <label\n    ><input type=\"radio\" v-model=\"radioSelected\" value=\"three\" /> three</label\n  >\n  <div>{{ radioSelected }}</div>\n\n  <h2>Select</h2>\n  <select v-model=\"selected\" @change=\"console.log(selected, $event.target.value)\">\n    <option>one</option>\n    <option>two</option>\n    <option>three</option>\n  </select>\n  <div>{{ selected }}</div>\n</div>\n",
+    "source": "/tests/model.html"
+  },
+  {
+    "id": "tests-multi-mount",
+    "category": "Tests",
+    "title": "Multi mount",
+    "description": "Test demo from /tests/multi-mount.html",
+    "code": "<script type=\"module\">\n  import { createApp, reactive } from 'https://esm.sh/pocket-vue'\n\n  const store = reactive({\n    count: 0,\n    inc() {\n      this.count++\n    }\n  })\n\n  createApp({\n    store,\n    count: 1\n  }).mount('#app1')\n\n  createApp({\n    store,\n    count: 2\n  }).mount('#app2')\n</script>\n\n<div id=\"app1\">\n  Global count {{ store.count }}\n  Local count {{ count }}\n</div>\n\n<div id=\"app2\">\n  Global count {{ store.count }}\n  Local count {{ count }}\n</div>",
+    "source": "/tests/multi-mount.html"
+  },
+  {
+    "id": "tests-on",
+    "category": "Tests",
+    "title": "v-on",
+    "description": "Test demo from /tests/on.html",
+    "code": "<script type=\"module\">\n  import { createApp } from 'https://esm.sh/pocket-vue'\n\n  createApp().mount('#app')\n</script>\n\n<div id=\"app\">\n  <input\n    type=\"text\"\n    @keyup.x=\"alert('yo')\"\n    placeholder=\"type x to test key modifier\"\n  />\n  <form>\n    <button type=\"submit\" @click.prevent.stop>submit (prevented)</button>\n  </form>\n  <button @click.right=\"alert('clicked')\">right click</button>\n  <button @click.middle=\"alert('clicked')\">middle click</button>\n  <button @click.once=\"alert('clicked')\">click once</button>\n</div>\n",
+    "source": "/tests/on.html"
+  },
+  {
+    "id": "tests-once",
+    "category": "Tests",
+    "title": "v-once",
+    "description": "Test demo from /tests/once.html",
+    "code": "<script type=\"module\">\n  import { createApp } from 'https://esm.sh/pocket-vue'\n  createApp().mount()\n</script>\n\n<div v-scope=\"{ count: 5 }\">\n  {{ count }}\n  <div v-once>\n    <h2>Once</h2>\n    {{ count }}\n    <span v-text=\"count\"></span>\n    <span v-for=\"i in count\">{{ i }}</span>\n  </div>\n  <span v-text=\"count\"></span>\n  <button @click=\"count++\">++</button>\n</div>\n",
+    "source": "/tests/once.html"
+  },
+  {
+    "id": "tests-pre",
+    "category": "Tests",
+    "title": "v-pre",
+    "description": "Test demo from /tests/pre.html",
+    "code": "<script type=\"module\">\n  import { createApp } from 'https://esm.sh/pocket-vue'\n  createApp().mount()\n</script>\n\n<div v-scope=\"{ count: 0 }\">\n  <p>{{ count }}</p>\n  <p v-pre> {{ count }}</p>\n  <button @click=\"count++\">increment</button>\n</div>",
+    "source": "/tests/pre.html"
+  },
+  {
+    "id": "tests-reactive",
+    "category": "Tests",
+    "title": "reactive",
+    "description": "Test demo from /tests/reactive.html",
+    "code": "<script type=\"module\">\n  import { createApp, reactive } from 'https://esm.sh/pocket-vue'\n\n  const store = reactive({\n    count: 0,\n    inc() {\n      this.count++\n    }\n  })\n\n  // manipulate it here\n  store.inc()\n\n  createApp({\n    // share it with app scopes\n    store\n  }).mount()\n</script>\n\n<div v-scope=\"{ localCount: 0 }\">\n  <p>Global {{ store.count }}</p>\n  <button @click=\"store.inc\">increment</button>\n\n  <p>Local {{ localCount }}</p>\n  <button @click=\"localCount++\">increment</button>\n</div>",
+    "source": "/tests/reactive.html"
+  },
+  {
+    "id": "tests-ref",
+    "category": "Tests",
+    "title": "ref",
+    "description": "Test demo from /tests/ref.html",
+    "code": "<script type=\"module\">\n  import { createApp, reactive } from 'https://esm.sh/pocket-vue'\n  createApp().mount()\n</script>\n\n<div\n  id=\"root\"\n  ref=\"root\"\n  v-scope=\"{ dynamicRef: 'x', show: true }\"\n  v-effect=\"console.log({ x: $refs.x, y: $refs.y, input: $refs.input, modal: $refs.modal })\"\n>\n  <p>Accessing root el (with ref): id is {{ $refs.root.id }}</p>\n  <p>Accessing root el (with $root): id is {{ $refs.root.id }}</p>\n\n  <input ref=\"input\" />\n  <span v-if=\"show\" :ref=\"dynamicRef\">Span with dynamic ref</span>\n  <p>dynamicRef is {{ dynamicRef }}</p>\n  <button @click=\"dynamicRef = dynamicRef === 'x' ? 'y' : 'x'\">\n    change dynamicRef\n  </button>\n  <button @click=\"show = !show\">toggle</button>\n\n  <div id=\"modal\" ref=\"modal\" v-scope>\n    <p ref=\"x\">nested scope ref</p>\n    <button\n      @click=\"console.log({ x: $refs.x, y: $refs.y, input: $refs.input, modal: $refs.modal })\"\n    >\n      log nested scope refs\n    </button>\n  </div>\n</div>\n",
+    "source": "/tests/ref.html"
+  },
+  {
+    "id": "tests-scope",
+    "category": "Tests",
+    "title": "v-scope",
+    "description": "Test demo from /tests/scope.html",
+    "code": "<script type=\"module\">\n  import { createApp } from 'https://esm.sh/pocket-vue'\n  createApp().mount()\n</script>\n\n<div v-scope=\"{ msg: 'one' }\">\n  {{ msg }} <button @click=\"msg = 1\">Change one</button>\n</div>\n\n<div v-scope=\"{ msg: 'two', outer: 'outer' }\">\n  <pre>{{ $data }}</pre>\n  {{ msg }} {{ outer }}\n  <button @click=\"msg = 2\">Change two</button>\n  <button @click=\"outer = 'changed'\">Change outer</button>\n  <div v-scope=\"{ msg: 'three', inner: 'inner' }\">\n    <pre>{{ $data }}</pre>\n    {{ msg }} {{ inner }} {{ outer }}\n    <button @click=\"msg = 3\">Change three</button>\n    <button @click=\"inner = 'changed'\">Change inner</button>\n    <button @click=\"outer = 'changed by inner'\">Change outer</button>\n\n    <div v-scope=\"{}\">\n      <button @click=\"outer = 'lol'\">change outer</button>\n    </div>\n  </div>\n</div>\n",
+    "source": "/tests/scope.html"
+  },
+  {
+    "id": "tests-show",
+    "category": "Tests",
+    "title": "v-show",
+    "description": "Test demo from /tests/show.html",
+    "code": "<script type=\"module\">\n  import { createApp } from 'https://esm.sh/pocket-vue'\n\n  createApp().mount('#app')\n</script>\n\n<div id=\"app\" v-scope=\"{ open: true }\">\n  <button @click=\"open = !open\">toggle</button>\n  <div v-show=\"open\">ok</div>\n</div>\n",
+    "source": "/tests/show.html"
+  },
+  {
+    "id": "tests-text",
+    "category": "Tests",
+    "title": "v-text",
+    "description": "Test demo from /tests/text.html",
+    "code": "<script type=\"module\">\n  import { createApp } from 'https://esm.sh/pocket-vue'\n  createApp().mount()\n</script>\n\n<div v-scope=\"{ count: 1 }\">\n  <p v-text=\"count\"></p>\n  <button @click=\"count++\">increase</button>\n</div>\n\n",
+    "source": "/tests/text.html"
+  }
+]

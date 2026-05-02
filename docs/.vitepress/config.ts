@@ -22,7 +22,7 @@ export default withMermaid(
             nav: [
                 { text: 'Guide', link: '/start-here/installation' },
                 { text: 'API', link: '/directives/v-bind' },
-                { text: 'Examples', link: '/examples/' },
+                { text: 'Playground', link: '/playground/', target: '_blank' },
                 { text: 'GitHub', link: 'https://github.com/ws-rush/pocket-vue' }
             ],
 

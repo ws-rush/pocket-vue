@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pocket Vue Playground</title>
+  <meta name="description" content="A portable Pocket Vue playground with a code editor and live preview.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism-tomorrow.min.css">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --brand: #42b883;
+      --brand-dark: #35a372;
+      --bg: #f6f8f6;
+      --panel: #ffffff;
+      --text: #213547;
+      --muted: #667085;
+      --border: #d9e2dc;
+      --code-bg: #17202a;
+      --code-text: #f8fafc;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #101412;
+        --panel: #171c19;
+        --text: #eef4f0;
+        --muted: #9aa8a0;
+        --border: #2b3831;
+        --code-bg: #0b1117;
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      gap: 0;
+    }
+    .app-bar,
+    .pane {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .app-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0;
+      padding: .65rem .8rem;
+      border-left: 0;
+      border-right: 0;
+      border-top: 0;
+    }
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: .1rem;
+      min-width: 13rem;
+      margin-right: .15rem;
+    }
+    h1 { margin: 0; font-size: .95rem; line-height: 1.2; }
+    .sub { color: var(--muted); font-size: .75rem; line-height: 1.25; }
+    .controls {
+      display: flex;
+      flex: 1;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0;
+    }
+    select, button {
+      border: 1px solid var(--border);
+      border-radius: 0;
+      background: color-mix(in srgb, var(--panel) 88%, var(--bg) 12%);
+      color: var(--text);
+      font: inherit;
+      font-size: .8rem;
+      line-height: 1;
+      padding: .42rem .55rem;
+      min-height: 2rem;
+      transition: border-color .15s ease, transform .15s ease;
+      margin: 0;
+    }
+    select {
+      min-width: min(16rem, 100%);
+      flex: 1 1 14rem;
+    }
+    button { cursor: pointer; }
+    button.primary {
+      background: linear-gradient(135deg, var(--brand-dark), var(--brand));
+      color: white;
+      border-color: transparent;
+      box-shadow: none;
+    }
+    button:hover, select:hover {
+      border-color: var(--brand);
+      transform: none;
+    }
+    button:active { transform: translateY(0); }
+    .description {
+      color: var(--muted);
+      min-width: 14rem;
+      flex: 1 1 14rem;
+      text-align: right;
+      font-size: .75rem;
+    }
+    main {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(320px, 1fr) minmax(320px, 1fr);
+      gap: 0;
+    }
+    .pane {
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-left: 0;
+      border-right: 0;
+      border-bottom: 0;
+    }
+    .pane-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .45rem .7rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      background: color-mix(in srgb, var(--panel) 92%, var(--bg) 8%);
+    }
+    .editor-shell {
+      position: relative;
+      flex: 1;
+      min-height: 18rem;
+      background: linear-gradient(180deg, rgba(11, 17, 23, 0.96), var(--code-bg));
+      overflow: hidden;
+    }
+    .editor-shell pre,
+    .editor-shell textarea {
+      position: absolute;
+      inset: 0;
+      margin: 0;
+      padding: 1rem 1.1rem;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      outline: none;
+      font: 14px/1.6 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      tab-size: 2;
+      white-space: pre;
+      overflow: auto;
+      scrollbar-width: none;
+    }
+    .editor-shell pre::-webkit-scrollbar,
+    .editor-shell textarea::-webkit-scrollbar {
+      display: none;
+    }
+    .editor-shell pre {
+      pointer-events: none;
+      background: transparent;
+    }
+    .editor-shell code {
+      display: block;
+      color: var(--code-text);
+    }
+    .editor-shell textarea {
+      background: transparent;
+      color: transparent;
+      caret-color: var(--code-text);
+      resize: none;
+    }
+    .editor-shell textarea::selection { background: rgba(66, 184, 131, 0.35); }
+    iframe {
+      flex: 1;
+      width: 100%;
+      border: 0;
+      background: #fff;
+    }
+    .status { color: var(--muted); font-size: .65rem; }
+    @media (max-width: 980px) {
+      .app-bar { align-items: stretch; }
+      .brand, .description { min-width: 100%; text-align: left; }
+      .controls { justify-content: stretch; }
+      select, button { flex: 1 1 auto; }
+      main { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <section class="app-bar" aria-label="Playground controls">
+    <div class="brand">
+      <h1>Pocket Vue Playground</h1>
+      <div class="sub">Edit HTML, preview live, and share or open examples in one place.</div>
+    </div>
+    <div class="controls">
+      <select id="exampleSelect" aria-label="Choose an example"></select>
+      <button id="runBtn" type="button" class="primary">Run</button>
+      <button id="resetBtn" type="button">Reset</button>
+      <button id="copyBtn" type="button">Copy link</button>
+      <button id="newTabBtn" type="button">Open in new tab</button>
+      <button id="docsBtn" type="button">Docs</button>
+      <span id="description" class="description"></span>
+    </div>
+  </section>
+
+  <main>
+    <section class="pane" aria-label="Code editor">
+      <div class="pane-title"><span>Code</span><span id="status" class="status">Loading…</span></div>
+      <div class="editor-shell">
+        <pre aria-hidden="true"><code id="highlight"></code></pre>
+        <textarea id="editor" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
+      </div>
+    </section>
+    <section class="pane" aria-label="Preview">
+      <div class="pane-title"><span>Preview</span><span class="status">Sandboxed iframe</span></div>
+      <iframe id="preview" title="Pocket Vue preview" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"></iframe>
+    </section>
+  </main>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-core.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-clike.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-markup.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-markup-templating.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-javascript.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-css.min.js"></script>
+  <script>
+    (async () => {
+      await new Promise((resolve) => {
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', resolve, { once: true })
+        } else {
+          resolve()
+        }
+      })
+
+      const res = await fetch('/playground/examples.json')
+      const examples = await res.json()
+      const byId = new Map(examples.map((example) => [example.id, example]))
+
+      const select = document.getElementById('exampleSelect')
+      const editor = document.getElementById('editor')
+      const highlight = document.getElementById('highlight')
+      const preview = document.getElementById('preview')
+      const description = document.getElementById('description')
+      const status = document.getElementById('status')
+      const docsBtn = document.getElementById('docsBtn')
+
+      let currentExampleId = examples[0]?.id || ''
+      let dirty = false
+      let renderTimer = 0
+
+      function groupExamples() {
+        const groups = new Map()
+        for (const example of examples) {
+          if (!groups.has(example.category)) groups.set(example.category, [])
+          groups.get(example.category).push(example)
+        }
+        for (const [label, items] of groups) {
+          const group = document.createElement('optgroup')
+          group.label = label
+          for (const example of items) {
+            const option = document.createElement('option')
+            option.value = example.id
+            option.textContent = example.title
+            group.appendChild(option)
+          }
+          select.appendChild(group)
+        }
+      }
+
+      function encodeCode(code) {
+        const bytes = new TextEncoder().encode(code)
+        let binary = ''
+        for (const byte of bytes) binary += String.fromCharCode(byte)
+        return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '')
+      }
+
+      function decodeCode(encoded) {
+        const normalized = encoded.replace(/-/g, '+').replace(/_/g, '/')
+        const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, '=')
+        const binary = atob(padded)
+        const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0))
+        return new TextDecoder().decode(bytes)
+      }
+
+      function getHashCode() {
+        const match = location.hash.match(/(?:^#|&)code=([^&]+)/)
+        if (!match) return null
+        try { return decodeCode(decodeURIComponent(match[1])) } catch { return null }
+      }
+
+      function buildShareUrl() {
+        const url = new URL(location.href)
+        url.search = ''
+        url.hash = ''
+        if (!dirty && currentExampleId) {
+          url.searchParams.set('example', currentExampleId)
+        } else {
+          url.hash = 'code=' + encodeURIComponent(encodeCode(editor.value))
+        }
+        return url.toString()
+      }
+
+      function needsRuntime(code) {
+        return !/<script[\s\S]+(?:pocket-vue|createApp|init)[\s\S]*<\/script>/i.test(code)
+      }
+
+      function normalizePreviewCode(code) {
+        return code
+          .replace(/from\s+['"]\.\.\/src['"]/g, "from 'https://esm.sh/pocket-vue'")
+          .replace(/from\s+['"]\.\/src['"]/g, "from 'https://esm.sh/pocket-vue'")
+      }
+
+      function createPreviewDocument(code) {
+        const source = normalizePreviewCode(code)
+        const runtime = needsRuntime(source)
+          ? '<script src="https://unpkg.com/pocket-vue" defer init><\/script>'
+          : ''
+
+        return `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="importmap">{"imports":{"pocket-vue":"https://esm.sh/pocket-vue"}}<\/script>
+  ${runtime}
+  <style>
+    body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 1rem; color: #213547; }
+    button, input, select, textarea { font: inherit; margin: .25rem; }
+    button { border: 1px solid #d0d7de; border-radius: .4rem; background: #fff; padding: .4rem .65rem; cursor: pointer; }
+    button:hover { border-color: #42b883; }
+    button.active, .active, a.selected { color: #fff; background: #42b883; border-color: #42b883; }
+    input, select, textarea { border: 1px solid #d0d7de; border-radius: .35rem; padding: .35rem .5rem; }
+    table { border-collapse: collapse; width: 100%; margin-top: .75rem; }
+    th, td { border: 1px solid #d0d7de; padding: .5rem; text-align: left; }
+    .error, .error-msg { color: #d92d20; border-color: #d92d20; }
+    [v-cloak] { display: none; }
+  </style>
+</head>
+<body>
+${source}
+</body>
+</html>`
+      }
+
+      function syncScroll() {
+        highlight.parentElement.scrollTop = editor.scrollTop
+        highlight.parentElement.scrollLeft = editor.scrollLeft
+      }
+
+      function highlightSegment(code, language, grammar) {
+        return window.Prism?.highlight
+          ? Prism.highlight(code, grammar, language)
+          : code.replace(/[&<>"']/g, (char) => ({
+              '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            })[char])
+      }
+
+      function syncHighlight() {
+        const source = editor.value
+        if (!window.Prism?.languages?.markup) {
+          highlight.textContent = source
+          syncScroll()
+          return
+        }
+
+        const markup = Prism.languages.markup
+        const javascript = Prism.languages.javascript || Prism.languages.js
+        const css = Prism.languages.css
+        const pattern = /(<script\b[^>]*>)([\s\S]*?)(<\/script>)|(<style\b[^>]*>)([\s\S]*?)(<\/style>)/gi
+        let lastIndex = 0
+        let output = ''
+        let match
+
+        while ((match = pattern.exec(source))) {
+          const [full, scriptOpen, scriptBody, scriptClose, styleOpen, styleBody, styleClose] = match
+          const index = match.index
+          if (index > lastIndex) {
+            output += highlightSegment(source.slice(lastIndex, index), 'markup', markup)
+          }
+          if (scriptOpen) {
+            output += highlightSegment(scriptOpen, 'markup', markup)
+            output += scriptBody ? highlightSegment(scriptBody, 'javascript', javascript) : ''
+            output += highlightSegment(scriptClose, 'markup', markup)
+          } else if (styleOpen) {
+            output += highlightSegment(styleOpen, 'markup', markup)
+            output += styleBody ? highlightSegment(styleBody, 'css', css) : ''
+            output += highlightSegment(styleClose, 'markup', markup)
+          } else {
+            output += highlightSegment(full, 'markup', markup)
+          }
+          lastIndex = index + full.length
+        }
+
+        if (lastIndex < source.length) {
+          output += highlightSegment(source.slice(lastIndex), 'markup', markup)
+        }
+
+        highlight.innerHTML = output || '&nbsp;'
+        syncScroll()
+      }
+
+      function render() {
+        syncHighlight()
+        preview.srcdoc = createPreviewDocument(editor.value)
+        status.textContent = 'Rendered ' + new Date().toLocaleTimeString()
+      }
+
+      function scheduleRender() {
+        clearTimeout(renderTimer)
+        renderTimer = setTimeout(render, 250)
+      }
+
+      function loadExample(id, fromUrl = false) {
+        const example = byId.get(id) || examples[0]
+        if (!example) return
+        currentExampleId = example.id
+        dirty = false
+        select.value = example.id
+        editor.value = example.code
+        description.textContent = example.description
+        if (!fromUrl) {
+          history.replaceState(null, '', `${location.pathname}?example=${encodeURIComponent(example.id)}`)
+        }
+        render()
+      }
+
+      function loadInitialState() {
+        const customCode = getHashCode()
+        if (customCode) {
+          currentExampleId = ''
+          dirty = true
+          select.value = examples[0]?.id || ''
+          editor.value = customCode
+          description.textContent = 'Custom code loaded from the URL.'
+          render()
+          return
+        }
+        const params = new URLSearchParams(location.search)
+        loadExample(params.get('example') || examples[0]?.id || '', true)
+      }
+
+      groupExamples()
+      loadInitialState()
+
+      select.addEventListener('change', () => loadExample(select.value))
+      editor.addEventListener('input', () => {
+        dirty = true
+        description.textContent = 'Custom code. Use Copy link or Open in new tab to share it.'
+        syncHighlight()
+        scheduleRender()
+      })
+      editor.addEventListener('scroll', syncScroll)
+      editor.addEventListener('keydown', (event) => {
+        if (event.key === 'Tab') {
+          event.preventDefault()
+          const start = editor.selectionStart
+          const end = editor.selectionEnd
+          editor.setRangeText('  ', start, end, 'end')
+          dirty = true
+          scheduleRender()
+        }
+      })
+      window.addEventListener('resize', syncScroll)
+      document.getElementById('runBtn').addEventListener('click', render)
+      document.getElementById('resetBtn').addEventListener('click', () => loadExample(select.value || examples[0]?.id || ''))
+      document.getElementById('copyBtn').addEventListener('click', async () => {
+        const url = buildShareUrl()
+        await navigator.clipboard.writeText(url)
+        status.textContent = 'Link copied'
+      })
+      document.getElementById('newTabBtn').addEventListener('click', () => window.open(buildShareUrl(), '_blank', 'noopener,noreferrer'))
+      docsBtn.addEventListener('click', () => { location.href = '/' })
+    })().catch((error) => {
+      document.getElementById('status').textContent = 'Failed to load playground'
+      document.getElementById('description').textContent = String(error)
+      console.error(error)
+    })
+  </script>
+</body>
+</html>
