@@ -3,7 +3,7 @@ layout: home
 
 hero:
   name: "Pocket Vue"
-  image: { src: '/logo.png', alt: 'pocket-vue logo' }
+  image: { src: '/logo.jpg', alt: 'pocket-vue logo' }
   text: "Progressive Enhancement for the Modern Web"
   tagline: A lightweight, Vue-compatible library optimized for "sprinkling" interactions on server-rendered pages (Django, Laravel, Rails, and more).
   actions:

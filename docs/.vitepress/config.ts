@@ -26,7 +26,7 @@ export default withMermaid(
         },
 
         themeConfig: {
-            logo: '/logo.png',
+            logo: '/logo.jpg',
             nav: [
                 { text: 'Guide', link: '/start-here/installation' },
                 { text: 'API', link: '/directives/v-bind' },
