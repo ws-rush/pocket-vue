@@ -23,7 +23,7 @@ export default withMermaid(
                 { text: 'Guide', link: '/start-here/installation' },
                 { text: 'API', link: '/directives/v-bind' },
                 { text: 'Examples', link: '/examples/' },
-                { text: 'GitHub', link: 'https://github.com/ws-rush/pico-vue' }
+                { text: 'GitHub', link: 'https://github.com/ws-rush/pocket-vue' }
             ],
 
             search: {
@@ -51,18 +51,18 @@ export default withMermaid(
                         { text: 'API Reference', link: '/essentials/api-reference' }
                     ]
                 },
-                            {
-                                text: 'Guides',
-                                items: [
-                                    { text: 'State Management', link: '/guides/state-management' },
-                                    { text: 'Server Integration', link: '/guides/server-integration' },
-                                    { text: 'Django', link: '/guides/django' },
-                                    { text: 'Rails', link: '/guides/rails' },
-                                    { text: 'Laravel', link: '/guides/laravel' },
-                                    { text: 'ASP.NET Core', link: '/guides/aspnet' },
-                                    { text: 'Form Handling', link: '/guides/form-handling' }
-                                ]
-                            },                {
+                {
+                    text: 'Guides',
+                    items: [
+                        { text: 'State Management', link: '/guides/state-management' },
+                        { text: 'Server Integration', link: '/guides/server-integration' },
+                        { text: 'Django', link: '/guides/django' },
+                        { text: 'Rails', link: '/guides/rails' },
+                        { text: 'Laravel', link: '/guides/laravel' },
+                        { text: 'ASP.NET Core', link: '/guides/aspnet' },
+                        { text: 'Form Handling', link: '/guides/form-handling' }
+                    ]
+                }, {
                     text: 'Directives',
                     items: [
                         { text: 'v-bind', link: '/directives/v-bind' },
@@ -103,7 +103,7 @@ export default withMermaid(
             ],
 
             socialLinks: [
-                { icon: 'github', link: 'https://github.com/ws-rush/pico-vue' }
+                { icon: 'github', link: 'https://github.com/ws-rush/pocket-vue' }
             ],
 
             footer: {

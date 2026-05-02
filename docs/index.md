@@ -12,7 +12,7 @@ hero:
       link: /start-here/installation
     - theme: alt
       text: View on GitHub
-      link: https://github.com/ws-rush/pico-vue
+      link: https://github.com/ws-rush/pocket-vue
 
 features:
   - title: Ultra Lightweight

@@ -55,7 +55,7 @@ If using a method handler, the event is automatically passed as the first argume
 
 ## Event Modifiers
 
-Pico-vue provides modifiers to simplify common event handling tasks. Modifiers are postfixed with a dot.
+pocket-vue provides modifiers to simplify common event handling tasks. Modifiers are postfixed with a dot.
 
 - `.stop`: Calls `event.stopPropagation()`
 - `.prevent`: Calls `event.preventDefault()`
@@ -123,7 +123,7 @@ Restrict handlers to specific mouse buttons.
 
 ## Special Lifecycle Events
 
-Pico-vue emits special events when an element is mounted or unmounted. These **must** be prefixed with `vue:`.
+pocket-vue emits special events when an element is mounted or unmounted. These **must** be prefixed with `vue:`.
 
 - `@vue:mounted`: Fired when the element is mounted to the DOM.
 - `@vue:unmounted`: Fired when the element is removed from the DOM.

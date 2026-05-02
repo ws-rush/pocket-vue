@@ -1,8 +1,8 @@
-# pico-vue
+# pocket-vue
 
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/ws-rush/pico-vue)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/ws-rush/pocket-vue)
 
-`pico-vue` is a fork of `petite-vue`, which is an alternative distribution of [Vue](https://vuejs.org) optimized for [progressive enhancement](https://developer.mozilla.org/en-US/docs/Glossary/Progressive_Enhancement). It provides the same template syntax and reactivity mental model as standard Vue. However, it is specifically optimized for "sprinkling" a small amount of interactions on an existing HTML page rendered by a server framework.
+`pocket-vue` is a fork of `petite-vue`, which is an alternative distribution of [Vue](https://vuejs.org) optimized for [progressive enhancement](https://developer.mozilla.org/en-US/docs/Glossary/Progressive_Enhancement). It provides the same template syntax and reactivity mental model as standard Vue. However, it is specifically optimized for "sprinkling" a small amount of interactions on an existing HTML page rendered by a server framework.
 
 ## Status
 

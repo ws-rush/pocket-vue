@@ -1,9 +1,9 @@
 
-> pico-vue@1.1.2 test:coverage /home/rush/Projects/pico-vue
+> pocket-vue@1.1.2 test:coverage /home/rush/Projects/pocket-vue
 > vitest run --coverage -- --reporter\=lcov
 
 
-[1m[46m RUN [49m[22m [36mv4.0.2 [39m[90m/home/rush/Projects/pico-vue[39m
+[1m[46m RUN [49m[22m [36mv4.0.2 [39m[90m/home/rush/Projects/pocket-vue[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
  [32m✓[39m [30m[43m chromium [49m[39m __tests__/index.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 273[2mms[22m[39m

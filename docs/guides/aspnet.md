@@ -1,6 +1,6 @@
 # ASP.NET Core Integration Guide
 
-Pico-vue is an excellent choice for ASP.NET developers who want a lightweight way to add interactivity to their Razor views or pages without using a full-blown SPA.
+pocket-vue is an excellent choice for ASP.NET developers who want a lightweight way to add interactivity to their Razor views or pages without using a full-blown SPA.
 
 ## Installation
 

@@ -1,6 +1,6 @@
 # Laravel Integration Guide
 
-Pico-vue is an excellent alternative or companion to Livewire or Alpine.js in Laravel applications. It provides the same reactive benefits without the server-side overhead of Livewire.
+pocket-vue is an excellent alternative or companion to Livewire or Alpine.js in Laravel applications. It provides the same reactive benefits without the server-side overhead of Livewire.
 
 ## Installation
 
@@ -37,7 +37,7 @@ Laravel provides the `Js::from()` directive to safely serialize data into your B
 
 ## CSRF Token Handling
 
-Laravel automatically includes a CSRF token. Pico-vue can read this for all AJAX requests.
+Laravel automatically includes a CSRF token. pocket-vue can read this for all AJAX requests.
 
 ### Option 1: Meta Tag Extraction
 
