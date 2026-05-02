@@ -1,3 +1,5 @@
+## [1.2.1](https://github.com/ws-rush/pico-vue/compare/v0.0.4...v1.2.1) (2026-05-02)
+
 ## [0.0.4](https://github.com/ws-rush/pico-vue/compare/v0.0.3...v0.0.4) (2026-02-22)
 
 ## [0.0.3](https://github.com/ws-rush/pico-vue/compare/v0.0.2...v0.0.3) (2026-02-22)

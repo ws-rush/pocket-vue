@@ -1,6 +1,6 @@
 {
   "name": "pocket-vue",
-  "version": "0.0.4",
+  "version": "1.2.1",
   "description": "petite-vue fork with plugins support — pocket-vue",
   "type": "module",
   "main": "dist/pocket-vue.umd.js",
