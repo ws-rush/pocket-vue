@@ -1,3 +1,5 @@
+import { copyFileSync, mkdirSync } from 'node:fs'
+import { dirname, join } from 'node:path'
 import { defineConfig } from 'vitepress'
 import { withMermaid } from "vitepress-plugin-mermaid";
 
@@ -16,6 +18,12 @@ export default withMermaid(
         title: "Pocket Vue",
         description: "A lightweight Vue-compatible library for progressive enhancement",
         base: '/',
+
+        buildEnd(siteConfig) {
+            const playgroundHtml = join(siteConfig.outDir, 'playground/index.html')
+            mkdirSync(dirname(playgroundHtml), { recursive: true })
+            copyFileSync(join(siteConfig.root, 'public/playground/index.html'), playgroundHtml)
+        },
 
         themeConfig: {
             logo: '/logo.png',
