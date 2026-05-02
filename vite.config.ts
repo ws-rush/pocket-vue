@@ -10,25 +10,16 @@ export default defineConfig({
     minify: 'esbuild',
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'PicoVue',
+      name: 'PocketVue',
       formats: ['es', 'umd', 'iife'],
       fileName: (format) => {
-        if (format === 'es') return 'pico-vue.es.js'
-        if (format === 'umd') return 'pico-vue.umd.js'
-        if (format === 'iife') return 'pico-vue.iife.js'
-        return `pico-vue.${format}.js`
+        if (format === 'es') return 'pocket-vue.es.js'
+        if (format === 'umd') return 'pocket-vue.umd.js'
+        if (format === 'iife') return 'pocket-vue.iife.js'
+        return `pocket-vue.${format}.js`
       }
     },
     rollupOptions: {
-      // external: ['@vue/reactivity', '@vue/shared'],
-      // output: {
-      //   // Provide global variables to use in the UMD/IIFE build
-      //   // for externalized deps
-      //   globals: {
-      //     '@vue/reactivity': 'VueReactivity',
-      //     '@vue/shared': 'VueShared'
-      //   },
-      // },
       plugins: [
         {
           name: 'remove-collection-handlers',

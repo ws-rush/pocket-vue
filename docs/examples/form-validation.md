@@ -1,6 +1,6 @@
 # Real-time Form Validation
 
-This example shows how to use pico-vue to provide instant feedback to users as they fill out a form.
+This example shows how to use pocket-vue to provide instant feedback to users as they fill out a form.
 
 ## Example Code
 

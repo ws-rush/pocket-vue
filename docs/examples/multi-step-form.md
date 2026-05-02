@@ -1,6 +1,6 @@
 # Multi-step Form
 
-This recipe demonstrates how to use pico-vue to manage a multi-step form process.
+This recipe demonstrates how to use pocket-vue to manage a multi-step form process.
 
 ## Example Code
 

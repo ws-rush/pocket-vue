@@ -1,6 +1,6 @@
 # Rails Integration Guide
 
-pico-vue works exceptionally well with Ruby on Rails, providing a lightweight alternative or supplement to Stimulus and Turbo.
+pocket-vue works exceptionally well with Ruby on Rails, providing a lightweight alternative or supplement to Stimulus and Turbo.
 
 ## Installation
 
@@ -9,7 +9,7 @@ The quickest way is via CDN in your `application.html.erb` layout.
 ```html
 <!-- app/views/layouts/application.html.erb -->
 <head>
-  <script src="https://unpkg.com/@rush/pico-vue" defer init></script>
+  <script src="https://unpkg.com/pocket-vue" defer init></script>
 </head>
 ```
 
@@ -43,7 +43,7 @@ Inject the data directly into `v-scope`.
 
 ## CSRF Protection
 
-Rails includes a CSRF token in a meta tag by default. pico-vue can easily read this for AJAX requests.
+Rails includes a CSRF token in a meta tag by default. pocket-vue can easily read this for AJAX requests.
 
 ### Option 1: Reading Meta Tag
 
@@ -68,11 +68,11 @@ function submitPost() {
 If you are using Hotwire (Turbo), remember that Turbo replaces the `<body>` but doesn't perform a full page reload.
 
 ### Handling Turbo Page Loads
-You may need to re-initialize pico-vue after a Turbo navigation.
+You may need to re-initialize pocket-vue after a Turbo navigation.
 
 ```javascript
 document.addEventListener('turbo:load', () => {
-  PicoVue.createApp().mount()
+  PocketVue.createApp().mount()
 })
 ```
 
@@ -81,7 +81,7 @@ document.addEventListener('turbo:load', () => {
 ## Practical Examples
 
 ### 1. Interactive Search Filter
-Use pico-vue to filter a list of items fetched from Rails.
+Use pocket-vue to filter a list of items fetched from Rails.
 
 ```html
 <div v-scope="{ 
@@ -116,9 +116,9 @@ Easily add or remove nested form fields.
 
 ## ERB Conflict Handling
 
-Rails uses `<%= %>` which doesn't conflict with pico-vue's `{{ }}`. However, you might want to use different delimiters for clarity.
+Rails uses `<%= %>` which doesn't conflict with pocket-vue's `{{ }}`. However, you might want to use different delimiters for clarity.
 
-### Changing pico-vue Delimiters
+### Changing pocket-vue Delimiters
 
 ```javascript
 createApp({

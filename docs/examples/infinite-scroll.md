@@ -1,6 +1,6 @@
 # Infinite Scroll
 
-This recipe demonstrates how to implement an infinite scroll pattern using pico-vue.
+This recipe demonstrates how to implement an infinite scroll pattern using pocket-vue.
 
 ## Example Code
 
@@ -60,5 +60,5 @@ This recipe demonstrates how to implement an infinite scroll pattern using pico-
 3.  **Scroll Event Listener**: We wire up `@vue:mounted="setupScrollListener()"` to attach a scroll event listener when the component is mounted, which detects when the user reaches the bottom of the page and triggers `loadMore`.
 4.  **Loading State**: We use the `loading` property to show or hide a loading indicator and prevent multiple requests from being made at once.
 5.  **List Rendering**: We use `v-for="item in items"` to render the concatenated list of items.
-6.  **Optimized Rendering**: By using `:key="item.id"`, we ensure that pico-vue efficiently updates only the new items as they are added to the DOM.
+6.  **Optimized Rendering**: By using `:key="item.id"`, we ensure that pocket-vue efficiently updates only the new items as they are added to the DOM.
 7.  **Fallback Mechanism**: We provide a "Load More" button as a fallback for users who prefer manual navigation.

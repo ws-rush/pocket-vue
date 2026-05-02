@@ -33,4 +33,4 @@ Properties defined in the root scope are available in all templates within the m
 </div>
 ```
 
-Note that when using a root scope, `v-scope` doesn't need a value; it just marks the element as a pico-vue region.
+Note that when using a root scope, `v-scope` doesn't need a value; it just marks the element as a pocket-vue region.

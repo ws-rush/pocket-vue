@@ -10,4 +10,4 @@ Skip compilation for this element and all its children.
 
 ## Details
 
-Inside the element with `v-pre`, all pico-vue syntax (mustache tags, directives) will be ignored and rendered as-is. This is useful for displaying raw mustache tags.
+Inside the element with `v-pre`, all pocket-vue syntax (mustache tags, directives) will be ignored and rendered as-is. This is useful for displaying raw mustache tags.

@@ -455,7 +455,7 @@ describe("on directive", () => {
     });
 
     expect(consoleSpy).toHaveBeenCalledWith(
-      "v-on=\"obj\" syntax is not supported in pico-vue."
+      "v-on=\"obj\" syntax is not supported in pocket-vue."
     );
     consoleSpy.mockRestore();
   });
@@ -516,7 +516,7 @@ describe("on directive", () => {
     });
 
     expect(consoleSpy).toHaveBeenCalledWith(
-      'v-on="obj" syntax is not supported in pico-vue.'
+      'v-on="obj" syntax is not supported in pocket-vue.'
     );
 
     consoleSpy.mockRestore();

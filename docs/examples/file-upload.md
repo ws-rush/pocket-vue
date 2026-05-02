@@ -1,6 +1,6 @@
 # File Upload Preview
 
-This recipe shows how to use pico-vue to provide a preview for an image before it is uploaded to the server.
+This recipe shows how to use pocket-vue to provide a preview for an image before it is uploaded to the server.
 
 ## Example Code
 

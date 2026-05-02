@@ -36,4 +36,4 @@ Represents the current element that the directive is bound to.
 
 ## Difference from standard Vue
 
-In standard Vue, `$el` typically refers to the component's root element. In pico-vue, `$el` always points to the current element the directive is on.
+In standard Vue, `$el` typically refers to the component's root element. In pocket-vue, `$el` always points to the current element the directive is on.

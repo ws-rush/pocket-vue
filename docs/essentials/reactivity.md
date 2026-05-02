@@ -1,22 +1,22 @@
 # Reactivity APIs
 
-pico-vue re-exports a subset of Vue's reactivity APIs: `reactive()` and `watchEffect()`. These are the core primitives you need for building reactive applications.
+pocket-vue re-exports a subset of Vue's reactivity APIs: `reactive()` and `watchEffect()`. These are the core primitives you need for building reactive applications.
 
 ## Usage
 
-When using the CDN build, these APIs are available on the global `PicoVue` object.
+When using the CDN build, these APIs are available on the global `PocketVue` object.
 
 ```html
-<script src="https://unpkg.com/@rush/pico-vue"></script>
+<script src="https://unpkg.com/pocket-vue"></script>
 <script>
-  const { reactive, watchEffect } = PicoVue
+  const { reactive, watchEffect } = PocketVue
 </script>
 ```
 
-When using the ES module build, you can import them from `@rush/pico-vue`.
+When using the ES module build, you can import them from `pocket-vue`.
 
 ```javascript
-import { reactive, watchEffect } from '@rush/pico-vue'
+import { reactive, watchEffect } from 'pocket-vue'
 ```
 
 ---
@@ -45,7 +45,7 @@ state.count++ // prints 1
 
 ## Additional Reactivity APIs
 
-pico-vue only re-exports `reactive` and `watchEffect` from `@vue/reactivity`. If you need additional reactivity utilities like `ref()`, `computed()`, or `watch()`, you can import them directly from `@vue/reactivity`:
+pocket-vue only re-exports `reactive` and `watchEffect` from `@vue/reactivity`. If you need additional reactivity utilities like `ref()`, `computed()`, or `watch()`, you can import them directly from `@vue/reactivity`:
 
 ```javascript
 import { ref, computed } from '@vue/reactivity'

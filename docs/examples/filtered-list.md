@@ -1,6 +1,6 @@
 # Filtered List
 
-This recipe shows how to implement a filtered list with category-based filtering using pico-vue.
+This recipe shows how to implement a filtered list with category-based filtering using pocket-vue.
 
 ## Example Code
 
@@ -45,4 +45,4 @@ This recipe shows how to implement a filtered list with category-based filtering
 4.  **List Rendering**: We use `v-for="item in filteredItems"` to render only the matched items in the list.
 5.  **Visibility Control**: We use `v-show` to display a fallback message if no items match the selected category.
 6.  **Simplified UI**: This approach is efficient and easy to maintain, even for a large number of categories.
-7.  **Optimized Rendering**: By using `:key="item.id"`, we ensure that pico-vue efficiently updates only the necessary parts of the DOM when the filtered results change.
+7.  **Optimized Rendering**: By using `:key="item.id"`, we ensure that pocket-vue efficiently updates only the necessary parts of the DOM when the filtered results change.

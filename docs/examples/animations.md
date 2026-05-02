@@ -1,6 +1,6 @@
 # CSS Transitions
 
-This recipe shows how to use pico-vue to apply CSS transitions to elements when they are shown or hidden.
+This recipe shows how to use pocket-vue to apply CSS transitions to elements when they are shown or hidden.
 
 ## Example Code
 

@@ -25,7 +25,7 @@
 ### Why use `v-text`?
 While mustache syntax is generally more flexible, `v-text` can be useful in specific cases:
 
-1.  **Avoiding FOUC**: When using mustache syntax, the raw `{{ msg }}` may be visible for a split second before pico-vue initializes. Using `v-text` on an empty element avoids this flash of uncompiled content (you can also use `v-cloak` to solve this).
+1.  **Avoiding FOUC**: When using mustache syntax, the raw `{{ msg }}` may be visible for a split second before pocket-vue initializes. Using `v-text` on an empty element avoids this flash of uncompiled content (you can also use `v-cloak` to solve this).
 2.  **Overwriting Content**: `v-text` will completely overwrite all children inside the target element, whereas mustache syntax allows you to combine static text and reactive data within a single element.
 
 ---

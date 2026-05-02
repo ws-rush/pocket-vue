@@ -1,11 +1,11 @@
 # Plugins
 
-Plugins are self-contained code that usually add global-level functionality to pico-vue.
+Plugins are self-contained code that usually add global-level functionality to pocket-vue.
 
 ## Using a Plugin
 
 ```js
-import { createApp } from '@rush/pico-vue'
+import { createApp } from 'pocket-vue'
 import myPlugin from './my-plugin'
 
 createApp().use(myPlugin, {
@@ -31,13 +31,13 @@ export default {
 ## Example
 
 ```html
-<div v-scope="{counter: 0}" v-log="inside pico-vue scope">
+<div v-scope="{counter: 0}" v-log="inside pocket-vue scope">
   <button @click="counter++">increase</button>
 </div>
 
 <script type="module">
   import log from './log.js'
-  import { createApp } from '@rush/pico-vue'
+  import { createApp } from 'pocket-vue'
   createApp().use(log).mount()
 </script>
 ```

@@ -6,9 +6,9 @@ A classic example of a Todo application. This demonstrates list rendering, input
 
 ```html
 <script type="module">
-  import { createApp } from '@rush/pico-vue'
+  import { createApp } from 'pocket-vue'
 
-  const STORAGE_KEY = 'pico-vue-todomvc'
+  const STORAGE_KEY = 'pocket-vue-todomvc'
 
   const filters = {
     all: (todos) => todos,

@@ -79,7 +79,9 @@ async function main() {
   await run('git', ['commit', '-m', `release: v${targetVersion}`])
   await run('git', ['tag', `v${targetVersion}`])
 
-  // Publishing is handled by GitHub Actions on tag push.
+  // Publish to npm.
+  step('\nPublishing to npm...')
+  await run('npm', ['publish', '--access', 'public'])
 
   // Push to GitHub.
   step('\nPushing to GitHub...')

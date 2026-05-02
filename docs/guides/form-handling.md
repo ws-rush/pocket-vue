@@ -1,6 +1,6 @@
 # Form Handling
 
-Forms are a crucial part of any application. pico-vue makes handling form inputs and submission straightforward with `v-model`.
+Forms are a crucial part of any application. pocket-vue makes handling form inputs and submission straightforward with `v-model`.
 
 ## Basic Bindings
 

@@ -1,6 +1,6 @@
 # v-scope
 
-`v-scope` is the primary directive in pico-vue. It marks a region of the DOM that should be controlled by pico-vue.
+`v-scope` is the primary directive in pocket-vue. It marks a region of the DOM that should be controlled by pocket-vue.
 
 ## Usage
 
@@ -35,7 +35,7 @@ This allows you to pass initial state directly from your database without making
 
 ### Explicit Mount Target
 
-If you don't use the `init` attribute on the script tag, you can manually mount pico-vue to specific elements. In this case, `v-scope` serves as a marker.
+If you don't use the `init` attribute on the script tag, you can manually mount pocket-vue to specific elements. In this case, `v-scope` serves as a marker.
 
 ```html
 <div id="app" v-scope>
@@ -43,13 +43,13 @@ If you don't use the `init` attribute on the script tag, you can manually mount 
 </div>
 
 <script>
-  PicoVue.createApp({ count: 0 }).mount('#app')
+  PocketVue.createApp({ count: 0 }).mount('#app')
 </script>
 ```
 
 ### Multiple Apps
 
-You can have multiple independent pico-vue apps on the same page:
+You can have multiple independent pocket-vue apps on the same page:
 
 ```html
 <div v-scope="{ count: 1 }">

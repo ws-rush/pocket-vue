@@ -47,4 +47,4 @@ This recipe shows how to animate items in a `v-for` list as they are added or re
 3.  **List Operations**: We provide `addItem()` and `removeItem(index)` methods to update the `items` array.
 4.  **Transition Timing**: The transition duration and easing are controlled by CSS properties.
 5.  **Simplified UI**: This approach is efficient and easy to maintain, providing smooth transitions for common UI patterns.
-6.  **Optimized Rendering**: By using `:key="item"`, we ensure that pico-vue efficiently updates only the new or removed items in the DOM.
+6.  **Optimized Rendering**: By using `:key="item"`, we ensure that pocket-vue efficiently updates only the new or removed items in the DOM.

@@ -13,7 +13,7 @@ export default withMermaid(
                 },
             },
         },
-        title: "Pico Vue",
+        title: "Pocket Vue",
         description: "A lightweight Vue-compatible library for progressive enhancement",
         base: '/',
 

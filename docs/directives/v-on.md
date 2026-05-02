@@ -138,7 +138,7 @@ Pico-vue emits special events when an element is mounted or unmounted. These **m
 
 ### Object Syntax Not Supported
 
-The `v-on="eventHandlers"` object syntax (passing an object of event handlers) is **not** supported in pico-vue. You must use individual `@event` bindings:
+The `v-on="eventHandlers"` object syntax (passing an object of event handlers) is **not** supported in pocket-vue. You must use individual `@event` bindings:
 
 ```html
 <!-- NOT supported -->

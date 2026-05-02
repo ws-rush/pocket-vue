@@ -1,6 +1,6 @@
 # Components
 
-In pico-vue, components are simplified compared to standard Vue. They are primarily functions that return a scope object.
+In pocket-vue, components are simplified compared to standard Vue. They are primarily functions that return a scope object.
 
 ## Function Components
 
@@ -41,7 +41,7 @@ Use the function in `v-scope` to instantiate the component:
 ```
 
 > [!NOTE]
-> pico-vue does **not** have automatic lifecycle hooks like `mounted()` or `setup()`. To run code when a component is mounted, define a method in your scope and wire it up manually using `@vue:mounted="methodName"`. See [Lifecycle Events](/essentials/lifecycle) for details.
+> pocket-vue does **not** have automatic lifecycle hooks like `mounted()` or `setup()`. To run code when a component is mounted, define a method in your scope and wire it up manually using `@vue:mounted="methodName"`. See [Lifecycle Events](/essentials/lifecycle) for details.
 
 ## Components with Template
 
@@ -90,7 +90,7 @@ export default function Counter(props) {
 `index.html`:
 ```html
 <script type="module">
-  import { createApp } from 'https://unpkg.com/@rush/pico-vue?module'
+  import { createApp } from 'https://unpkg.com/pocket-vue?module'
   import Counter from './components/Counter.js'
 
   createApp({

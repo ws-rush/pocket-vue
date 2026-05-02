@@ -1,6 +1,6 @@
 # v-bind
 
-`v-bind` is used to dynamically bind one or more attributes to an expression. It's one of the most fundamental directives in pico-vue.
+`v-bind` is used to dynamically bind one or more attributes to an expression. It's one of the most fundamental directives in pocket-vue.
 
 ## Shorthand
 

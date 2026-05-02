@@ -18,7 +18,7 @@
 `v-show` works by adding an inline `display: none` style to the element when the expression is false. When the expression is true, it restores the element's original `display` value (either from an existing inline style or the default for that element type).
 
 ### Preservation of Initial State
-pico-vue intelligently stores the initial `display` property of your element when the application is mounted. This means if your element was originally `display: flex` or `display: inline-block`, `v-show` will correctly restore that state.
+pocket-vue intelligently stores the initial `display` property of your element when the application is mounted. This means if your element was originally `display: flex` or `display: inline-block`, `v-show` will correctly restore that state.
 
 ---
 

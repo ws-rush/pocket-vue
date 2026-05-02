@@ -1,6 +1,6 @@
 # Scope and Context
 
-pico-vue uses a hierarchical scope system similar to JavaScript's lexical scoping. This allows components to inherit and share data efficiently.
+pocket-vue uses a hierarchical scope system similar to JavaScript's lexical scoping. This allows components to inherit and share data efficiently.
 
 ## Scope Inheritance
 
@@ -39,7 +39,7 @@ If a child scope defines a property with the same name as a parent property, it 
 
 ### Updating Parent State
 
-When you assign a value to a property in a template, pico-vue will first check if the property exists on the current scope. If it doesn't, it will walk up the scope chain (prototype chain) and update the property on the first parent scope where it finds it.
+When you assign a value to a property in a template, pocket-vue will first check if the property exists on the current scope. If it doesn't, it will walk up the scope chain (prototype chain) and update the property on the first parent scope where it finds it.
 
 <div v-pre>
 
@@ -60,7 +60,7 @@ When you assign a value to a property in a template, pico-vue will first check i
 
 ## Implicit Data Sharing (Scope Inheritance)
 
-Since pico-vue uses prototype-based scope inheritance, any property defined in a parent scope is automatically accessible in all descendant scopes — no special API is needed.
+Since pocket-vue uses prototype-based scope inheritance, any property defined in a parent scope is automatically accessible in all descendant scopes — no special API is needed.
 
 ```html
 <div v-scope="{ theme: 'dark' }">

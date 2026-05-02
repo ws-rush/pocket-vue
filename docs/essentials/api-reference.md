@@ -1,6 +1,6 @@
 # API Reference
 
-This page provides a comprehensive reference of the pico-vue core API.
+This page provides a comprehensive reference of the pocket-vue core API.
 
 ## `createApp()`
 
@@ -45,7 +45,7 @@ function watchEffect(effect: () => void): void
 Runs a function and tracks its reactive dependencies. This is a re-export of `effect` from `@vue/reactivity`.
 
 > [!NOTE]
-> Only `reactive` and `watchEffect` are re-exported from `@rush/pico-vue`. If you need `ref()`, `computed()`, or other reactivity APIs, import them directly from `@vue/reactivity`.
+> Only `reactive` and `watchEffect` are re-exported from `pocket-vue`. If you need `ref()`, `computed()`, or other reactivity APIs, import them directly from `@vue/reactivity`.
 
 ---
 
@@ -53,7 +53,7 @@ Runs a function and tracks its reactive dependencies. This is a re-export of `ef
 
 ### `v-scope`
 
-Marks an element as a pico-vue component and defines its scope.
+Marks an element as a pocket-vue component and defines its scope.
 
 ```html
 <div v-scope="{ count: 0 }"></div>

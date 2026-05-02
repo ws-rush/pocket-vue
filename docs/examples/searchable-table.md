@@ -1,6 +1,6 @@
 # Searchable Table
 
-This recipe demonstrates how to implement a real-time searchable table using pico-vue.
+This recipe demonstrates how to implement a real-time searchable table using pocket-vue.
 
 ## Example Code
 
@@ -52,4 +52,4 @@ This recipe demonstrates how to implement a real-time searchable table using pic
 3.  **Two-way Binding**: We use `v-model="query"` to bind the search input to the `query` property.
 4.  **List Rendering**: We use `v-for="user in filteredUsers"` to render only the matched users in the table.
 5.  **Conditional Rendering**: We use `v-if` to show the table if any users match the search, and a fallback message if no matches are found.
-6.  **Optimized Rendering**: By using `:key="user.id"`, we ensure that pico-vue efficiently updates only the necessary parts of the DOM when the filtered results change.
+6.  **Optimized Rendering**: By using `:key="user.id"`, we ensure that pocket-vue efficiently updates only the necessary parts of the DOM when the filtered results change.

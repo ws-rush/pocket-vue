@@ -41,4 +41,4 @@
 `v-html` works by setting the element's `innerHTML` property. This means all existing children in the element will be completely overwritten.
 
 ### Integration with Other Directives
-Directives and interpolations inside the HTML string provided to `v-html` will **not** be compiled by pico-vue. If you need to render dynamic templates, you should use regular Vue components or server-side rendering.
+Directives and interpolations inside the HTML string provided to `v-html` will **not** be compiled by pocket-vue. If you need to render dynamic templates, you should use regular Vue components or server-side rendering.

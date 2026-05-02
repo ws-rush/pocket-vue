@@ -62,10 +62,10 @@ While both directives conditionally control what is displayed on the screen, the
 ## Best Practices
 
 ### 1. Unique Keys for Toggling
-When using `v-if` to toggle between similar elements, providing a unique `:key` can help pico-vue track them accurately.
+When using `v-if` to toggle between similar elements, providing a unique `:key` can help pocket-vue track them accurately.
 
 ### 2. Don't Combine with `v-for`
-It's generally not recommended to use `v-if` and `v-for` on the same element. In pico-vue, `v-for` has a higher priority, meaning the `v-if` will be evaluated for each iteration. For performance, it's better to filter the list in your data scope before iterating.
+It's generally not recommended to use `v-if` and `v-for` on the same element. In pocket-vue, `v-for` has a higher priority, meaning the `v-if` will be evaluated for each iteration. For performance, it's better to filter the list in your data scope before iterating.
 
 ### 3. Avoid Empty Expressions
-In development mode, pico-vue will warn you if a `v-if` expression is empty or invalid.
+In development mode, pocket-vue will warn you if a `v-if` expression is empty or invalid.

@@ -1,6 +1,6 @@
 # State Management
 
-As your application grows, you may need to share state between multiple components or persist state across page reloads. pico-vue provides a simple and effective way to manage global state using the `reactive` function.
+As your application grows, you may need to share state between multiple components or persist state across page reloads. pocket-vue provides a simple and effective way to manage global state using the `reactive` function.
 
 ## The Store Pattern
 
@@ -11,7 +11,7 @@ The simplest way to manage global state is to create a reactive object and share
 Create a JavaScript file (e.g., `store.js`) to hold your global state.
 
 ```js
-import { reactive } from '@rush/pico-vue'
+import { reactive } from 'pocket-vue'
 
 export const store = reactive({
   count: 0,
@@ -33,7 +33,7 @@ You can now import this store and use it in your components.
 
 ```html
 <script type="module">
-  import { createApp } from '@rush/pico-vue'
+  import { createApp } from 'pocket-vue'
   import { store } from './store.js'
 
   createApp({
@@ -53,22 +53,22 @@ You can now import this store and use it in your components.
 
 Because `store` is reactive, any change to `store.count` will automatically update all components that use it.
 
-## Global State with `PicoVue.reactive`
+## Global State with `PocketVue.reactive`
 
 If you are using the CDN build without ES modules, you can still achieve this pattern.
 
 ```html
-<script src="https://unpkg.com/@rush/pico-vue"></script>
+<script src="https://unpkg.com/pocket-vue"></script>
 
 <script>
-  const store = PicoVue.reactive({
+  const store = PocketVue.reactive({
     count: 0,
     increment() {
       this.count++
     }
   })
 
-  PicoVue.createApp({
+  PocketVue.createApp({
     store
   }).mount()
 </script>
@@ -86,17 +86,17 @@ To persist state across page reloads (e.g., for a dark mode preference), you can
 ### Using `v-effect`
 
 ```html
-<script src="https://unpkg.com/@rush/pico-vue"></script>
+<script src="https://unpkg.com/pocket-vue"></script>
 
 <script>
-  const store = PicoVue.reactive({
+  const store = PocketVue.reactive({
     darkMode: localStorage.getItem('darkMode') === 'true',
     toggleTheme() {
       this.darkMode = !this.darkMode
     }
   })
 
-  PicoVue.createApp({ store }).mount()
+  PocketVue.createApp({ store }).mount()
 </script>
 
 <div v-scope v-effect="
@@ -113,7 +113,7 @@ To persist state across page reloads (e.g., for a dark mode preference), you can
 
 ```html
 <script type="module">
-  import { createApp, reactive, watchEffect } from '@rush/pico-vue'
+  import { createApp, reactive, watchEffect } from 'pocket-vue'
 
   const store = reactive({
     darkMode: localStorage.getItem('darkMode') === 'true',

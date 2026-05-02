@@ -1,6 +1,6 @@
 # v-effect
 
-`v-effect` is used to run a reactive side effect. It's pico-vue's equivalent of `watchEffect()` but as an inline directive.
+`v-effect` is used to run a reactive side effect. It's pocket-vue's equivalent of `watchEffect()` but as an inline directive.
 
 ## Basic Usage
 
@@ -72,7 +72,7 @@ Be careful not to modify the same reactive state that the effect depends on, as 
 ```
 
 ### 3. Cleanup
-Unlike `watchEffect`, `v-effect` in pico-vue doesn't provide an explicit `onCleanup` callback. However, all effects are automatically stopped when the element is removed from the DOM (e.g., via `v-if`).
+Unlike `watchEffect`, `v-effect` in pocket-vue doesn't provide an explicit `onCleanup` callback. However, all effects are automatically stopped when the element is removed from the DOM (e.g., via `v-if`).
 
 ### 4. Direct DOM Mutation
 While you can use `v-effect` to mutate the DOM directly (like setting `innerHTML` or `className`), it's generally better to use built-in directives like `v-html` or `:class` for these purposes whenever possible. Use `v-effect` for things that don't have a dedicated directive.

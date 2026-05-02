@@ -1,6 +1,6 @@
 # Examples and Cookbook
 
-Explore these practical examples and recipes to see how pico-vue solves common UI challenges.
+Explore these practical examples and recipes to see how pocket-vue solves common UI challenges.
 
 ## Application Patterns
 
@@ -43,7 +43,7 @@ Explore these practical examples and recipes to see how pico-vue solves common U
 
 ## Advanced Recipes
 
-- [**Custom Directive**](/advanced/custom-directives) - Extending pico-vue functionality.
+- [**Custom Directive**](/advanced/custom-directives) - Extending pocket-vue functionality.
 - [**Plugin Pattern**](/advanced/plugins) - Creating reusable plugins.
 - [**Fetch API Integration**](/examples/fetch-api) - Working with external data.
 - [**Global State Management**](/advanced/global-state) - Sharing state across apps.

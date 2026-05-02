@@ -94,7 +94,7 @@ Use a `<template>` tag if you need to repeat a block of multiple elements.
 
 ## Importance of `:key`
 
-It is highly recommended to provide a unique `key` attribute for each item using `:key`. This allows pico-vue to efficiently track and reuse elements when the list changes.
+It is highly recommended to provide a unique `key` attribute for each item using `:key`. This allows pocket-vue to efficiently track and reuse elements when the list changes.
 
 ```html
 <div v-for="item in items" :key="item.id">
@@ -104,7 +104,7 @@ It is highly recommended to provide a unique `key` attribute for each item using
 
 ### How Key-Based Diffing Works
 
-When you provide `:key`, pico-vue uses a key-based diffing algorithm to efficiently update the list:
+When you provide `:key`, pocket-vue uses a key-based diffing algorithm to efficiently update the list:
 
 1. **Reuse**: Existing DOM elements with matching keys are reused (their scope data is updated in-place) instead of being destroyed and recreated.
 2. **Reorder**: Elements are moved in the DOM to match the new order, rather than being patched in-place.
@@ -115,11 +115,11 @@ This is especially important for:
 - Stateful elements like input fields inside list items
 - Animations and transitions
 
-Without a unique key, pico-vue will use index-based matching which can lead to unexpected behavior with stateful elements.
+Without a unique key, pocket-vue will use index-based matching which can lead to unexpected behavior with stateful elements.
 
 ---
 
 ## Limitations
 
-- **Deep Destructuring**: pico-vue supports basic destructuring (e.g., `v-for="[id, name] in items"`) but does not support complex nested destructuring.
-- **`v-for` with `v-if`**: Unlike standard Vue, `v-for` takes precedence over `v-if` in pico-vue when used on the same element. It's generally better to use a wrapper or filter the list in your scope.
+- **Deep Destructuring**: pocket-vue supports basic destructuring (e.g., `v-for="[id, name] in items"`) but does not support complex nested destructuring.
+- **`v-for` with `v-if`**: Unlike standard Vue, `v-for` takes precedence over `v-if` in pocket-vue when used on the same element. It's generally better to use a wrapper or filter the list in your scope.

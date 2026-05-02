@@ -9,7 +9,7 @@ const escapeRegex = (str: string) =>
   str.replace(/[-.*+?^${}()|[\]\/\\]/g, '\\$&')
 
 /**
- * The main application interface for pico-vue.
+ * The main application interface for pocket-vue.
  */
 export interface App {
   /** Registers a directive. */
@@ -27,7 +27,7 @@ export interface App {
 }
 
 /**
- * Creates a new pico-vue application instance.
+ * Creates a new pocket-vue application instance.
  * @param initialData - Optional initial state/data for the application.
  * @returns A new App instance.
  */
@@ -100,7 +100,7 @@ export const createApp = (initialData?: any): App => {
         roots[0] === document.documentElement
       ) {
         console.warn(
-          `Mounting on documentElement - this is non-optimal as pico-vue will be forced to crawl the entire page's DOM. Consider explicitly marking elements controlled by pico-vue with \`v-scope\`.`
+          `Mounting on documentElement - this is non-optimal as pocket-vue will be forced to crawl the entire page's DOM. Consider explicitly marking elements controlled by pocket-vue with \`v-scope\`.`
         )
       }
 

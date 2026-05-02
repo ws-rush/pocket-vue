@@ -1,6 +1,6 @@
 # Tabs Component
 
-This recipe demonstrates how to build a tabbed interface using pico-vue.
+This recipe demonstrates how to build a tabbed interface using pocket-vue.
 
 ## Example Code
 

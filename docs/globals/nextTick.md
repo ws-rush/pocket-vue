@@ -20,11 +20,11 @@ A utility to wait for the next DOM update cycle.
 
 ## Details
 
-When you mutate state in pico-vue, the DOM updates asynchronously. If you need to perform an operation that depends on the updated DOM, use `$nextTick`.
+When you mutate state in pocket-vue, the DOM updates asynchronously. If you need to perform an operation that depends on the updated DOM, use `$nextTick`.
 
 ### Async Update Queue
 
-pico-vue buffers all state changes and flushes them together in the next "tick". This ensures that you don't trigger unnecessary re-renders if you change the same data multiple times.
+pocket-vue buffers all state changes and flushes them together in the next "tick". This ensures that you don't trigger unnecessary re-renders if you change the same data multiple times.
 
 ```js
 count = 1
